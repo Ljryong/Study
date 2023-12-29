@@ -11,7 +11,7 @@ y = np.array([1,2,3])
 
 #2. 모델구성            #y=wx+b  x = input , y = output
 model = Sequential()                    # Sequential = 순차적으로 나열하겠다
-model.add(Dense(1, input_dim=1))        # y = 1 = output = 한덩어리 ,  x = dim = 하나의 차원 = 한덩어리  ,  dense = ?
+model.add(Dense(1, input_dim=1))        # y = 1 = output = 한덩어리 ,  x = dim = 하나의 차원 = 한덩어리  ,  dense = 밀집도
 
 
 #3. 컴파일, 훈련           # 반복하면서 loss 를 줄여가며 최적의 weight를 구한다
