@@ -9,8 +9,6 @@ y = np.array([1,2,3])
 #2 모델구성
 model = Sequential()
 model.add(Dense(3 , input_dim = 1))             # 첫번째 model.add 말고는 input을 넣지 않아도 위에 input 기록이 남아있어서 쓸 수 있다.
-model.add(Dense(6))
-model.add(Dense(7))
 model.add(Dense(9))
 model.add(Dense(8))
 model.add(Dense(1))
@@ -28,6 +26,6 @@ print(result)
 
 
 
-# 1.9544283968997433e-09
-# 1/1 [==============================] - 0s 50ms/step
-# [[3.9999882]]
+# 5.5868176751516785e-09
+# 1/1 [==============================] - 0s 55ms/step
+# [[4.000094]]
