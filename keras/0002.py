@@ -3,8 +3,8 @@ from keras.layers import Dense
 import numpy as np
 
 #1 데이터
-x = np.array([1,3,5,7,9])
-y = np.array([1,3,5,7,9])
+x = np.array([2,4,6,8])
+y = np.array([2,4,6,8])
 
 #2 모델구성
 model = Sequential()
@@ -18,5 +18,5 @@ model.fit(x,y,epochs=3000)
 #4 평가, 예측
 loss = model.evaluate(x,y)
 print(loss)
-result = model.predict([11])
+result = model.predict([10])
 print(result)
