@@ -23,7 +23,7 @@ model.add(Dense(1))
 
 #3 컴파일, 훈련
 model.compile(loss='mse', optimizer='adam')
-model.fit(x,y,epochs=7000)
+model.fit(x,y,epochs=1000)
 
 #4 평가, 예측
 loss = model.evaluate(x,y)
@@ -45,6 +45,11 @@ print("loss의 값 : ",loss)
 # [10,1.3]의 예측 값 :  [[9.995862]]
 # loss의 값 :  5.797704034193885e-06
 # 441 epochs = 7000
+
+# 1/1 [==============================] - 0s 61ms/step
+# [10,1.3]의 예측 값 :  [[10.004786]]
+# loss의 값 :  7.985251613717992e-06
+# 441 epochs = 1000
 
 
 # 과제 : tensor 행렬 20문제 a4 1장에 만들어서 제출하기
