@@ -14,8 +14,6 @@ model.add(Dense(3))
 model.add(Dense(4))
 model.add(Dense(1))
 
-
-
 #3 컴파일, 훈련
 model.compile(loss='mse',optimizer='adam')
 model.fit(x,y,epochs=100)                   # 01_1번과 같은 결과를 만들기 loss 값을 0.33 정도로맞춘다
