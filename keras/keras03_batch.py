@@ -23,6 +23,7 @@ model.add(Dense(1))
 model.compile(loss= 'mse', optimizer= 'adam')
 model.fit(x,y,epochs=100 , batch_size= 3)
 #batch_size = 일괄 처리하기 위해서 잘라서 돌리는 것(한번에 많은 양을 돌릴 수 없을 때 사용) 하지만 epochs의 양은 많아진다. 85% 이상이 batch를 썻을때 성능이 좋아지지만 15%로 나빠질 경우도 있다
+#면접에서 많이 물어보는 내용
 
 #4 평가, 예측
 loss = model.evaluate(x,y)
