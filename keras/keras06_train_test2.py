@@ -30,7 +30,7 @@ model.add(Dense(1))
 
 #3 컴파일, 훈련
 model.compile(loss= 'mse', optimizer= 'adam')
-model.fit(x_train,y_train,epochs=1000 , batch_size= 10)
+model.fit(x_train,y_train,epochs=250 , batch_size= 2)
 
 #4 평가, 예측
 loss = model.evaluate(x_test,y_test)
@@ -38,8 +38,8 @@ results = model.predict([110000,7])
 print("로스 : " ,loss)
 print("11000과 7의 예측 값 : ",results)
 
-# 1 [==============================] - 0s 70ms/step - loss: 0.0161
-# 1/1 [==============================] - 0s 58ms/step
-# 로스 :  0.016122587025165558
-# 11000과 7의 예측 값 :  [[1.06529555e+05]
-# [6.93876791e+00]]
+# 1/1 [==============================] - 0s 67ms/step - loss: 0.0021
+# 1/1 [==============================] - 0s 60ms/step
+# 로스 :  0.0021343149710446596
+# 11000과 7의 예측 값 :  [[1.07483414e+05] , [7.00350571e+00]]
+# 7,6,10,4,1  epochs = 250 , batch = 2
