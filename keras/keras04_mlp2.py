@@ -19,12 +19,9 @@ print(x.shape)                  # 전치된 x.shape = (10,3)
 
 #2 모델구성
 model = Sequential()
-model.add(Dense(5,input_dim = 3))           # 열, 컬럼, 속성, 특성, 차원 = 2 // 
+model.add(Dense(1,input_dim = 3))           # 열, 컬럼, 속성, 특성, 차원 = 2 // 
                                             #(행무시,열우선) <= 외우기  (행의 갯수, 열의 갯수)
 #행무시, 열우선 이란 행은 무시하고 n으로 두고 최소 갯수만 세어 (n,2) , (n,3) 과 같은 형식으로 만든다
-
-model.add(Dense(5))
-model.add(Dense(1))
 
 #3 컴파일, 훈련
 model.compile(loss='mse', optimizer='adam')
