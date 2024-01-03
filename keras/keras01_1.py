@@ -23,7 +23,7 @@ model.fit(x,y,epochs=9000)                  # adam = loss 값을 건드려주는
 #4. 평가, 예측                              # 최적의 weight값으로 평가랑 예측을 진행한다
 loss = model.evaluate(x,y)      # evaluate = 평가
 print("로스 : ", loss)
-result = model.predict([4])     # predict = 예측
+result = model.predict([4])     # predict = 예측  //    결과 값은 y의 다음 값을 구하는 것이다.
 print("4의 예측값은", result)
 
 # , = 분리하는것 . = 이어주는 것
