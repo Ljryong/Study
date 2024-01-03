@@ -11,19 +11,24 @@ y = np.array([1,2,3,4,5,6,7,8,9,10])
 
 print(x)
 print(x.shape,y.shape)          # x.shape = (3,10) , y.shape = (10,)
-                                # numpy에서 넘어온 함수 때문에 가능하다 print(x.shape , y.shape)이 가능
+                                # # print(x.shape , y.shape)이 가능한 이유는
+                                # numpy에서 가져온 함수 때문에 가능한것 이고
+                                # np.array를 사용하여 가져오는 것이다                           
 x = x.T
-print(x.shape)                  # 전지된 x.shape = (10,3)
+print(x.shape)                  # 전치된 x.shape = (10,3)
 
 #2 모델구성
 model = Sequential()
-model.add(Dense(5,input_dim = 3))           # 열, 컬럼, 속성, 특성, 차원 = 2 // (행무시,열우선) <= 외우기  (행의 갯수, 열의 갯수)
+model.add(Dense(5,input_dim = 3))           # 열, 컬럼, 속성, 특성, 차원 = 2 // 
+                                            #(행무시,열우선) <= 외우기  (행의 갯수, 열의 갯수)
+#행무시, 열우선 이란 행은 무시하고 n으로 두고 최소 갯수만 세어 (n,2) , (n,3) 과 같은 형식으로 만든다
+
 model.add(Dense(5))
 model.add(Dense(1))
 
 #3 컴파일, 훈련
 model.compile(loss='mse', optimizer='adam')
-model.fit(x,y,epochs=3000)
+model.fit(x,y,epochs=7000)
 
 #4 평가, 예측
 loss = model.evaluate(x,y)
@@ -39,3 +44,8 @@ print("loss의 값 : ",loss)
 # [10,1.3,0]의 예측 값 :  [[9.999921]]
 # loss의 값 :  1.93606020104653e-09
 # 551 epochs = 3000
+
+# 1/1 [==============================] - 0s 54ms/step
+# [10,1.3,0]의 예측 값 :  [[10.]]
+# loss의 값 :  3.6095570434512003e-13
+# 551 epochs = 7000
