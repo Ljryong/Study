@@ -25,7 +25,7 @@ model.add(Dense(1,input_dim = 3))           # 열, 컬럼, 속성, 특성, 차�
 
 #3 컴파일, 훈련
 model.compile(loss='mse', optimizer='adam')
-model.fit(x,y,epochs=7000)
+model.fit(x,y,epochs=3000)
 
 #4 평가, 예측
 loss = model.evaluate(x,y)
