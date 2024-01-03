@@ -4,7 +4,7 @@ from keras.layers import Dense
 
 #1 데이터
 x = np.array(range(1,11))
-y = np.array([1,2,3,4,5,6,7,8,9,10])
+y = np.array([1,2,3,4,5,7,6,8,9,10])
 
 x_train = x[:8]
 y_train = y[:8]
