@@ -6,13 +6,19 @@ from keras.layers import Dense
 x = np.array([[1,2,3,4,5,6,7,8,9,10],[9,8,7,6,5,4,3,2,1,0]])
 y = np.array([[1,2,3,4,5,7,6,8,9,10],[9,8,6,7,5,4,3,2,1,0]])
 
-x_train = x[:,:3]      #질문 앞에 3개와 뒤에 3개를 뽑아내는 방법을 모르겠음.
+x_train = x[:,-3:]      #질문 앞에 3개와 뒤에 3개를 뽑아내는 방법을 모르겠음.
+                        # [[ 8  9 10],[ 2  1  0]] 로 출력되는데 [[1,2,3],[2,1,0]]을 뽑고싶음
+
 y_train = y[:6,:3]
 
 print(x_train)
 
 
 '''
+x_test = x[]
+y_test = y[]
+
+
 #2 모델구성
 model = Sequential()
 model.add(Dense(1,input_dim = 2))
