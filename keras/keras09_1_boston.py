@@ -33,21 +33,23 @@ print(datasets.DESCR)
 #[실습]
 # train , test의 비율을 0.7 이상 0.9 이하
 # R2 0.62 이상
-x_train,x_test,y_train,y_test = train_test_split(x,y,test_size = 0.3, random_state = 2 )
+x_train,x_test,y_train,y_test = train_test_split(x,y,test_size = 0.3, random_state = 51 )
 
 
 #2
 model = Sequential()
-model.add(Dense(10,input_dim = 13))
+model.add(Dense(20,input_dim = 13))
+model.add(Dense(30))
+model.add(Dense(50))
+model.add(Dense(30))
+model.add(Dense(14))
 model.add(Dense(7))
-model.add(Dense(5))
-model.add(Dense(3))
 model.add(Dense(1))
 
 #3
 model.compile(loss='mse', optimizer='adam')
 start_time = time.time()
-model.fit(x_train,y_train,epochs=100,batch_size=2)
+model.fit(x_train,y_train,epochs=500,batch_size=1)
 end_time = time.time()
 
 #4
@@ -57,8 +59,8 @@ r2 = r2_score(y_test,y_predict)
 print('R2 : ' , r2)
 print(end_time - start_time)
 
-# 76/76 [==============================] - 0s 665us/step - loss: 17.3915
-# 12/12 [==============================] - 0s 692us/step - loss: 28.6136
-# 12/12 [==============================] - 0s 437us/step
-# R2 :  0.694805045962896
-# random = 2 , 11,20,30,20,10,5,1
+# #5/5 [==============================] - 0s 0s/step - loss: 23.7223
+# 5/5 [==============================] - 0s 4ms/step
+# R2 :  0.7506910719128115
+# 205.5621416568756
+# random = 51 , 20,30,50,30,14,7,1
