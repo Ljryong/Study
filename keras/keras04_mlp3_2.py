@@ -2,6 +2,8 @@ import numpy as np
 from keras.models import Sequential
 from keras.layers import Dense
 
+# pip install numpy 를 했어야 됬다.
+
 #1 데이터
 x = np.array([range(1,10)])               # numpy = 가져와서 쓰는거 // range = python 에서 기본적으로 제공하는 함수
                                         # range(a) = 괄호안에 숫자는 열이고 0 부터 시작된다.  
