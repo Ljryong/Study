@@ -14,8 +14,7 @@ x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, shuffle
 # train_size 와 test_size 합계가 1이 넘으면 돌아가지 않는다. 합이 1이 되지않을시에는 손실이 일어난다. train이 0.5고 test가 0.4면 손실이 0.1 일어난다.
 # sklearn.model_selection 여기서 train_test_split 이 정보를 가져올 때 x_train,x_test,y_train,y_test 이 순서대로 가져와서 변환되면 안된다. 결과 값이 달라진다.
 # shuffle = False 는 숫자가 섞이지 않고 뒤에서 부터 자름 shuffle 의 디폴트 값은 ture 이다.
-# 
-
+# 쓰는 이유는 더 폭 넓은 데이터로 훈련하고 평가하기 위해서이다.
 
 print(x_train)
 print(y_train)

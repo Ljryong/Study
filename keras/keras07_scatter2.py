@@ -27,6 +27,7 @@ result = model.predict(x)
 print(loss)
 print(result)
 
+#5? 시각화
 
 import matplotlib.pyplot as plt             # 그림을 뽑아낼 때 필요한 정보를 가져온다.
 
