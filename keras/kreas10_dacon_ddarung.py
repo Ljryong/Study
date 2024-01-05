@@ -91,12 +91,12 @@ train_csv = train_csv.fillna(0)
                                           
 
 ######### x 와 y 를 분리 ############
-x = train_csv.drop(['count'],axis = 1)                # 'count'를 drop 해주세요 axis =1 에서 (count 행을 drop 해주세요) // 원본을 건드리는 것이 아니라 이 함수만 해당
+x = train_csv.drop(['count'],axis = 1)                # 'count'를 drop 해주세요 axis =1 에서 (count 행(axis = 1)을 drop 해주세요) // 원본을 건드리는 것이 아니라 이 함수만 해당
 print(x)
 y = train_csv['count']                                # count 만 가져오겠다
 print(y)
 
-x_train, x_test, y_train , y_test = train_test_split(x,y,test_size = 0.3, random_state= 777 ) #45
+x_train, x_test, y_train , y_test = train_test_split(x,y,test_size = 0.3, random_state= 54 ) #45
 
 print(x_train.shape, x_test.shape)                    # (1021, 9) (438, 9)---->(929, 9) (399, 9)
 print(y_train.shape, y_test.shape)                    # (1021,) (438,) ------>(929,) (399,)
@@ -105,10 +105,6 @@ print(y_train.shape, y_test.shape)                    # (1021,) (438,) ------>(9
 #2 모델구성
 model = Sequential()
 model.add(Dense(13,input_dim = 9))
-model.add(Dense(30))
-model.add(Dense(40))
-model.add(Dense(30))
-model.add(Dense(14))
 model.add(Dense(7))
 model.add(Dense(1))
 
@@ -116,7 +112,7 @@ model.add(Dense(1))
 
 #3 컴파일, 훈련
 model.compile(loss='mse',optimizer = 'adam')
-model.fit(x_train,y_train,epochs= 777 , batch_size = 10 )
+model.fit(x_train,y_train,epochs= 100 , batch_size = 3 )
 
 #4 평가, 예측
 loss = model.evaluate(x_test,y_test)
