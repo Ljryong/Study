@@ -90,7 +90,7 @@ train_csv = train_csv.fillna(0)
 
                                           
 
-######### x 와 y 를 분리 ############
+######### x 와 y 를 분리 ############                  (train에서 x 값과 y 값을 만들어주는 것, test 에는 count가 없다)
 x = train_csv.drop(['count'],axis = 1)                # 'count'를 drop 해주세요 axis =1 에서 (count 행(axis = 1)을 drop 해주세요) // 원본을 건드리는 것이 아니라 이 함수만 해당
 print(x)
 y = train_csv['count']                                # count 만 가져오겠다
