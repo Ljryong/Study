@@ -17,7 +17,9 @@ print(y)
 print(x.shape,y.shape)              # x= (442,10) y= (442,)
 
 print(datasets.feature_names)       # ['age', 'sex', 'bmi', 'bp', 's1', 's2', 's3', 's4', 's5', 's6']
-print(datasets.DESCR)
+                                    # 특징 이름들 뽑아내는것, 결국 열을 뽑아낸 것 
+
+print(datasets.DESCR)               # 모든 설명을 뽑아내는 것
 
 x_train, x_test , y_train , y_test = train_test_split(x,y,test_size=0.3, random_state= 785 )   #9
 #2
