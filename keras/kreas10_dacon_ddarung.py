@@ -96,7 +96,7 @@ print(x)
 y = train_csv['count']                                # count 만 가져오겠다
 print(y)
 
-x_train, x_test, y_train , y_test = train_test_split(x,y,test_size = 0.3, random_state= 78 ) #45
+x_train, x_test, y_train , y_test = train_test_split(x,y,test_size = 0.3, random_state= 45 ) #45
 
 print(x_train.shape, x_test.shape)                    # (1021, 9) (438, 9)---->(929, 9) (399, 9)
 print(y_train.shape, y_test.shape)                    # (1021,) (438,) ------>(929,) (399,)
@@ -106,7 +106,7 @@ print(y_train.shape, y_test.shape)                    # (1021,) (438,) ------>(9
 model = Sequential()
 model.add(Dense(13,input_dim = 9))
 model.add(Dense(20))
-model.add(Dense(20))
+model.add(Dense(30))
 model.add(Dense(20))
 model.add(Dense(10))
 model.add(Dense(7))
@@ -120,7 +120,7 @@ model.add(Dense(1))
 
 #3 컴파일, 훈련
 model.compile(loss='mse',optimizer = 'adam')
-model.fit(x_train,y_train,epochs= 100 , batch_size = 100 )
+model.fit(x_train,y_train,epochs= 500 , batch_size = 10 )
 
 # 1000 , 10
 
@@ -183,4 +183,10 @@ print("R2 = " ,r2)
 # 14/14 [==============================] - 0s 1ms/step
 # R2 =  0.6329272259885607
 
+# 로스는 :  2678.32373046875
+# 14/14 [==============================] - 0s 770us/step
+# R2 =  0.6327222083940265
 
+# 로스는 :  2654.700927734375
+# 14/14 [==============================] - 0s 770us/step
+# R2 =  0.6359615686273938
