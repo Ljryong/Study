@@ -109,11 +109,17 @@ model.add(Dense(10))
 model.add(Dense(7))
 model.add(Dense(1))
 
+# model.add(Dense(13,input_dim = 9))
+# model.add(Dense(10))
+# model.add(Dense(7))
+# model.add(Dense(1))
 
 
 #3 컴파일, 훈련
 model.compile(loss='mse',optimizer = 'adam')
-model.fit(x_train,y_train,epochs= 1500 , batch_size = 20 )
+model.fit(x_train,y_train,epochs= 100 , batch_size = 100 )
+
+# 1000 , 10
 
 #4 평가, 예측
 loss = model.evaluate(x_test,y_test)
