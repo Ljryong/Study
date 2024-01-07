@@ -96,7 +96,7 @@ print(x)
 y = train_csv['count']                                # count 만 가져오겠다
 print(y)
 
-x_train, x_test, y_train , y_test = train_test_split(x,y,test_size = 0.3, random_state= 45) #45
+x_train, x_test, y_train , y_test = train_test_split(x,y,test_size = 0.3, random_state= 78 ) #45
 
 print(x_train.shape, x_test.shape)                    # (1021, 9) (438, 9)---->(929, 9) (399, 9)
 print(y_train.shape, y_test.shape)                    # (1021,) (438,) ------>(929,) (399,)
@@ -105,6 +105,9 @@ print(y_train.shape, y_test.shape)                    # (1021,) (438,) ------>(9
 #2 모델구성
 model = Sequential()
 model.add(Dense(13,input_dim = 9))
+model.add(Dense(20))
+model.add(Dense(20))
+model.add(Dense(20))
 model.add(Dense(10))
 model.add(Dense(7))
 model.add(Dense(1))
