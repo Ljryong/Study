@@ -20,9 +20,9 @@ train_csv = pd.read_csv(path + "train.csv",index_col = 0) # index_col = 0 , 필�
 # \ \\ / // 다 된다, 섞여도 가능하지만 가독성에 있어서 한개로 하는게 좋다
 
 
-print(train_csv)     # [1459 rows x 11 columns]
+print(train_csv)     # [1459 rows x 11 columns] = [1459,11] -- index_col = 0 사용하기 전 결과 값
 
-test_csv = pd.read_csv(path + "test.csv", index_col = 0)          # [715 rows x 10 columns]
+test_csv = pd.read_csv(path + "test.csv", index_col = 0)          # [715 rows x 10 columns] = [715,10] -- index_col = 0 사용하기 전 결과 값
 print(test_csv)
 
 submission_csv = pd.read_csv(path + "submission.csv", )   # 서브미션의 index_col을 사용하면 안됨 , 결과 틀에서 벗어날 수 있어서 index_col 을 사용하면 안됨
@@ -96,10 +96,10 @@ print(x)
 y = train_csv['count']                                # count 만 가져오겠다
 print(y)
 
-x_train, x_test, y_train , y_test = train_test_split(x,y,test_size = 0.3, random_state= 45) #45
+x_train, x_test, y_train , y_test = train_test_split(x,y,test_size = 0.3, random_state= 846 ) #45
 
-print(x_train.shape, x_test.shape)                    # (1021, 9) (438, 9)---->(929, 9) (399, 9)
-print(y_train.shape, y_test.shape)                    # (1021,) (438,) ------>(929,) (399,)
+print(x_train.shape, x_test.shape)                    # (1021, 9) (438, 9)---->(929, 9) (399, 9) == 결측치를 제거 했을 때
+print(y_train.shape, y_test.shape)                    # (1021,) (438,) ------>(929,) (399,)  == 결측치를 제거 했을 때
 
 
 #2 모델구성
@@ -107,13 +107,14 @@ model = Sequential()
 model.add(Dense(13,input_dim = 9))
 model.add(Dense(10))
 model.add(Dense(7))
+model.add(Dense(4))
 model.add(Dense(1))
 
 
 
 #3 컴파일, 훈련
 model.compile(loss='mse',optimizer = 'adam')
-model.fit(x_train,y_train,epochs= 1500 , batch_size = 20 )
+model.fit(x_train,y_train,epochs= 1000 , batch_size = 10 )
 
 #4 평가, 예측
 loss = model.evaluate(x_test,y_test)
@@ -174,4 +175,6 @@ print("R2 = " ,r2)
 # 14/14 [==============================] - 0s 1ms/step
 # R2 =  0.6329272259885607
 
-
+# 로스는 :  2652.173583984375
+# 14/14 [==============================] - 0s 216us/step
+# R2 =  0.6363080952424065
