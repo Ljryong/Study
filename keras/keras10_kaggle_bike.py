@@ -19,7 +19,7 @@ print(train_csv)
 test_csv = pd.read_csv(path + "test.csv", index_col = 0 )
 print(test_csv)
 
-sampleSubmission_csv = pd.read_csv(path + "sampleSubmission.csv" )
+submission_csv = pd.read_csv(path + "sampleSubmission.csv" )
 
 
 print(train_csv.shape)      # (10886, 11)
@@ -35,14 +35,17 @@ y = train_csv['count']
 print(x)
 print(y)            #  10886, 
 
-x_train , x_test , y_train , y_test = train_test_split(x,y,test_size=0.3 , random_state= 26 ) #7
+x_train , x_test , y_train , y_test = train_test_split(x,y,test_size=0.3 , random_state= 894 ) #7
+# x_train_d, x_val , y_train_d, y_val  = train_test_split(x_train, y_train, train_size=0.8, random_state=10)
+
+
 
 #2 모델구성
 model = Sequential()
 model.add(Dense(20,input_dim = 8 , activation='relu'))                  # relu 0이하는 전부 0으로 바꾸고 양수는 그대로 놔둔다. 
 model.add(Dense(30, activation='relu'))
-model.add(Dense(50,activation='relu'))
-model.add(Dense(30,activation='relu'))
+model.add(Dense(50, activation='relu'))
+model.add(Dense(30, activation='relu'))
 model.add(Dense(15, activation='relu'))
 model.add(Dense(5, activation='relu'))
 model.add(Dense(1, activation='relu'))                                                     # default 값으로 linear(선형의)가 존재한다.
@@ -53,7 +56,7 @@ model.add(Dense(1, activation='relu'))                                          
 model.compile(loss = 'mse' , optimizer='adam')
 
 start_time = time.time()
-model.fit(x_train, y_train, epochs = 2000 , batch_size= 50)
+model.fit(x_train, y_train, epochs = 100 , batch_size= 50, verbose= 0)
 end_time = time.time()
 
 #4 평가, 예측
@@ -80,12 +83,12 @@ print(y_submit.shape)       # (6493, 1)
 
 
 
-sampleSubmission_csv['count'] = y_submit
+submission_csv['count'] = y_submit
 
 
-print(sampleSubmission_csv)             # [6493 rows x 2 columns]
+print(submission_csv)             # [6493 rows x 2 columns]
 
-sampleSubmission_csv.to_csv(path + "sampleSubmission_0108.csv" , index = False)
+submission_csv.to_csv(path + "sampleSubmission_0108.csv" , index = False)
 
 
 
@@ -96,7 +99,7 @@ print("R2 = " ,r2)
 print("시간 : " , end_time - start_time)
 
 ################### 데이터 프레임 조건 중요 ###################
-print("음수갯수",sampleSubmission_csv[sampleSubmission_csv['count']<0].count())    # sampleSubmission_csv 중 'count'에서 0 보다 작은 데이터 값을 세라
+print("음수갯수",submission_csv[submission_csv['count']<0].count())    # sampleSubmission_csv 중 'count'에서 0 보다 작은 데이터 값을 세라
 
 # 로스는 :  24193.734375
 # 103/103 [==============================] - 0s 342us/step
