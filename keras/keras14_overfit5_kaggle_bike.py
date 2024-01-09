@@ -1,5 +1,3 @@
-# https://www.kaggle.com/competitions/bike-sharing-demand/data?select=train.csv
-
 import numpy as np
 import pandas as pd
 from keras.models import Sequential
@@ -7,7 +5,7 @@ from keras.layers import Dense
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_squared_error , mean_squared_log_error
 import time
-
+import matplotlib.pyplot as plt
 
 #1 데이터(데이터 정제 or 데이터 전처리)
 
@@ -57,7 +55,7 @@ model.add(Dense(1, activation='linear'))                                        
 model.compile(loss = 'mse' , optimizer='adam')
 
 start_time = time.time()
-model.fit(x_train, y_train, epochs = 300 , batch_size= 50, verbose= 1 )
+hist = model.fit(x_train, y_train, epochs = 30 , batch_size= 50, verbose= 1 , validation_split=0.2)
 end_time = time.time()
 
 #4 평가, 예측
@@ -86,12 +84,12 @@ print("R2 = " ,r2)
 print("시간 : " , end_time - start_time)
 
 ################### 데이터 프레임 조건 중요 ###################
-print("음수갯수",submission_csv[submission_csv['count']<0].count())    # sampleSubmission_csv 중 'count'에서 0 보다 작은 데이터 값을 세라
+print("음수갯수",submission_csv[submission_csv['count']<0].count())    
 
 
 
-def RMSE(y_test, y_predict) :                                          # python에선 함수를 만들때 앞에 def 를 쓴다 // 이 함수는 지금 결과값에 영향을 주지 않는다.
-    return np.sqrt(mean_squared_error(y_test , y_predict))             # MSE 결과값에 루트를 씌우준다.
+def RMSE(y_test, y_predict) :                                          
+    return np.sqrt(mean_squared_error(y_test , y_predict))             
 rmse = RMSE(y_test,y_predict)    
 print("RMSE : ", rmse)
 
@@ -101,50 +99,19 @@ rmsle = RMSLE(y_test, y_predict)
 print("RMSLE : " , rmsle )
 
 
-
-# y_submit=abs(y_submit)              # y_submit에 절대값 씌워주기
-
-
-# y_submit 의 음수 값을 0 으로 바꾸는 방법 = 함수[함수 < 0 ] = 0 
-# y_submit 의 음수 값을 결측치로 바꾸는 방법 = 함수[함수 < 0 ] = np.NaN
-
-# y_submit[y_submit < 0] = 0
-
-# 여기서 하는 처리는 후처리 라고 하고 후처리는 데이터 조작으로 하지 않는다. 음수가 나오거나 나올거 같으면 훈련 과정에서 처리를 해줘야한다.
-# Relu = 활성화 함수 -- 후처리가 아닌 모델구성에서 역전파로 올라갈때 ReLU를 사용한다.
+plt.figure(figsize = (9,6))
+plt.plot(hist.history['loss'], c = 'red' , label = 'loss' , marker = '.')
+plt.plot(hist.history['val_loss'],c = 'blue' , label = 'val_loss' , marker = '.')
+plt.legend(loc = 'upper right')
 
 
+print(hist)
+plt.title('kaggle loss')
+plt.xlabel('epoch')
+plt.ylabel('loss')
+plt.grid()
 
-# 로스는 :  24193.734375
-# 103/103 [==============================] - 0s 342us/step
-# R2 =  0.2655433866648905
-# epochs = 400 , batch_size= 50
-# model.add(Dense(10,input_dim = 8))
-# model.add(Dense(25))
-# model.add(Dense(50))
-# model.add(Dense(25))
-# model.add(Dense(15))
-# model.add(Dense(7))
-# model.add(Dense(4))
-# model.add(Dense(1))
-# random_state= 69 
+plt.show()
 
 
-# [6493 rows x 2 columns]
-# 로스는 :  23641.580078125
-# 103/103 [==============================] - 0s 480us/step
-# R2 =  0.32094848078170934
-# 음수갯수 datetime    0
-# count       0
-# dtype: int64
-
-
-# [6493 rows x 2 columns]
-# 로스는 :  21660.03515625
-# 103/103 [==============================] - 0s 731us/step
-# R2 =  0.3372962092161955
-# 음수갯수 datetime    0
-# count       0
-# dtype: int64
-# RMSE :  147.17349400130269
 

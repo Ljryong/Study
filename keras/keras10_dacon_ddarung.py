@@ -68,18 +68,18 @@ print(train_csv.describe())         # describe는 함수이다 , 함수 뒤에�
 
 ######### 결측치 처리 ###########
 # 1.제거
-
+'''
 print(train_csv.isnull().sum())             # isnull 이랑 isna 똑같다
 # print(train_csv.isna().sum())
 train_csv = train_csv.dropna()              # 결측치가 1행에 1개라도 있으면 행이 전부 삭제된다
 # print(train_csv.info())                   # 결측치 확인 방법
 print(train_csv.shape)                      # (1328, 10)      행무시, 열우선
                                             # test data는 결측치를 제거하는 것을 넣으면 안된다. test data는 0이나 mean 값을 넣어줘야 한다.
-
+'''
 
 # 결측치 평균값으로 바꾸는 법
-train_csv = train_csv.fillna(train_csv.mean())  
-'''
+# train_csv = train_csv.fillna(train_csv.mean())  
+
 test_csv = test_csv.fillna(test_csv.mean())                    # 717 non-null     
 
 
@@ -181,4 +181,3 @@ print("R2 = " ,r2)
 
 
 
-'''

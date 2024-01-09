@@ -5,7 +5,7 @@ from tensorflow.keras.layers import Dense       # tensorflow에서 Dense를 땡�
 import numpy as np  # np로 바꾸는건 속도가 빨라서 바꾸는 것 
 
 
-#1. 데이터
+#1. 데이터 (데이터 정제 or 데이터 전처리)
 x = np.array([1,2,3])   # np데이터 123을 준비한 것
 y = np.array([1,2,3])   
 

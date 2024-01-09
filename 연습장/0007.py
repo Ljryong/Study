@@ -13,6 +13,11 @@ submission_csv = pd.read_csv(path + "sampleSubmission.csv")
 print(train_csv)        # [10886 rows x 11 columns]
 print(test_csv)         # [6493 rows x 8 columns]
 print(submission_csv)   # [6493 rows x 2 columns]
+
+print(train_csv.info())
+print(test_csv.info())
+print(submission_csv.info())
+
 x = train_csv.drop(['casual' , 'registered' , 'count'] , axis= 1)
 y = train_csv['count']        
 print(x)       
