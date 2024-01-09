@@ -100,7 +100,7 @@ import matplotlib.pyplot as plt
 
 plt.rcParams['font.family'] ='Malgun Gothic'  
 
-plt.figure(figsize=(9,6))               # 
+plt.figure(figsize=(9,6))               # 그래프 창 크기
 plt.plot(hist.history['loss'], c = 'red' , label = 'loss' , marker='.')
 # c = 'red' , label = 'loss' , marker='.' // c = color , label = 이름 , marker = 1 epoch 당 . 을 찍어주세요
 plt.plot(hist.history['val_loss'], c = 'blue' , label = 'val_loss' , marker='.')

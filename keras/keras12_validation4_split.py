@@ -25,7 +25,7 @@ model.add(Dense(1))
 # #3 컴파일, 훈련
 model.compile(loss='mse', optimizer='adam')
 model.fit(x_train,y_train, epochs = 500 , batch_size = 1 , 
-          validation_split= 0.3 ,          # validation_batch_size = x_val , y_val 을 쓰지 않고 train 값에서 validation 값을 뽑아낸다.
+          validation_split= 0.3 ,          # validation_split = x_val , y_val 을 쓰지 않고 train 값에서 validation 값을 뽑아낸다.
           verbose = 1 )
 
 # #4 평가,예측

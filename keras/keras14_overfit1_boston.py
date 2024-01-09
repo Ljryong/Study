@@ -55,7 +55,7 @@ model.add(Dense(1))
 #3
 model.compile(loss='mse', optimizer='adam')
 start_time = time.time()
-hist = model.fit(x_train,y_train,epochs=800,batch_size=10,validation_split=0.2)
+hist = model.fit(x_train,y_train,epochs=10,batch_size=1000,validation_split=0.2)
 # loss 와 val_loss 가 들어가 있다.
 
 end_time = time.time()
@@ -80,32 +80,29 @@ print(end_time - start_time)            # python에서 기본으로 제공하는
 #================================
 print(" hist :",hist)
 #================================
-print(hist.history)
+print(hist.history)  # loss 가 어떻게 나왔는지 기록을 보여주는 것
 #================================
-print(hist.history["loss"])
+print(hist.history["loss"])     # history 안에 있는 [] 를 따로 뽑아주세요 (loss를 뽑아주세요)
 #================================
 print(hist.history["val_loss"])
 #================================
 
 import matplotlib.pyplot as plt
 
-plt.rcParams['font.family'] ='Malgun Gothic'  
+plt.rcParams['font.family'] ='Malgun Gothic'                    # 그래프창에 한글로 화면이 깨진걸 한글이 들어갈 수 있는 폰트로 바꿔줌
 
-plt.figure(figsize=(9,6))
+plt.figure(figsize=(9,6))                                       # 그래프 창의 크기를 정한다
 plt.plot(hist.history['loss'], c = 'red' , label = 'loss' , marker='.')
 # c = 'red' , label = 'loss' , marker='.' // c = color , label = 이름 , marker = 1 epoch 당 . 을 찍어주세요
 plt.plot(hist.history['val_loss'], c = 'blue' , label = 'val_loss' , marker='.')
 
 
 
-
-
-
-plt.legend(loc='upper right') # 라벨을 오른쪽 위에 달아주세요
-plt.title('보스턴 loss')
-plt.xlabel('epoch')
-plt.ylabel('loss')
-plt.grid()
+plt.legend(loc='upper right')   # 라벨을 오른쪽 위에 달아주세요
+plt.title('보스턴 loss')         # 타이틀 이름은 이거다 
+plt.xlabel('epoch')             # x축은 epoch로 둔다
+plt.ylabel('loss')              # y축은 loss로 둔다
+plt.grid()                      # grid = 격자 // 그래프를 보기 쉽게 그래프 창에 격자모양을 남겨주세요
 
 plt.show()
 
