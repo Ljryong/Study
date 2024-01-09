@@ -30,6 +30,20 @@ model = Sequential()
 model.add(Dense(1,input_dim = 8))
 
 
+#3 컴파일, 훈련
+model.compile(loss ='mse' , optimizer='adam')
+model.fit(x_train , y_train , epochs = 100 , batch_size = 200 , validation_split= 0.2)
+
+#4 평가, 예측
+loss = model.evaluate(x_test,y_test)
+y_submit = model.predict(test_csv)
+
+submission_csv['count'] = y_submit
+
+submission_csv.to_csv(path + 'sampleSubmission_0109.csv' , index = False)
+
+
+
 # 로스는 :  22717.474609375
 # 103/103 [==============================] - 0s 769us/step
 # R2 =  0.30513638648798214
