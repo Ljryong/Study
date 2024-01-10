@@ -30,28 +30,23 @@ y = train_csv['count']
 print(x)
 print(y)            #  10886, 
 
-x_train , x_test , y_train , y_test = train_test_split(x,y,test_size=0.3 , random_state= 135 ) #7
+x_train , x_test , y_train , y_test = train_test_split(x,y,test_size=0.3 , random_state= 6974 ) #7
 # x_train_d, x_val , y_train_d, y_val  = train_test_split(x_train, y_train, train_size=0.8, random_state=10)
 
-es = EarlyStopping(monitor = 'val_loss' , mode = 'min', patience = 30 , verbose= 1 ,restore_best_weights=True )
+es = EarlyStopping(monitor = 'val_loss' , mode = 'min', patience = 10 , verbose= 1 ,restore_best_weights=True )
 
 
 
 #2 모델구성
-model = Sequential()
-model.add(Dense(20,input_dim = 8 , activation='relu'))                  # relu 0이하는 전부 0으로 바꾸고 양수는 그대로 놔둔다. 
-model.add(Dense(30, activation='relu'))
-model.add(Dense(50,))
-model.add(Dense(100,activation='relu'))
-model.add(Dense(250,))
-model.add(Dense(150,))
-model.add(Dense(75,activation='relu'))
-model.add(Dense(50,activation='relu'))
-model.add(Dense(30, activation='relu'))
-model.add(Dense(15, activation='relu'))
-model.add(Dense(10, activation='relu'))
-model.add(Dense(5, activation='relu'))
-model.add(Dense(1, activation='linear'))                                                     # default 값으로 linear(선형의)가 존재한다.
+model = Sequential()            # relu 0이하는 전부 0으로 바꾸고 양수는 그대로 놔둔다. 
+model.add(Dense(512, input_dim = 8 ))
+model.add(Dense(256, activation= 'relu'))
+model.add(Dense(128))
+model.add(Dense(64))
+model.add(Dense(32,activation= 'relu'))
+model.add(Dense(16,activation= 'relu'))
+model.add(Dense(1))
+# default 값으로 linear(선형의)가 존재한다.
 # 마지막에는 relu를 잘 쓰지 않는다. 최종 아웃풋에 자주 쓰는 애는 'softmax' 라고 따로 존재한다
 # 마지막에도 relu를 쓰면 오류가 덜 뜨긴 하지만 성능이 안좋아짐, 반대로 안쓰면 성능이 조금 좋아지지만 오류가 더 많이 뜬다.
 
@@ -82,7 +77,6 @@ print("로스는 : " , loss)
 y_predict = model.predict(x_test)
 r2 = r2_score(y_test,y_predict)
 print("R2 = " ,r2)
-print("시간 : " , end_time - start_time)
 
 ################### 데이터 프레임 조건 중요 ###################
 print("음수갯수",submission_csv[submission_csv['count']<0].count())    
