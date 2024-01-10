@@ -56,15 +56,21 @@ model.add(Dense(1))
 model.compile(loss='mse', optimizer='adam')
 
 from keras.callbacks import EarlyStopping               # keras.callbacks에서  Earlystopping 을 떙겨온다
-es = EarlyStopping(monitor='val_loss',      # 
+
+
+es = EarlyStopping(monitor='val_loss',      # 모니터를 왜 val_loss로 하는지 물어보기
+
+
                    mode = 'min'  ,          # 모드는 최솟값으로 한다. (max,auto도 가능하다) auto는 자동으로 낮고 높음을 조절해준다. ex) loss는 낮게 r2는 높게 해준다.
                    patience= 10  ,          # 최솟값이 갱신되는걸 10번까지 봐준다.
-                   verbose = 1   ,)
+                   verbose = 1   ,
+                   restore_best_weights = True )          # 최고의 가중치를 불러온다. / default 값은 False 이다. default가 False 인 이유는 ?
+# Ture 를 해도 좋지 않을수도 있다. train 데이터를 훈련시키는거기 때문에 test_csv에 영향이 없을수도 있다.
 
 
 start_time = time.time()
 
-hist = model.fit(x_train,y_train,epochs=800,batch_size=10,validation_split=0.2 , callbacks = [es] ) # [] 한개인데 대괄호일 때 에는 들어갈 수 있는게 더 있다고 생각해야 된다.
+hist = model.fit(x_train,y_train,epochs=800,batch_size=10,validation_split=0.2  ,  callbacks = [es] ) # [] 한개인데 대괄호일 때 에는 들어갈 수 있는게 더 있다고 생각해야 된다.
 # loss 와 val_loss 가 들어가 있다.
 
 end_time = time.time()
@@ -80,9 +86,7 @@ r2 = r2_score(y_test,y_predict)
 # print(rmse)
 
 
-print('R2 : ' , r2)
-print(end_time - start_time)            # python에서 기본으로 제공하는 시스템
-                                        # print는 함수
+
 
 
 
@@ -119,10 +123,13 @@ plt.grid()
 plt.show()
 
 
+print('R2 : ' , r2)
+print("시간은 : ",end_time - start_time)            # python에서 기본으로 제공하는 시스템
+                                        # print는 함수
 
 
-
-
+# R2 :  0.4410328749001228
+# 3.7773852348327637
 
 
 

@@ -26,17 +26,15 @@ model.add(Dense(1))
 model.compile(loss = 'mse' , optimizer = 'adam')
 
 from keras.callbacks import EarlyStopping
-es = EarlyStopping(monitor = 'val_loss' , mode = 'min' , patience = 10, verbose=1)
+es = EarlyStopping(monitor = 'val_loss' , mode = 'min' , patience = 10, verbose=1 , restore_best_weights=True ) 
 
-hist = model.fit(x_train,y_train,epochs = 200 , batch_size = 10, validation_split = 0.2 )
+hist = model.fit(x_train,y_train,epochs = 10000 , batch_size = 5 , validation_split = 0.2 )
 
 #4 평가, 예측
 loss = model.evaluate(x_test,y_test)
 y_predict = model.predict(x_test)
 r2 = r2_score(y_test, y_predict)
 
-print(r2)
-print(loss)
 
 
 plt.figure(figsize = (9,6))
@@ -54,6 +52,9 @@ plt.grid()
 plt.show()
 
 
+print(r2)
+print(loss)
 
-
+# 0.4282132267148565 = r2 
+# 3493.03271484375 = loss
 

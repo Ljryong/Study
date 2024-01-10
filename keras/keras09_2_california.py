@@ -8,12 +8,17 @@ import time                                 # 시간에 대한 정보를 가져�
 
 #1
 datasets = fetch_california_housing()
+print(datasets.items())
 x = datasets.data
 y = datasets.target
 
 print(x)
 print(y)
 print(x.shape,y.shape)              # x.shape = (20640, 8) y.shpae = (20640,)
+
+print(type(x), type(y))
+x
+
 
 print(datasets.feature_names)       #['MedInc', 'HouseAge', 'AveRooms', 'AveBedrms', 'Population', 'AveOccup', 'Latitude', 'Longitude'] // feature_names = 특징 이름 
 print(datasets.DESCR)               # datasets에 대한 설명

@@ -5,7 +5,7 @@ from keras.layers import Dense
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
 import time
-
+import pandas as pd
 # warning 뜨는것을 없애는 방법, 하지만 아직 왜 뜨는지 모르니 보는것을 추천
 import warnings
 warnings.filterwarnings('ignore') 
@@ -16,8 +16,9 @@ warnings.filterwarnings('ignore')
 # pip uninstall scikit-learn-intelex
 
 # pip install scikit-learn==0.23.2
-
 datasets = load_boston()
+
+
 print(datasets)
 x = datasets.data
 y = datasets.target
@@ -25,6 +26,15 @@ print(x)
 print(x.shape)      #(506, 13)
 print(y)
 print(y.shape)      #(506,)
+
+
+############################
+# df = pd.DataFrame(x)
+# Nan_num = df.isna().sum()
+# print(Nan_num)
+############################
+
+
 
 print(datasets.feature_names)
 # 'CRIM' 'ZN' 'INDUS' 'CHAS' 'NOX' 'RM' 'AGE' 'DIS' 'RAD' 'TAX' 'PTRATIO' 'B' 'LSTAT']

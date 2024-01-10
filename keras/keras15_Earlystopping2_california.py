@@ -30,9 +30,9 @@ model.add(Dense(1))
 model.compile(loss = 'mse' , optimizer= 'adam')
 
 from keras.callbacks import EarlyStopping
-es = EarlyStopping(monitor='val_loss' , mode = 'min' , patience= 10 , verbose = 1)
+es = EarlyStopping(monitor='val_loss' , mode = 'min' , patience= 10 , verbose = 1 , restore_best_weights=True)
 
-hist = model.fit(x_train,y_train, epochs= 10 ,batch_size= 100, validation_split=0.2 , callbacks = [es])
+hist = model.fit(x_train,y_train, epochs= 10000 ,batch_size= 100, validation_split=0.2 , callbacks = [es])
 
 
 #4 평가, 예측
@@ -40,8 +40,7 @@ loss = model.evaluate(x_test,y_test)
 y_predict = model.predict(x_test)
 r2 = r2_score(y_test,y_predict)
 
-print(loss)
-print(r2)
+
 
 plt.figure(figsize = (9,6))
 plt.plot(hist.history['loss'], c = 'red' , label = 'loss' , marker = '.')
@@ -58,4 +57,13 @@ plt.grid()
 plt.show()
 
 
+print(loss)
+print(r2)
 
+
+
+# Epoch 220: early stopping
+# 194/194 [==============================] - 0s 368us/step - loss: 0.6333
+# 194/194 [==============================] - 0s 349us/step
+# 0.6333415508270264 = loss
+# 0.5249593856949173 = r2

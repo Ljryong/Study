@@ -3,7 +3,7 @@ import pandas as pd
 from keras.models import Sequential
 from keras.layers import Dense
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import r2_score, mean_squared_error , mean_squared_log_error
+from sklearn.metrics import r2_score, mean_squared_error , mean_squared_log_error , accuracy_score
 import time
 import matplotlib.pyplot as plt
 
@@ -43,6 +43,11 @@ model = Sequential()
 model.add(Dense(20,input_dim = 8 , activation='relu'))                  # relu 0이하는 전부 0으로 바꾸고 양수는 그대로 놔둔다. 
 model.add(Dense(30, activation='relu'))
 model.add(Dense(50,))
+model.add(Dense(100,activation='relu'))
+model.add(Dense(250,))
+model.add(Dense(150,))
+model.add(Dense(75,activation='relu'))
+model.add(Dense(50,activation='relu'))
 model.add(Dense(30, activation='relu'))
 model.add(Dense(15, activation='relu'))
 model.add(Dense(10, activation='relu'))
@@ -55,7 +60,7 @@ model.add(Dense(1, activation='linear'))                                        
 model.compile(loss = 'mse' , optimizer='adam')
 
 from keras.callbacks import EarlyStopping
-es = EarlyStopping(monitor = 'val_loss' , mode = 'min', patience = 20 , verbose= 1  )
+es = EarlyStopping(monitor = 'val_loss' , mode = 'min', patience = 30 , verbose= 1 ,restore_best_weights=True )
 
 
 start_time = time.time()
@@ -77,7 +82,7 @@ submission_csv['count'] = y_submit
 
 print(submission_csv)             # [6493 rows x 2 columns]
 
-submission_csv.to_csv(path + "sampleSubmission_0109.csv" , index = False)
+submission_csv.to_csv(path + "sampleSubmission_0110.csv" , index = False)
 
 
 
