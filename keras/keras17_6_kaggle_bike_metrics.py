@@ -14,7 +14,7 @@ path = 'c:/_data/kaggle/bike//'
 
 train_csv = pd.read_csv(path + 'train.csv', index_col = 0)
 test_csv = pd.read_csv(path + 'test.csv', index_col = 0)
-submission_csv = pd.read_csv(path + 'sample_Submission.csv')
+submission_csv = pd.read_csv(path + 'sampleSubmission.csv')
 
 
 print(train_csv.shape)      # (10886, 11)
@@ -30,7 +30,7 @@ y = train_csv['count']
 print(x)
 print(y)            #  10886, 
 
-x_train , x_test , y_train , y_test = train_test_split(x,y,test_size=0.3 , random_state= 1356 ) #7
+x_train , x_test , y_train , y_test = train_test_split(x,y,test_size=0.3 , random_state= 135 ) #7
 # x_train_d, x_val , y_train_d, y_val  = train_test_split(x_train, y_train, train_size=0.8, random_state=10)
 
 es = EarlyStopping(monitor = 'val_loss' , mode = 'min', patience = 30 , verbose= 1 ,restore_best_weights=True )
