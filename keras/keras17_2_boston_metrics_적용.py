@@ -48,6 +48,7 @@ plt.plot(hist.history['loss'], c='red', label = 'loss' , marker = '.' )
 plt.plot(hist.history['val_loss'] , c = 'blue' , label = 'val_loss' , marker="." )
 plt.xlabel('epochs')
 plt.ylabel('loss')
+plt.legend(loc='upper right')
 
 plt.show()
 

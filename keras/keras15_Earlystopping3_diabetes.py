@@ -48,7 +48,7 @@ plt.title('diabetes loss')
 plt.xlabel('epoch')
 plt.ylabel('loss')
 plt.grid()
-
+plt.legend(loc='upper right')
 plt.show()
 
 

@@ -19,9 +19,9 @@ x = datasets.data       # x,y 를 정하는 것은 print로 뽑고 data의 이�
 y = datasets.target
 print(x.shape,y.shape)  # (569, 30) (569,)
 
-es = EarlyStopping(monitor='val_loss' , mode = 'min' , verbose= 1 , patience= 20 ,restore_best_weights=True )
+es = EarlyStopping(monitor='val_loss' , mode = 'min' , verbose= 1 , patience= 100 ,restore_best_weights=True )
 
-x_train , x_test , y_train , y_test = train_test_split(x,y,test_size = 0.3 , random_state= 72 ,shuffle=True) # 0
+x_train , x_test , y_train , y_test = train_test_split(x,y,test_size = 0.3 , random_state= 0 ,shuffle=True) # 0
 
 print(np.unique(y)) # [0 1]
 
@@ -43,12 +43,10 @@ print(pd.Series(y).value_counts())
 
 #2 모델구성
 model = Sequential()
-model.add(Dense(64 ,input_dim = 30))      # sigmoid = 0과 1 사이에서 값이 나온다. 0.5 이상이며 1이 되고 0.5미만이면 0이된다.
-model.add(Dense(32))
-model.add(Dense(16))
-model.add(Dense(8))
-model.add(Dense(4))
-model.add(Dense(2))
+model.add(Dense(1024 ,input_dim = 30))      # sigmoid = 0과 1 사이에서 값이 나온다. 0.5 이상이며 1이 되고 0.5미만이면 0이된다.
+model.add(Dense(512))
+model.add(Dense(256))
+model.add(Dense(128))
 model.add(Dense(1, activation= 'sigmoid'))  # 2진분류 에서는 loss = binary_crossentropy , 
                                             # activation ='sigmoid'최종 레이어에 써야한다.
                                             # sigmoid는 중간에도 쓸 수 있고 회귀모델에서도 쓸 수 있다.
@@ -61,7 +59,7 @@ model.compile(loss='binary_crossentropy', optimizer='adam' , metrics=['accuracy'
 
 # metrics가 accuracy 
 
-hist = model.fit(x_train , y_train,epochs = 1 , batch_size = 1 ,  validation_split= 0.2 , callbacks=[es] ,)
+hist = model.fit(x_train , y_train,epochs = 1000000 , batch_size = 1 ,  validation_split= 0.2 , callbacks=[es] ,)
 
 #4 평가, 예측
 loss = model.evaluate(x_test,y_test)        # evaluate = predict로 훈련한 x_test 값을 y_test 값이랑 비교하여 평가한다.

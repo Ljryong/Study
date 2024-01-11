@@ -52,6 +52,7 @@ print(hist)
 plt.title('california loss')
 plt.xlabel('epoch')
 plt.ylabel('loss')
+plt.legend(loc='upper right')
 plt.grid()
 
 plt.show()
