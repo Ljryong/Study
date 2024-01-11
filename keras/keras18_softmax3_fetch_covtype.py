@@ -29,10 +29,17 @@ print(one_hot)
 
 # print(one_hot)
 
+
+
 x_train , x_test , y_train , y_test = train_test_split(x,one_hot,test_size=0.3 , random_state=0 ,shuffle=True, stratify=y )
 
 es= EarlyStopping(monitor='val_loss' , mode = 'min', verbose= 1 ,patience=10, restore_best_weights=True )
 
+
+print(datasets.DESCR)
+
+
+'''
 #2
 model = Sequential()
 model.add(Dense(2048,input_dim = 54))
@@ -67,7 +74,7 @@ print('acc = ' , acc)
 
 
 
-
+'''
 
 
 
