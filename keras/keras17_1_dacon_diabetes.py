@@ -7,7 +7,7 @@ import pandas as pd
 from keras.callbacks import EarlyStopping
 
 #1 데이터
-path = "c:/_data/dacon/cancer//"
+path = "c:/_data/dacon/diabetes//"
 
 
 train_csv = pd.read_csv(path + "train.csv",index_col = 0)

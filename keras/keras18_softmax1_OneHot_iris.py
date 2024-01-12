@@ -32,6 +32,7 @@ one_hot = to_categorical(y)     # y를 one_hot 으로 지정한것
 print(one_hot)
 print(one_hot.shape)
 # 0과 1로 나옴 
+# one_hot = to_categorical() 을 사용하면 1열이 늘어난다.
 
 ########## pandas로 onehot ################
 
@@ -83,8 +84,7 @@ print(y)
 '''
 
 
-x_train , x_test , y_train , y_test = train_test_split(x,one_hot,test_size= 0.2 , random_state= 2 , shuffle=True
-                                                       , stratify = y , )       # stratify = y 는 분류모델에서만 쓴다
+x_train , x_test , y_train , y_test = train_test_split(x,one_hot,test_size= 0.2 , random_state= 2 , shuffle=True, stratify = y , )       # stratify = y 는 분류모델에서만 쓴다
 # stratify = y 라벨을 골고루 잡아줌 ex) y = 0이 20개 1이 40개로 0.5 를 주면 0은 10개 1은 20개가 빠지게된다
 # 분류모델에서 라벨중 특정 값만 많이 들어갈 수 있어서 고루 분배되게 해야된다.
 # stratify = 층을 형성시키다.
