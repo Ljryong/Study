@@ -53,7 +53,7 @@ print(one_hot_y.shape)  # (5497, 10)
 
 x_train , x_test , y_train , y_test = train_test_split(x,one_hot_y, test_size=0.3 , random_state= 123456789 , shuffle=True , stratify= y )
 
-es = EarlyStopping(monitor='val_loss' , mode = 'min', verbose=1, patience= 1000 , restore_best_weights=True )
+es = EarlyStopping(monitor='val_loss' , mode = 'min', verbose=1, patience= 10 , restore_best_weights=True )
 
 
 #2 
@@ -69,15 +69,15 @@ model.add(Dense(7, activation= 'softmax'))
 
 #3 
 model.compile(loss = 'categorical_crossentropy' , optimizer='adam' , metrics=['acc'] )
-model.fit(x_train,y_train,epochs=10000000 ,batch_size = 10 , validation_split=0.2 , callbacks=[es], verbose= 1)
+model.fit(x_train,y_train,epochs=10000000 ,batch_size = 100 , validation_split=0.2 , callbacks=[es], verbose= 1)
 
 #4
 loss = model.evaluate(x_test,y_test)
 y_predict = model.predict(x_test)
 print(y_predict.shape)
 y_submit = model.predict(test_csv)
-y_submit =y_submit + 3
-submission_csv['quality'] = np.argmax(y_submit, axis=1)
+
+submission_csv['quality'] = np.argmax(y_submit, axis=1)+3       # +3 밖에 써줘야 된다. argmax 전에 쓰면 위치값이 안뽑혀있는 상태이고, 안에 쓰면 소용이 없다.
 # y_submit도 결과값을 뽑아내야 되는데 그냥 뽑으면 소수점을 나와서 argmax로 위치값의 정수를 뽑아줘야한다.
 
 submission_csv.to_csv(path + 'submission_0112.csv',index = False)
