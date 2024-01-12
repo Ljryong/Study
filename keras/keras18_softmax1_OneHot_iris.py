@@ -87,7 +87,7 @@ x_train , x_test , y_train , y_test = train_test_split(x,one_hot,test_size= 0.2 
                                                        , stratify = y , )       # stratify = y 는 분류모델에서만 쓴다
 # stratify = y 라벨을 골고루 잡아줌 ex) y = 0이 20개 1이 40개로 0.5 를 주면 0은 10개 1은 20개가 빠지게된다
 # 분류모델에서 라벨중 특정 값만 많이 들어갈 수 있어서 고루 분배되게 해야된다.
-
+# stratify = 층을 형성시키다.
 # y 값이 아니라 one_hot이 된 값을 넣어줘야 한다.
 
 print(y_test)
