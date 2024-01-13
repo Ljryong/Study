@@ -32,7 +32,7 @@ model.add(Dense(1))
 
 #3 컴파일, 훈련
 model.compile(loss='mse', optimizer= 'adam')
-model.fit(x_train, y_train, epochs = 100 ,batch_size= 100 )
+model.fit(x_train, y_train, epochs = 100 ,batch_size= 100 , validation = 0.2)
 
 
 
