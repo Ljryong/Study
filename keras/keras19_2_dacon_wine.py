@@ -51,17 +51,18 @@ print(one_hot_y.shape)  # (5497, 10)
 # print(one_hot)          # [5497 rows x 2 columns]
 
 
-x_train , x_test , y_train , y_test = train_test_split(x,one_hot_y, test_size=0.3 , random_state= 123456789 , shuffle=True , stratify= y )
+x_train , x_test , y_train , y_test = train_test_split(x,one_hot_y, test_size=0.3 , random_state= 1234567 , shuffle=True , stratify= y )
 
-es = EarlyStopping(monitor='val_loss' , mode = 'min', verbose=1, patience= 10 , restore_best_weights=True )
+es = EarlyStopping(monitor='val_loss' , mode = 'min', verbose=1, patience= 2500 , restore_best_weights=True )
 
 
 #2 
 model = Sequential()
-model.add(Dense(1024,input_dim = 12 ))
+model.add(Dense(2048,input_dim = 12 ))
+model.add(Dense(1024))
 model.add(Dense(512))
 model.add(Dense(256))
-model.add(Dense(128,))
+model.add(Dense(128))
 model.add(Dense(64))
 model.add(Dense(32))
 model.add(Dense(16))
@@ -144,6 +145,30 @@ print("Acc = ",acc)
 
 
 
+# Epoch 68: early stopping
+# 52/52 [==============================] - 0s 1ms/step - loss: 1.1319 - acc: 0.5327
+# 52/52 [==============================] - 0s 1ms/step
+# (1650, 7)
+# 32/32 [==============================] - 0s 1ms/step
+# [1.131880283355713, 0.5327273011207581]
+# Acc =  0.5327272727272727
+# PS C:\Study> [1.131880283355713, 0.5327273011207581]
+# >> Acc =  0.5327272727272727
+
+# Epoch 1718: early stopping
+# 52/52 [==============================] - 0s 1ms/step - loss: 1.0814 - acc: 0.5448
+# 52/52 [==============================] - 0s 1ms/step
+# (1650, 7)
+# 32/32 [==============================] - 0s 1ms/step
+# [1.0814285278320312, 0.5448485016822815]
+# Acc =  0.5448484848484848
 
 
 
+# Epoch 9114: early stopping
+# 52/52 [==============================] - 0s 1ms/step - loss: 1.0885 - acc: 0.5424
+# 52/52 [==============================] - 0s 1ms/step
+# (1650, 7)
+# 32/32 [==============================] - 0s 1ms/step
+# [1.0885460376739502, 0.5424242615699768]
+# Acc =  0.5424242424242425
