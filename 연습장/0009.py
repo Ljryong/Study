@@ -40,7 +40,7 @@ print(a)
 #######################################################################
 
 
-'''
+
 ######## keras에 있는 데이터 수치화 방법 ##########
 # train_csv['type'] = train_csv['type'].replace({'white': 0, 'red':1})
 # test_csv['type'] = test_csv['type'].replace({'white': 0, 'red':1})
@@ -142,8 +142,6 @@ print("Acc = ",acc)
 # Acc =  0.5351515151515152
 
 
-
-'''
 
 
 
