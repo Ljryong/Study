@@ -15,8 +15,8 @@ test_csv = pd.read_csv(path + "test.csv" , index_col= 0)
 submission_csv = pd.read_csv(path + "sample_submission.csv")
 
 
-print(train_csv)        # [5497 rows x 13 columns]
-print(test_csv)         # [1000 rows x 12 columns]
+# print(train_csv)        # [5497 rows x 13 columns]
+# print(test_csv)         # [1000 rows x 12 columns]
 
 # ######################## 사이킷런 문자데이터 수치화 ##################
 # from sklearn.preprocessing import LabelEncoder      # 문자데이터를 알파벳 순서대로 수치화한다
@@ -51,9 +51,9 @@ print(one_hot_y.shape)  # (5497, 10)
 # print(one_hot)          # [5497 rows x 2 columns]
 
 
-x_train , x_test , y_train , y_test = train_test_split(x,one_hot_y, test_size=0.3 , random_state= 1234567 , shuffle=True , stratify= y )
+x_train , x_test , y_train , y_test = train_test_split(x,one_hot_y, test_size=0.3 , random_state= 971 , shuffle=True , stratify= y )
 
-es = EarlyStopping(monitor='val_loss' , mode = 'min', verbose=1, patience= 2500 , restore_best_weights=True )
+es = EarlyStopping(monitor='val_loss' , mode = 'min', verbose=1, patience= 1000 , restore_best_weights=True )
 
 
 #2 
@@ -70,12 +70,12 @@ model.add(Dense(7, activation= 'softmax'))
 
 #3 
 model.compile(loss = 'categorical_crossentropy' , optimizer='adam' , metrics=['acc'] )
-model.fit(x_train,y_train,epochs=10000000 ,batch_size = 100 , validation_split=0.2 , callbacks=[es], verbose= 1)
+model.fit(x_train,y_train,epochs=10000000 ,batch_size = 50 , validation_split=0.2 , callbacks=[es], verbose= 1)
 
 #4
 loss = model.evaluate(x_test,y_test)
 y_predict = model.predict(x_test)
-print(y_predict.shape)
+# print(y_predict.shape)
 y_submit = model.predict(test_csv)
 
 submission_csv['quality'] = np.argmax(y_submit, axis=1)+3       # +3 밖에 써줘야 된다. argmax 전에 쓰면 위치값이 안뽑혀있는 상태이고, 안에 쓰면 소용이 없다.
