@@ -2,7 +2,7 @@ from keras.models import Sequential
 from keras.layers import Dense
 from keras.callbacks import EarlyStopping
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score , 
 import numpy as np
 import pandas as pd
 
@@ -23,7 +23,6 @@ submission_csv = pd.read_csv(path + "sample_submission.csv")
 # lab = LabelEncoder()
 # lab.fit(train_csv)
 # trainlab_csv = lab.transform(train_csv)
-
 # print(trainlab_csv)
 
 
@@ -53,7 +52,7 @@ print(one_hot_y.shape)  # (5497, 10)
 
 x_train , x_test , y_train , y_test = train_test_split(x,one_hot_y, test_size=0.3 , random_state= 971 , shuffle=True , stratify= y )
 
-es = EarlyStopping(monitor='val_loss' , mode = 'min', verbose=1, patience= 1000 , restore_best_weights=True )
+es = EarlyStopping(monitor='val_loss' , mode = 'min', verbose=1, patience= 100 , restore_best_weights=True )
 
 
 #2 
@@ -70,7 +69,7 @@ model.add(Dense(7, activation= 'softmax'))
 
 #3 
 model.compile(loss = 'categorical_crossentropy' , optimizer='adam' , metrics=['acc'] )
-model.fit(x_train,y_train,epochs=10000000 ,batch_size = 50 , validation_split=0.2 , callbacks=[es], verbose= 1)
+model.fit(x_train,y_train,epochs=10000000 ,batch_size = 10 , validation_split=0.2 , callbacks=[es], verbose= 1)
 
 #4
 loss = model.evaluate(x_test,y_test)

@@ -9,7 +9,7 @@ from keras.callbacks import EarlyStopping
 import matplotlib.pyplot as plt
 
 
-#1 데이터
+#1 데이터                     ####################################      2진 분류        ###########################################
 datasets = load_breast_cancer()
 # print(datasets)     
 print(datasets.DESCR) # datasets 에 있는 describt 만 뽑아줘
