@@ -6,8 +6,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score , f1_score
 import numpy as np
 import pandas as pd
-from sklearn.preprocessing import OneHotEncoder
-from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import OneHotEncoder , LabelEncoder , MinMaxScaler
 
 #1
 path = 'c:/_data/dacon/dechul//'
@@ -62,7 +61,7 @@ print(test_csv.dtypes)
 
 
 
-# train_csv['주택소유상태'] = train_csv['주택소유상태'].replace({'MORTGAGE' : 0 , 'OWN' : 1 , 'RENT': 2 , 'ANY' : 3}).astype(float)
+# train_csv['주택소유상태'] = train_csv['주택소유상태'].replace({'MORTGAGE' : 0 , 'OWN' : 1 , 'RENT': 2 , 'ANY' : 0}).astype(float)
 # test_csv['주택소유상태'] = test_csv['주택소유상태'].replace({'MORTGAGE' : 0 , 'OWN' : 1 , 'RENT': 2}).astype(float)
 
 # train_csv['대출목적'] = train_csv['대출목적'].replace({'부채 통합' : 0 , '주택 개선' : 2 , '주요 구매': 4 , '휴가' : 9  
@@ -99,6 +98,12 @@ print(train_csv.dtypes)
 
 print(y.shape)      # (96294,)
 
+
+scaler = MinMaxScaler()
+x = scaler.fit_transform(x)
+
+test_csv = scaler.transform(test_csv)       # test_csv도 같이 학습 시켜줘야 값이 나온다. 안해주면 소용이 없다.
+
 y = y.values.reshape(-1,1)       # (96294, 1)
 
 # print(y.shape) 
@@ -107,19 +112,17 @@ ohe.fit(y)
 y_ohe = ohe.transform(y) 
 
 
-x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 56 , shuffle=True , stratify=y)
-es = EarlyStopping(monitor='val_loss', mode='min' , patience= 100 , restore_best_weights=True , verbose= 1 )
+x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.25, random_state= 5969 , shuffle=True , stratify=y)    # 0
+es = EarlyStopping(monitor='val_loss', mode='min' , patience= 300 , restore_best_weights=True , verbose= 1 )
 
 
 print(y_train.shape)            # (67405, 7) // print(y_train.shape) = output 값 구하는 법
 
 #2
 model = Sequential()
-model.add(Dense(2048,input_dim= 13))
-model.add(Dense(1024))
-model.add(Dense(512))
+model.add(Dense(512,input_dim= 13))
 model.add(Dense(256))
-model.add(Dense(128))
+model.add(Dense(128, activation= 'relu'))
 model.add(Dense(64))
 model.add(Dense(32))
 model.add(Dense(7,activation='softmax'))
@@ -127,7 +130,7 @@ model.add(Dense(7,activation='softmax'))
 
 #3
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
-model.fit(x_train,y_train, epochs = 10000000 , batch_size= 3000 , validation_split=0.2 , callbacks = [es] , verbose= 1 )
+model.fit(x_train,y_train, epochs = 10000000 , batch_size= 500 , validation_split=0.2 , callbacks = [es] , verbose= 2 )
 
 
 #4
@@ -140,7 +143,7 @@ arg_test = np.argmax(y_test,axis=1)
 
 submit =  np.argmax(y_submit,axis=1)
 
-y_submit = encoder.inverse_transform(submit)       # inverse_transform 처리하거나 뽑을라면 argmax처리를 해줘야한다.
+y_submit = encoder.inverse_transform(submit)       # inverse_transform 처리하거나, 뽑을라면 argmax처리를 해줘야한다.
 submission_csv['대출등급'] = y_submit
 submission_csv.to_csv(path+'submission_0115.csv', index = False)
 
@@ -158,7 +161,7 @@ acc = acc(arg_test,arg_pre)
 
 
 
-submission_csv.to_csv(path+'submission_0115.csv', index = False)
+submission_csv.to_csv(path+'submission_0115_2.csv', index = False)
 
 
 print('y_submit = ', y_submit)
@@ -172,3 +175,16 @@ print("f1 = ",f1)
 # loss =  [222.89456176757812, 0.43975216150283813]
 # f1 =  0.30516756362369907
 
+# Epoch 357: early stopping
+# 753/753 [==============================] - 1s 732us/step - loss: 48.2262 - acc: 0.4793
+# 2007/2007 [==============================] - 1s 695us/step
+# 753/753 [==============================] - 1s 683us/step
+# y_submit =  ['C' 'A' 'A' ... 'C' 'C' 'A']
+# loss =  [48.226158142089844, 0.47931379079818726]
+# f1 =  0.37544917638611197
+
+# 2007/2007 [==============================] - 2s 812us/step
+# 753/753 [==============================] - 1s 840us/step
+# y_submit =  ['B' 'A' 'A' ... 'D' 'B' 'A']
+# loss =  [11.950640678405762, 0.4693860709667206]
+# f1 =  0.4320287071351898
