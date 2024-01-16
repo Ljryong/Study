@@ -114,7 +114,7 @@ y_ohe = ohe.transform(y)
 
 
 x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 0 , shuffle=True , stratify=y)    # 0
-es = EarlyStopping(monitor='val_loss', mode='min' , patience= 300 , restore_best_weights=True , verbose= 1 )
+# es = EarlyStopping(monitor='val_loss', mode='min' , patience= 500 , restore_best_weights=True , verbose= 1 )
 
 
 # print(y_train.shape)            # (67405, 7) // print(y_train.shape) = output 값 구하는 법
@@ -138,17 +138,21 @@ test_csv = scaler.transform(test_csv)
 
 #2
 model = Sequential()
-model.add(Dense(512,input_dim= 13))
+model.add(Dense(1024 ,input_dim= 13))
+model.add(Dense(512))
 model.add(Dense(256,activation= 'relu'))
-model.add(Dense(128, activation= 'relu'))
-model.add(Dense(64,activation= 'relu'))
-model.add(Dense(32,activation= 'relu'))
+model.add(Dense(128))
+model.add(Dense(64))
+model.add(Dense(32))
 model.add(Dense(7,activation='softmax'))
 
 
 #3
+from keras.callbacks import EarlyStopping ,ModelCheckpoint
+
+
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
-model.fit(x_train,y_train, epochs = 10000000 , batch_size= 1000 , validation_split=0.2 , callbacks = [es] , verbose= 2 )
+hist = model.fit(x_train,y_train, epochs = 10000000 , batch_size= 10000 , validation_split=0.2 , callbacks = [es] , verbose = 1 )
 
 
 #4
@@ -164,8 +168,6 @@ submit =  np.argmax(y_submit,axis=1)
 y_submit = encoder.inverse_transform(submit)       # inverse_transform 처리하거나, 뽑을라면 argmax처리를 해줘야한다.
 submission_csv['대출등급'] = y_submit
 submission_csv.to_csv(path+'submission_0115_3.csv', index = False)
-
-
 
 
 
@@ -185,7 +187,6 @@ submission_csv.to_csv(path+'submission_0116.csv', index = False)
 print('y_submit = ', y_submit)
 
 print('loss = ',loss)
-
 print("f1 = ",f1)
 
 
@@ -235,7 +236,14 @@ print("f1 = ",f1)
 # loss =  [0.41843244433403015, 0.8540620803833008]
 # f1 =  0.7846639869016788
 
-
+# RobustScaler
+# Epoch 2237: early stopping
+# 903/903 [==============================] - 1s 571us/step - loss: 0.3488 - acc: 0.8790
+# 2007/2007 [==============================] - 1s 548us/step
+# 903/903 [==============================] - 0s 537us/step
+# y_submit =  ['B' 'A' 'A' ... 'D' 'C' 'A']
+# loss =  [0.34875673055648804, 0.8790196776390076]
+# f1 =  0.8497940978155077
 
 
 

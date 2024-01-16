@@ -2,7 +2,7 @@
 
 from sklearn.datasets import load_boston
 import numpy as np
-from keras.models import Sequential
+from keras.models import Sequential , load_model
 from keras.layers import Dense
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
@@ -57,34 +57,35 @@ from sklearn.preprocessing import StandardScaler, RobustScaler
 # scaler = MaxAbsScaler()
 scaler = RobustScaler()
 
-scaler.fit(x_train)
-x_train = scaler.transform(x_train)
-
-# 위에 두줄을 x_train = scaler.fit_transform(x_train) 이라고 바꿀 수 있다.
-
-
+x_train = scaler.fit_transform(x_train)
 x_test = scaler.transform(x_test)
-print(np.min(x_train))  # 0.aa0
-print(np.min(x_test))   # -0.06211435623200334
-print(np.max(x_train))  # 1.0000000000000002
-print(np.max(x_test))   # 1.210017220702162
-
-### 
-
-
-
-
-
 
 #2
-model = Sequential()
-model.add(Dense(20,input_dim = 13))
-model.add(Dense(30))
-model.add(Dense(50))
-model.add(Dense(30))
-model.add(Dense(14))
-model.add(Dense(7))
-model.add(Dense(1))
+# model = Sequential()
+# model.add(Dense(20,input_dim = 13))
+# model.add(Dense(30))
+# model.add(Dense(50))
+# model.add(Dense(30))
+# model.add(Dense(14))
+# model.add(Dense(7))
+# model.add(Dense(1))
+# model.save("../_data/_save/keras24_save_model.h5")
+
+model = load_model('../_data/_save/keras24_save_model.h5')
+
+model.summary()
+
+# model.save("c:/_data/_save/keras24_save_model.h5")
+
+model.save("c:/_data/keras24_save_model.h5")    # 절대 경로
+
+model.save("./_data/_save/keras24_save_model.h5")     # 현재 작업하고 있는 폴더에 생성 , 상대 경로
+
+model.save("../_data/_save/keras24_save_model.h5")      # _data 상위 폴더에 생성 (Study) , 상대 경로
+
+
+
+'''
 
 #3
 model.compile(loss='mse', optimizer='adam')
@@ -143,7 +144,7 @@ print(end_time - start_time)            # python에서 기본으로 제공하는
 
 
 
-
+'''
 
 
 
