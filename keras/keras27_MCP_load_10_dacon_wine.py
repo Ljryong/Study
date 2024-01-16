@@ -1,6 +1,6 @@
-from keras.models import Sequential
+from keras.models import Sequential , load_model
 from keras.layers import Dense
-from keras.callbacks import EarlyStopping
+from keras.callbacks import EarlyStopping , ModelCheckpoint
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 import numpy as np
@@ -67,24 +67,28 @@ scaler.fit(x_train)
 x_train = scaler.transform(x_train)
 x_test = scaler.transform(x_test)
 
+mcp = ModelCheckpoint(monitor='val_loss', mode='min' , verbose=1, save_best_only=True , filepath=  'c:/_data/_save/MCP/keras26_MCP10.hdf5'   )
 
 
 
-#2 
-model = Sequential()
-model.add(Dense(2048,input_dim = 12 ))
-model.add(Dense(1024))
-model.add(Dense(512))
-model.add(Dense(256))
-model.add(Dense(128))
-model.add(Dense(64))
-model.add(Dense(32))
-model.add(Dense(16))
-model.add(Dense(7, activation= 'softmax'))
+# #2 
+# model = Sequential()
+# model.add(Dense(2048,input_dim = 12 ))
+# model.add(Dense(1024))
+# model.add(Dense(512))
+# model.add(Dense(256))
+# model.add(Dense(128))
+# model.add(Dense(64))
+# model.add(Dense(32))
+# model.add(Dense(16))
+# model.add(Dense(7, activation= 'softmax'))
 
-#3 
-model.compile(loss = 'categorical_crossentropy' , optimizer='adam' , metrics=['acc'] )
-model.fit(x_train,y_train,epochs=10000000 ,batch_size = 10 , validation_split=0.2 , callbacks=[es], verbose= 1)
+# #3 
+# model.compile(loss = 'categorical_crossentropy' , optimizer='adam' , metrics=['acc'] )
+# model.fit(x_train,y_train,epochs=10000000 ,batch_size = 10 , validation_split=0.2 , callbacks=[es,mcp], verbose= 1)
+
+
+model = load_model('c:/_data/_save/MCP/keras26_MCP10.hdf5')
 
 #4
 loss = model.evaluate(x_test,y_test)

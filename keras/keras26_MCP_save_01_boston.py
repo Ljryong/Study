@@ -70,8 +70,8 @@ print(np.min(x_test))   # -0.06211435623200334
 print(np.max(x_train))  # 1.0000000000000002
 print(np.max(x_test))   # 1.210017220702162
 
-es = EarlyStopping(monitor='val_loss' , mode = 'min', verbose= 1 , patience= 100 , restore_best_weights=True , )
-mpc = ModelCheckpoint(monitor = 'val_loss' , mode = 'min' , verbose = 1 , save_best_only=True, filepath = '../_data/_save/MCP/keras25_MCP1.hdf5')
+es = EarlyStopping(monitor='val_loss' , mode = 'min', verbose= 1 , patience= 10 , restore_best_weights=True , )
+mpc = ModelCheckpoint(monitor = 'val_loss' , mode = 'min' , verbose = 1 , save_best_only=True, filepath = 'c:/_data/_save/MCP/keras26_MCP1.hdf5')
 
 #2
 model = Sequential()
@@ -86,7 +86,7 @@ model.add(Dense(1))
 #3
 model.compile(loss='mse', optimizer='adam')
 start_time = time.time()
-model.fit(x_train,y_train,epochs=100,batch_size=1, callbacks=[es,mpc] )
+model.fit(x_train,y_train,epochs=100,batch_size=1 , validation_split=0.2 , callbacks=[es,mpc] )
 end_time = time.time()
 
 #4

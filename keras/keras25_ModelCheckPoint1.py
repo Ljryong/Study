@@ -71,7 +71,7 @@ print(np.max(x_train))  # 1.0000000000000002
 print(np.max(x_test))   # 1.210017220702162
 
 es = EarlyStopping(monitor='val_loss' , mode = 'min', verbose= 1 , patience= 100 , restore_best_weights=True , )
-mpc = ModelCheckpoint(monitor = 'val_loss' , mode = 'min' , verbose = 1 , save_best_only=True, filepath = '../_data/_save/MCP/keras25_MCP1.hdf5')
+mpc = ModelCheckpoint(monitor = 'val_loss' , mode = 'min' , verbose = 1 , save_best_only=True, filepath = 'c:/_data/_save/MCP/keras25_MCP1.hdf5')
 
 #2
 model = Sequential()

@@ -1,14 +1,13 @@
 # 9_1 복붙
-
+from keras.callbacks import EarlyStopping , ModelCheckpoint
 from sklearn.datasets import load_boston
-import numpy as np
-from keras.models import Sequential
+from keras.models import Sequential , load_model
 from keras.layers import Dense
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
 import time
+import numpy as np
 import pandas as pd
-from keras.callbacks import EarlyStopping , ModelCheckpoint
 
 # warning 뜨는것을 없애는 방법, 하지만 아직 왜 뜨는지 모르니 보는것을 추천
 import warnings
@@ -63,12 +62,11 @@ x_train = scaler.transform(x_train)
 
 # 위에 두줄을 x_train = scaler.fit_transform(x_train) 이라고 바꿀 수 있다.
 
-
 x_test = scaler.transform(x_test)
-print(np.min(x_train))  # 0.aa0
-print(np.min(x_test))   # -0.06211435623200334
-print(np.max(x_train))  # 1.0000000000000002
-print(np.max(x_test))   # 1.210017220702162
+# print(np.min(x_train))  # 0.aa0
+# print(np.min(x_test))   # -0.06211435623200334
+# print(np.max(x_train))  # 1.0000000000000002
+# print(np.max(x_test))   # 1.210017220702162
 
 # es = EarlyStopping(monitor='val_loss' , mode = 'min', verbose= 1 , patience= 100 , restore_best_weights=True , )
 # mpc = ModelCheckpoint(monitor = 'val_loss' , mode = 'min' , verbose = 1 , save_best_only=True, filepath = '../_data/_save/MCP/keras25_MCP1.hdf5')
@@ -89,9 +87,8 @@ print(np.max(x_test))   # 1.210017220702162
 # model.fit(x_train,y_train,epochs=500,batch_size=1, callbacks=[es,mpc] )
 # end_time = time.time()
 
-model=load_model('../_data/_save/MCP/keras25_MCP1.hdf5')
+model = load_model('c:/_data/_save/MCP/keras26_MCP1.hdf5')
 
-model = load_model('../_data/_save/MCP/keras25_MCP1.hdf5')
 #4
 loss = model.evaluate(x_test,y_test)
 y_predict = model.predict(x_test)
