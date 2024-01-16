@@ -2,12 +2,13 @@
 
 from sklearn.datasets import load_boston
 import numpy as np
-from keras.models import Sequential , load_model
+from keras.models import Sequential
 from keras.layers import Dense
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
 import time
 import pandas as pd
+from keras.callbacks import EarlyStopping , ModelCheckpoint
 
 # warning 뜨는것을 없애는 방법, 하지만 아직 왜 뜨는지 모르니 보는것을 추천
 import warnings
@@ -21,6 +22,7 @@ warnings.filterwarnings('ignore')
 # pip install scikit-learn==0.23.2
 datasets = load_boston()
 
+
 print(datasets)
 x = datasets.data
 y = datasets.target
@@ -29,11 +31,14 @@ print(x.shape)      #(506, 13)
 print(y)
 print(y.shape)      #(506,)
 
+
 ############################
 # df = pd.DataFrame(x)
 # Nan_num = df.isna().sum()
 # print(Nan_num)
 ############################
+
+
 
 print(datasets.feature_names)
 # 'CRIM' 'ZN' 'INDUS' 'CHAS' 'NOX' 'RM' 'AGE' 'DIS' 'RAD' 'TAX' 'PTRATIO' 'B' 'LSTAT']
@@ -48,13 +53,25 @@ from sklearn.preprocessing import MinMaxScaler, MaxAbsScaler
 from sklearn.preprocessing import StandardScaler, RobustScaler
 
 ###################
-# scaler = MinMaxScaler()
+scaler = MinMaxScaler()
 # scaler = StandardScaler()
 # scaler = MaxAbsScaler()
-scaler = RobustScaler()
+# scaler = RobustScaler()
 
-x_train = scaler.fit_transform(x_train)
+scaler.fit(x_train)
+x_train = scaler.transform(x_train)
+
+# 위에 두줄을 x_train = scaler.fit_transform(x_train) 이라고 바꿀 수 있다.
+
+
 x_test = scaler.transform(x_test)
+print(np.min(x_train))  # 0.aa0
+print(np.min(x_test))   # -0.06211435623200334
+print(np.max(x_train))  # 1.0000000000000002
+print(np.max(x_test))   # 1.210017220702162
+
+es = EarlyStopping(monitor='val_loss' , mode = 'min', verbose= 1 , patience= 100 , restore_best_weights=True , )
+mpc = ModelCheckpoint(monitor = 'val_loss' , mode = 'min' , verbose = 1 , save_best_only=True, filepath = '../_data/_save/MCP/keras25_MCP1.hdf5')
 
 #2
 model = Sequential()
@@ -65,28 +82,20 @@ model.add(Dense(30))
 model.add(Dense(14))
 model.add(Dense(7))
 model.add(Dense(1))
-model.summary()
 
-# 3 컴파일, 훈련
+#3
 model.compile(loss='mse', optimizer='adam')
+start_time = time.time()
+model.fit(x_train,y_train,epochs=500,batch_size=1, callbacks=[es,mpc] )
+end_time = time.time()
 
-from keras.callbacks import EarlyStopping ,ModelCheckpoint
-mcp = ModelCheckpoint(monitor='val_loss' , mode= 'min' , verbose= 1 , save_best_only = True , filepath = '../_data/_save/MCP/keras25_MCP1.hdf5' ) 
-
-es = EarlyStopping(monitor='val_loss', mode='min' , patience=10 , verbose= 1 , restore_best_weights=True )
-
-
-hist = model.fit(x_train,y_train, epochs = 10000000 , batch_size= 10000 , validation_split=0.2 , callbacks = [es, mcp] , verbose = 1 )
-# 체크되는 지점마다 저장 // mode를 모르겠으면 auto 로 주면 된다. // save_best_only 가장 좋은 애만 저장한다.
-
-
-# 4 평가, 예측
+#4
 loss = model.evaluate(x_test,y_test)
 y_predict = model.predict(x_test)
 r2 = r2_score(y_test,y_predict)
 print(loss)
 print('R2 : ' , r2)
-# print(end_time - start_time)            # python에서 기본으로 제공하는 시스템
+print(end_time - start_time)            # python에서 기본으로 제공하는 시스템
                                         # print는 함수
 
 
@@ -128,6 +137,8 @@ print('R2 : ' , r2)
 # 5/5 [==============================] - 0s 784us/step
 # R2 :  0.7210621160942314
 # 96.14459896087646
+
+
 
 
 
