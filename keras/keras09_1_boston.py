@@ -66,6 +66,7 @@ end_time = time.time()
 loss = model.evaluate(x_test,y_test)
 y_predict = model.predict(x_test)
 r2 = r2_score(y_test,y_predict)
+print(loss)
 print('R2 : ' , r2)
 print(end_time - start_time)            # python에서 기본으로 제공하는 시스템
                                         # print는 함수

@@ -23,23 +23,23 @@ submission_csv = pd.read_csv(path+ 'sample_submission.csv')
 encoder = LabelEncoder()
 encoder.fit(train_csv['주택소유상태'])
 train_csv['주택소유상태'] = encoder.transform(train_csv['주택소유상태'])
-encoder.fit(train_csv['대출목적'])
-train_csv['대출목적'] = encoder.transform(train_csv['대출목적'])
-encoder.fit(train_csv['대출기간'])
-train_csv['대출기간'] = encoder.transform(train_csv['대출기간'])
-encoder.fit(train_csv['근로기간'])
-train_csv['근로기간'] = encoder.transform(train_csv['근로기간'])
+# encoder.fit(train_csv['대출목적'])
+# train_csv['대출목적'] = encoder.transform(train_csv['대출목적'])
+# encoder.fit(train_csv['대출기간'])
+# train_csv['대출기간'] = encoder.transform(train_csv['대출기간'])
+# encoder.fit(train_csv['근로기간'])
+# train_csv['근로기간'] = encoder.transform(train_csv['근로기간'])
 
 
 
 encoder.fit(test_csv['주택소유상태'])
 test_csv['주택소유상태'] = encoder.transform(test_csv['주택소유상태'])
-encoder.fit(test_csv['대출목적'])
-test_csv['대출목적'] = encoder.transform(test_csv['대출목적'])
-encoder.fit(test_csv['대출기간'])
-test_csv['대출기간'] = encoder.transform(test_csv['대출기간'])
-encoder.fit(test_csv['근로기간'])
-test_csv['근로기간'] = encoder.transform(test_csv['근로기간'])
+# encoder.fit(test_csv['대출목적'])
+# test_csv['대출목적'] = encoder.transform(test_csv['대출목적'])
+# encoder.fit(test_csv['대출기간'])
+# test_csv['대출기간'] = encoder.transform(test_csv['대출기간'])
+# encoder.fit(test_csv['근로기간'])
+# test_csv['근로기간'] = encoder.transform(test_csv['근로기간'])
 
 encoder.fit(train_csv['대출등급'])
 train_csv['대출등급'] = encoder.transform(train_csv['대출등급'])
@@ -47,8 +47,8 @@ train_csv['대출등급'] = encoder.transform(train_csv['대출등급'])
 
 
 
-print(train_csv.dtypes)
-print(test_csv.dtypes)
+# print(train_csv.dtypes)
+# print(test_csv.dtypes)
 
 # encoder.fit(test_csv['대출목적'])
 # encoder.fit(train_csv['대출목적'])
@@ -61,31 +61,32 @@ print(test_csv.dtypes)
 
 
 
-# train_csv['주택소유상태'] = train_csv['주택소유상태'].replace({'MORTGAGE' : 0 , 'OWN' : 1 , 'RENT': 2 , 'ANY' : 0}).astype(float)
-# test_csv['주택소유상태'] = test_csv['주택소유상태'].replace({'MORTGAGE' : 0 , 'OWN' : 1 , 'RENT': 2}).astype(float)
+train_csv['주택소유상태'] = train_csv['주택소유상태'].replace({'MORTGAGE' : 0 , 'OWN' : 1 , 'RENT': 2 , 'ANY' : 0}).astype(float)
+test_csv['주택소유상태'] = test_csv['주택소유상태'].replace({'MORTGAGE' : 0 , 'OWN' : 1 , 'RENT': 2}).astype(float)
 
-# train_csv['대출목적'] = train_csv['대출목적'].replace({'부채 통합' : 0 , '주택 개선' : 2 , '주요 구매': 4 , '휴가' : 9  
-#                                                      , '의료' : 5 , '자동차' : 6 , '신용 카드' : 1 , '기타' : 3 , '주택개선' : 8,
-#                                                       '소규모 사업' : 7 , '이사' :  8 , '주택': 10 , '재생 에너지' : 11 })
-# test_csv['대출목적'] = test_csv['대출목적'].replace({'부채 통합' : 0 , '주택 개선' : 2 , '주요 구매': 4 , '휴가' : 9 ,
-#                                              '의료' : 5 , '자동차' : 6 , '신용 카드' : 1 , '기타' : 3 , '주택개선' : 8,
-#                                              '소규모 사업' : 7 , '이사' :  8 , '주택': 10 , '재생 에너지' : 11 , 
-#                                              '결혼' : 0 })
-# # 결혼은 train에 없는 라벨이다. 그래서 12 로 두든 2로 두든 아니면 없애든 값이 좋은걸로 비교해보면 된다.
-# train_csv['대출기간'] = train_csv['대출기간'].replace({' 36 months' : 36 , ' 60 months' : 60 }).astype(int)
-# test_csv['대출기간'] = test_csv['대출기간'].replace({' 36 months' : 36 , ' 60 months' : 60 }).astype(int)
+train_csv['대출목적'] = train_csv['대출목적'].replace({'부채 통합' : 0 , '주택 개선' : 2 , '주요 구매': 4 , '휴가' : 9  
+                                                     , '의료' : 5 , '자동차' : 6 , '신용 카드' : 1 , '기타' : 3 , '주택개선' : 8,
+                                                      '소규모 사업' : 7 , '이사' :  8 , '주택': 10 , '재생 에너지' : 11 })
+test_csv['대출목적'] = test_csv['대출목적'].replace({'부채 통합' : 0 , '주택 개선' : 2 , '주요 구매': 4 , '휴가' : 9 ,
+                                             '의료' : 5 , '자동차' : 6 , '신용 카드' : 1 , '기타' : 3 , '주택개선' : 8,
+                                             '소규모 사업' : 7 , '이사' :  8 , '주택': 10 , '재생 에너지' : 11 , 
+                                             '결혼' : 0 })
 
-# train_csv['근로기간'] = train_csv['근로기간'].replace({'10+ years' : 10 ,            # 10으로 둘지 그 이상으로 둘지 고민
-#                                                       '2 years' : 2 , '< 1 year' : 0.7 , '3 years' : 3.5 , '1 year' : 1 ,
-#                                                       'Unknown' : 0 , '5 years' : 5 , '4 years' : 4 , '8 years' : 8 ,
-#                                                       '6 years' : 6 , '7 years' : 7 , '9 years' : 9 , '10+years' : 11,
-#                                                       '<1 year' : 0.5 , '3' : 3 , '1 years' : 1.5 })
+# 결혼은 train에 없는 라벨이다. 그래서 12 로 두든 2로 두든 아니면 없애든 값이 좋은걸로 비교해보면 된다.
+train_csv['대출기간'] = train_csv['대출기간'].replace({' 36 months' : 36 , ' 60 months' : 60 }).astype(int)
+test_csv['대출기간'] = test_csv['대출기간'].replace({' 36 months' : 36 , ' 60 months' : 60 }).astype(int)
 
-# test_csv['근로기간'] = test_csv['근로기간'].replace({'10+ years' : 10 ,            # 10으로 둘지 그 이상으로 둘지 고민
-#                                                       '2 years' : 2 , '< 1 year' : 0.7 , '3 years' : 3.5 , '1 year' : 1 ,
-#                                                       'Unknown' : 0 , '5 years' : 5 , '4 years' : 4 , '8 years' : 8 ,
-#                                                       '6 years' : 6 , '7 years' : 7 , '9 years' : 9 , '10+years' : 11,
-#                                                       '<1 year' : 0.5 , '3' : 3 , '1 years' : 1.5 })
+train_csv['근로기간'] = train_csv['근로기간'].replace({'10+ years' : 10 ,            # 10으로 둘지 그 이상으로 둘지 고민
+                                                      '2 years' : 2 , '< 1 year' : 0.7 , '3 years' : 3.5 , '1 year' : 1 ,
+                                                      'Unknown' : 0 , '5 years' : 5 , '4 years' : 4 , '8 years' : 8 ,
+                                                      '6 years' : 6 , '7 years' : 7 , '9 years' : 9 , '10+years' : 11,
+                                                      '<1 year' : 0.5 , '3' : 3 , '1 years' : 1.5 })
+
+test_csv['근로기간'] = test_csv['근로기간'].replace({'10+ years' : 10 ,            # 10으로 둘지 그 이상으로 둘지 고민
+                                                      '2 years' : 2 , '< 1 year' : 0.7 , '3 years' : 3.5 , '1 year' : 1 ,
+                                                      'Unknown' : 0 , '5 years' : 5 , '4 years' : 4 , '8 years' : 8 ,
+                                                      '6 years' : 6 , '7 years' : 7 , '9 years' : 9 , '10+years' : 11,
+                                                      '<1 year' : 0.5 , '3' : 3 , '1 years' : 1.5 })
 
 
 # print(train_csv['대출기간'])
@@ -94,15 +95,15 @@ print(test_csv.dtypes)
 
 x = train_csv.drop(['대출등급'],axis = 1 )
 y = train_csv['대출등급']
-print(train_csv.dtypes)
+# print(train_csv.dtypes)
 
-print(y.shape)      # (96294,)
+# print(y.shape)      # (96294,)
 
 
-scaler = MinMaxScaler()
-x = scaler.fit_transform(x)
+# scaler = MinMaxScaler()
+# x = scaler.fit_transform(x)
 
-test_csv = scaler.transform(test_csv)       # test_csv도 같이 학습 시켜줘야 값이 나온다. 안해주면 소용이 없다.
+# test_csv = scaler.transform(test_csv)       # test_csv도 같이 학습 시켜줘야 값이 나온다. 안해주면 소용이 없다.
 
 y = y.values.reshape(-1,1)       # (96294, 1)
 
@@ -112,11 +113,17 @@ ohe.fit(y)
 y_ohe = ohe.transform(y) 
 
 
-x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.25, random_state= 5969 , shuffle=True , stratify=y)    # 0
+x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 0 , shuffle=True , stratify=y)    # 0
 es = EarlyStopping(monitor='val_loss', mode='min' , patience= 300 , restore_best_weights=True , verbose= 1 )
 
+scaler = MinMaxScaler()
+scaler.fit(x_train)
+x_train = scaler.transform(x_train)
+x_test = scaler.transform(x_test)
+y_test = scaler.transform(y_test)
+test_csv = scaler.transform(test_csv)
 
-print(y_train.shape)            # (67405, 7) // print(y_train.shape) = output 값 구하는 법
+# print(y_train.shape)            # (67405, 7) // print(y_train.shape) = output 값 구하는 법
 
 #2
 model = Sequential()
@@ -130,7 +137,7 @@ model.add(Dense(7,activation='softmax'))
 
 #3
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
-model.fit(x_train,y_train, epochs = 10000000 , batch_size= 500 , validation_split=0.2 , callbacks = [es] , verbose= 2 )
+model.fit(x_train,y_train, epochs = 10000000 , batch_size= 1000 , validation_split=0.2 , callbacks = [es] , verbose= 2 )
 
 
 #4
@@ -145,7 +152,7 @@ submit =  np.argmax(y_submit,axis=1)
 
 y_submit = encoder.inverse_transform(submit)       # inverse_transform 처리하거나, 뽑을라면 argmax처리를 해줘야한다.
 submission_csv['대출등급'] = y_submit
-submission_csv.to_csv(path+'submission_0115.csv', index = False)
+submission_csv.to_csv(path+'submission_0115_3.csv', index = False)
 
 
 
@@ -188,3 +195,4 @@ print("f1 = ",f1)
 # y_submit =  ['B' 'A' 'A' ... 'D' 'B' 'A']
 # loss =  [11.950640678405762, 0.4693860709667206]
 # f1 =  0.4320287071351898
+

@@ -1,0 +1,106 @@
+from sklearn.datasets import load_wine
+import numpy as np
+import pandas as pd
+from keras.models import Sequential
+from keras.layers import Dense
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import r2_score, accuracy_score
+import matplotlib.pyplot as plt
+from keras.callbacks import EarlyStopping
+
+
+#1
+
+datasets = load_wine()
+x= datasets.data
+y= datasets.target
+
+print(x.shape,y.shape)      # (178, 13) (178,)
+print(pd.value_counts(y))   # 1    71 , 0    59 , 2    48
+
+
+from keras.utils import to_categorical
+one_hot = to_categorical(y)             # 행렬 데이터로 바꿔주는 것
+print(one_hot)
+print(one_hot.shape)                    # (178, 3)
+
+
+one_hot = pd.get_dummies(y)
+
+
+from sklearn.preprocessing import OneHotEncoder
+y = y.reshape(-1,1)
+ohe = OneHotEncoder()
+
+ohe.fit(y)
+y_ohe = ohe.transform(y).toarray()
+
+print(y_ohe)
+print(y_ohe.shape)     # (178, 3)
+
+
+
+x_train , x_test , y_train , y_test = train_test_split(x,y_ohe, test_size = 0.3, random_state= 0 ,shuffle=True, stratify = y)
+
+es = EarlyStopping(monitor='val_loss', mode = 'min' , verbose= 1 ,patience=20 ,restore_best_weights=True)
+
+
+from sklearn.preprocessing import MinMaxScaler, MaxAbsScaler
+from sklearn.preprocessing import StandardScaler, RobustScaler
+
+###################
+scaler = MinMaxScaler()
+# scaler = StandardScaler()
+# scaler = MaxAbsScaler()
+# scaler = RobustScaler()
+
+# scaler.fit(x_train)
+# x_train = scaler.transform(x_train)
+# x_test = scaler.transform(x_test)
+
+
+#2
+model = Sequential()
+model.add(Dense(64,input_dim = 13))
+model.add(Dense(128))
+model.add(Dense(64))
+model.add(Dense(32))
+model.add(Dense(16))
+model.add(Dense(3,activation='softmax'))
+
+#3
+model.compile(loss="categorical_crossentropy", optimizer='adam' , metrics = ['acc'])
+model.fit(x_train,y_train,epochs = 1000000 , batch_size = 1 , verbose = 1 , callbacks=[es],validation_split=0.2)
+
+#4
+result = model.evaluate(x_test,y_test)
+y_predict = model.predict(x_test)
+
+
+y_test = np.argmax(y_test,axis = 1)
+y_predict = np.argmax(y_predict, axis = 1)
+print(y_test.shape,y_predict.shape)
+
+acc = accuracy_score(y_test,y_predict)
+
+print('결과',result[0])
+print('acc',result[1])
+print(y_predict)
+print("accuracy : ",acc)
+
+
+# 결과 0.19868147373199463
+
+# MinMaxScaler
+# 결과 2.9090735552017577e-05
+
+# StandardScaler
+# 결과 0.03268396109342575
+
+# MaxAbsScaler
+# 결과 0.07153265178203583
+
+# RobustScaler
+# 결과 0.003748755669221282
+
+
