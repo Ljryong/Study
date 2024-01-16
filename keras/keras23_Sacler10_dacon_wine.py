@@ -2,7 +2,7 @@ from keras.models import Sequential
 from keras.layers import Dense
 from keras.callbacks import EarlyStopping
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score , 
+from sklearn.metrics import accuracy_score
 import numpy as np
 import pandas as pd
 
@@ -54,15 +54,14 @@ x_train , x_test , y_train , y_test = train_test_split(x,one_hot_y, test_size=0.
 
 es = EarlyStopping(monitor='val_loss' , mode = 'min', verbose=1, patience= 100 , restore_best_weights=True )
 
-
 from sklearn.preprocessing import MinMaxScaler, MaxAbsScaler
 from sklearn.preprocessing import StandardScaler, RobustScaler
 
 ###################
-scaler = MinMaxScaler()
+# scaler = MinMaxScaler()
 # scaler = StandardScaler()
 # scaler = MaxAbsScaler()
-# scaler = RobustScaler()
+scaler = RobustScaler()
 
 scaler.fit(x_train)
 x_train = scaler.transform(x_train)
@@ -187,3 +186,44 @@ print("Acc = ",acc)
 # 32/32 [==============================] - 0s 1ms/step
 # [1.0885460376739502, 0.5424242615699768]
 # Acc =  0.5424242424242425
+
+# MinMaxScaler
+# Epoch 155: early stopping
+# 52/52 [==============================] - 0s 1ms/step - loss: 1.0702 - acc: 0.5376
+# 52/52 [==============================] - 0s 1ms/step
+# 32/32 [==============================] - 0s 1ms/step
+# [1.0702472925186157, 0.5375757813453674]
+# Acc =  0.5375757575757576
+
+# StandardScaler
+# Epoch 135: early stopping
+# 52/52 [==============================] - 0s 2ms/step - loss: 1.0620 - acc: 0.5412
+# 52/52 [==============================] - 0s 1ms/step
+# 32/32 [==============================] - 0s 1ms/step
+# [1.062016248703003, 0.5412121415138245]
+# Acc =  0.5412121212121213
+
+# MaxAbsScaler
+# Epoch 149: early stopping
+# 52/52 [==============================] - 0s 2ms/step - loss: 1.0740 - acc: 0.5345
+# 52/52 [==============================] - 0s 1ms/step
+# 32/32 [==============================] - 0s 1ms/step
+# [1.0740325450897217, 0.5345454812049866]
+# Acc =  0.5345454545454545
+
+# RobustScaler
+# Epoch 140: early stopping
+# 52/52 [==============================] - 0s 2ms/step - loss: 1.0639 - acc: 0.5345
+# 52/52 [==============================] - 0s 1ms/step
+# 32/32 [==============================] - 0s 2ms/step
+# [1.0638880729675293, 0.5345454812049866]
+# Acc =  0.5345454545454545
+
+
+
+
+
+
+
+
+
