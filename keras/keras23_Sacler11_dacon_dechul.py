@@ -114,7 +114,7 @@ y_ohe = ohe.transform(y)
 
 
 x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 0 , shuffle=True , stratify=y)    # 0
-# es = EarlyStopping(monitor='val_loss', mode='min' , patience= 500 , restore_best_weights=True , verbose= 1 )
+es = EarlyStopping(monitor='val_loss', mode='min' , patience= 1000 , restore_best_weights=True , verbose= 1 )
 
 
 # print(y_train.shape)            # (67405, 7) // print(y_train.shape) = output 값 구하는 법
@@ -152,7 +152,7 @@ from keras.callbacks import EarlyStopping ,ModelCheckpoint
 
 
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
-hist = model.fit(x_train,y_train, epochs = 10000000 , batch_size= 10000 , validation_split=0.2 , callbacks = [es] , verbose = 1 )
+hist = model.fit(x_train,y_train, epochs = 10000000 , batch_size= 1000 , validation_split=0.2 , callbacks = [es] , verbose = 1 )
 
 
 #4
