@@ -43,9 +43,9 @@ from sklearn.preprocessing import MinMaxScaler, MaxAbsScaler
 from sklearn.preprocessing import StandardScaler, RobustScaler
 
 ###################
-scaler = MinMaxScaler()
+# scaler = MinMaxScaler()
 # scaler = StandardScaler()
-# scaler = MaxAbsScaler()
+scaler = MaxAbsScaler()
 # scaler = RobustScaler()
 
 scaler.fit(x_train)
@@ -113,13 +113,23 @@ print('reslut = ',result)
 # batch = 1000
 
 
+# MinMaxScaler
+# Epoch 93: early stopping
+# 5447/5447 [==============================] - 5s 831us/step - loss: 0.6298 - acc: 0.7239
+# 5447/5447 [==============================] - 4s 785us/step
+# (174304,)
+# (174304,)
+# acc =  0.7239191297962181
+# reslut =  [0.6298187375068665, 0.723919153213501]
+
+StandardScaler
 
 
 
+MaxAbsScaler
 
 
-
-
+RobustScaler
 
 
 
