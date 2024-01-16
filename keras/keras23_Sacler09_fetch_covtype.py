@@ -45,8 +45,8 @@ from sklearn.preprocessing import StandardScaler, RobustScaler
 ###################
 # scaler = MinMaxScaler()
 # scaler = StandardScaler()
-scaler = MaxAbsScaler()
-# scaler = RobustScaler()
+# scaler = MaxAbsScaler()
+scaler = RobustScaler()
 
 scaler.fit(x_train)
 x_train = scaler.transform(x_train)
@@ -122,14 +122,32 @@ print('reslut = ',result)
 # acc =  0.7239191297962181
 # reslut =  [0.6298187375068665, 0.723919153213501]
 
-StandardScaler
+# StandardScaler
+# Epoch 58: early stopping
+# 5447/5447 [==============================] - 4s 806us/step - loss: 0.6309 - acc: 0.7228
+# 5447/5447 [==============================] - 4s 806us/step
+# (174304,)
+# (174304,)
+# acc =  0.7227774463007159
+# reslut =  [0.6309492588043213, 0.7227774262428284]
 
 
+# MaxAbsScaler
+# Epoch 108: early stopping
+# 5447/5447 [==============================] - 5s 842us/step - loss: 0.6302 - acc: 0.7242
+# 5447/5447 [==============================] - 4s 804us/step
+# (174304,)
+# (174304,)
+# acc =  0.7242002478428493
+# reslut =  [0.630240261554718, 0.7242002487182617]
 
-MaxAbsScaler
-
-
-RobustScaler
-
+# RobustScaler
+# Epoch 51: early stopping
+# 5447/5447 [==============================] - 9s 2ms/step - loss: 0.6287 - acc: 0.7247
+# 5447/5447 [==============================] - 8s 1ms/step
+# (174304,)
+# (174304,)
+# acc =  0.7246764273912245
+# reslut =  [0.6287251114845276, 0.7246764302253723]
 
 
