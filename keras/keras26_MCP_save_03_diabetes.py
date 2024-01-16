@@ -1,7 +1,7 @@
 from sklearn.datasets import load_diabetes
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
-from keras.models import Sequential , load_model
+from keras.models import Sequential
 from keras.layers import Dense
 import numpy as np
 import time
@@ -28,21 +28,21 @@ x_train = scaler.transform(x_train)
 x_test = scaler.transform(x_test)
 
 
-# #2 모델구성
-# model = Sequential()
-# model.add(Dense(50,input_dim = 10 ))
-# model.add(Dense(25))
-# model.add(Dense(1))
+#2 모델구성
+model = Sequential()
+model.add(Dense(50,input_dim = 10 ))
+model.add(Dense(25))
+model.add(Dense(1))
 
-# #3 컴파일, 훈련
-# model.compile(loss = 'mse' , optimizer = 'adam' , metrics = ['mse' , 'mae'])
+#3 컴파일, 훈련
+model.compile(loss = 'mse' , optimizer = 'adam' , metrics = ['mse' , 'mae'])
 
-# from keras.callbacks import EarlyStopping
-# es = EarlyStopping(monitor = 'val_loss' , mode = 'min' , patience = 100, verbose=1 , restore_best_weights=True ) 
+from keras.callbacks import EarlyStopping , ModelCheckpoint
+es = EarlyStopping(monitor = 'val_loss' , mode = 'min' , patience = 10, verbose=1 , restore_best_weights=True ) 
 
-# hist = model.fit(x_train,y_train,epochs = 100000000000 , batch_size = 5 , validation_split = 0.2 ,callbacks= [es] )
+mcp = ModelCheckpoint(monitor = 'val_loss', mode = 'min' , verbose = 1 , save_best_only=True , filepath='c:/_data/_save/MCP/keras26_MCP3.hdf5'  )
 
-model = load_model('c:/_data/_save/MCP/keras26_MCP3.hdf5')
+hist = model.fit(x_train,y_train,epochs = 100000000000 , batch_size = 5 , validation_split = 0.2 ,callbacks= [es,mcp] )
 
 #4 평가, 예측
 loss = model.evaluate(x_test,y_test)

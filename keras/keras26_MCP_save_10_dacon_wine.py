@@ -1,6 +1,6 @@
 from keras.models import Sequential
 from keras.layers import Dense
-from keras.callbacks import EarlyStopping
+from keras.callbacks import EarlyStopping , ModelCheckpoint
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 import numpy as np
@@ -67,6 +67,7 @@ scaler.fit(x_train)
 x_train = scaler.transform(x_train)
 x_test = scaler.transform(x_test)
 
+mcp = ModelCheckpoint(monitor='val_loss', mode='min' , verbose=1, save_best_only=True , filepath=  'c:/_data/_save/MCP/keras26_MCP10.hdf5'   )
 
 
 
@@ -84,7 +85,7 @@ model.add(Dense(7, activation= 'softmax'))
 
 #3 
 model.compile(loss = 'categorical_crossentropy' , optimizer='adam' , metrics=['acc'] )
-model.fit(x_train,y_train,epochs=10000000 ,batch_size = 10 , validation_split=0.2 , callbacks=[es], verbose= 1)
+model.fit(x_train,y_train,epochs=10000000 ,batch_size = 10 , validation_split=0.2 , callbacks=[es,mcp], verbose= 1)
 
 #4
 loss = model.evaluate(x_test,y_test)

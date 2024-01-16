@@ -70,8 +70,8 @@ print(np.min(x_test))   # -0.06211435623200334
 print(np.max(x_train))  # 1.0000000000000002
 print(np.max(x_test))   # 1.210017220702162
 
-es = EarlyStopping(monitor='val_loss' , mode = 'min', verbose= 1 , patience= 100 , restore_best_weights=True , )
-mpc = ModelCheckpoint(monitor = 'val_loss' , mode = 'min' , verbose = 1 , save_best_only=True, filepath = 'c:/_data/_save/MCP/keras25_MCP1.hdf5')
+es = EarlyStopping(monitor='val_loss' , mode = 'min', verbose= 1 , patience= 10 , restore_best_weights=True , )
+mpc = ModelCheckpoint(monitor = 'val_loss' , mode = 'min' , verbose = 1 , save_best_only=True, filepath = 'c:/_data/_save/MCP/keras26_MCP1.hdf5')
 
 #2
 model = Sequential()
@@ -86,7 +86,7 @@ model.add(Dense(1))
 #3
 model.compile(loss='mse', optimizer='adam')
 start_time = time.time()
-model.fit(x_train,y_train,epochs=500,batch_size=1, callbacks=[es,mpc] )
+model.fit(x_train,y_train,epochs=100,batch_size=1 , validation_split=0.2 , callbacks=[es,mpc] )
 end_time = time.time()
 
 #4
@@ -140,7 +140,15 @@ print(end_time - start_time)            # python에서 기본으로 제공하는
 
 
 
-
+# Epoch 500/500
+# 267/354 [=====================>........] - ETA: 0s - loss: 20.7551WARNING:tensorflow:Early stopping conditioned on metric `val_loss` which is not available. Available metrics are: loss
+# WARNING:tensorflow:Can save best model only with val_loss available, skipping.
+# 354/354 [==============================] - 0s 567us/step - loss: 22.7928
+# 5/5 [==============================] - 0s 1ms/step - loss: 25.0397
+# 5/5 [==============================] - 0s 743us/step
+# 25.039709091186523
+# R2 :  0.7368456322476744
+# 100.694020986557
 
 
 

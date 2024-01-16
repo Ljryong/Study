@@ -1,6 +1,6 @@
 from keras.models import Sequential
 from keras.layers import Dense
-from keras.callbacks import EarlyStopping
+from keras.callbacks import EarlyStopping , ModelCheckpoint
 from keras.utils import to_categorical
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score , f1_score
@@ -114,7 +114,7 @@ y_ohe = ohe.transform(y)
 
 
 x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 0 , shuffle=True , stratify=y)    # 0
-# es = EarlyStopping(monitor='val_loss', mode='min' , patience= 500 , restore_best_weights=True , verbose= 1 )
+es = EarlyStopping(monitor='val_loss', mode='min' , patience= 10 , restore_best_weights=True , verbose= 1 )
 
 
 # print(y_train.shape)            # (67405, 7) // print(y_train.shape) = output 값 구하는 법
@@ -149,10 +149,11 @@ model.add(Dense(7,activation='softmax'))
 
 #3
 from keras.callbacks import EarlyStopping ,ModelCheckpoint
+mcp = ModelCheckpoint(monitor='val_loss', mode='min' , verbose=1, save_best_only=True , filepath=  'c:/_data/_save/MCP/keras26_MCP11.hdf5'   )
 
 
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
-hist = model.fit(x_train,y_train, epochs = 10000000 , batch_size= 10000 , validation_split=0.2 , callbacks = [es] , verbose = 1 )
+model.fit(x_train,y_train, epochs = 10000000 , batch_size= 10000 , validation_split=0.2 , callbacks = [es,mcp] , verbose= 2 )
 
 
 #4
