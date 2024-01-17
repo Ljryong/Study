@@ -2,7 +2,7 @@ from sklearn.datasets import load_diabetes
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
 from keras.models import Sequential
-from keras.layers import Dense
+from keras.layers import Dense , Dropout
 import numpy as np
 import time
 import matplotlib.pyplot as plt
@@ -33,13 +33,14 @@ date = datetime.datetime.now()
 date = date.strftime('%m%d-%H%M')
 path = 'c:/_data/_save/MCP/'
 filename = '{epoch:04d}-{val_loss:.4f}.hdf5'
-filepath = ''.join([path , 'k26_3_', date , '_', filename ])
+filepath = ''.join([path , 'k28_3_', date , '_', filename ])
 
 
 
 #2 모델구성
 model = Sequential()
 model.add(Dense(50,input_dim = 10 ))
+model.add(Dropout(0.2))
 model.add(Dense(25))
 model.add(Dense(1))
 
@@ -111,5 +112,12 @@ print(loss)
 # [3471.232666015625, 3471.232666015625, 47.71084976196289]
 
 
-
+# Dropout
+# Epoch 36: val_loss did not improve from 4040.04980
+# 50/50 [==============================] - 0s 997us/step - loss: 2463.5974 - mse: 2463.5974 - mae: 40.5088 - val_loss: 4116.0996 - val_mse: 4116.0996 - val_mae: 52.2245
+# Epoch 36: early stopping
+# 5/5 [==============================] - 0s 0s/step - loss: 3421.3333 - mse: 3421.3333 - mae: 47.4588
+# 5/5 [==============================] - 0s 499us/step
+# 0.4399500408441176
+# [3421.333251953125, 3421.333251953125, 47.45878601074219]
 

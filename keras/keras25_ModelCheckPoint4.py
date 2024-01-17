@@ -1,15 +1,15 @@
+# 세이브 파일명 만들기
+
 # 9_1 복붙
 
 from sklearn.datasets import load_boston
 import numpy as np
-from keras.models import Sequential
+from keras.models import Sequential , load_model
 from keras.layers import Dense
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
 import time
 import pandas as pd
-from keras.callbacks import EarlyStopping , ModelCheckpoint
-import datetime
 
 # warning 뜨는것을 없애는 방법, 하지만 아직 왜 뜨는지 모르니 보는것을 추천
 import warnings
@@ -23,7 +23,6 @@ warnings.filterwarnings('ignore')
 # pip install scikit-learn==0.23.2
 datasets = load_boston()
 
-
 print(datasets)
 x = datasets.data
 y = datasets.target
@@ -32,14 +31,11 @@ print(x.shape)      #(506, 13)
 print(y)
 print(y.shape)      #(506,)
 
-
 ############################
 # df = pd.DataFrame(x)
 # Nan_num = df.isna().sum()
 # print(Nan_num)
 ############################
-
-
 
 print(datasets.feature_names)
 # 'CRIM' 'ZN' 'INDUS' 'CHAS' 'NOX' 'RM' 'AGE' 'DIS' 'RAD' 'TAX' 'PTRATIO' 'B' 'LSTAT']
@@ -54,33 +50,13 @@ from sklearn.preprocessing import MinMaxScaler, MaxAbsScaler
 from sklearn.preprocessing import StandardScaler, RobustScaler
 
 ###################
-scaler = MinMaxScaler()
+# scaler = MinMaxScaler()
 # scaler = StandardScaler()
 # scaler = MaxAbsScaler()
-# scaler = RobustScaler()
+scaler = RobustScaler()
 
-scaler.fit(x_train)
-x_train = scaler.transform(x_train)
-
-# 위에 두줄을 x_train = scaler.fit_transform(x_train) 이라고 바꿀 수 있다.
-
-
+x_train = scaler.fit_transform(x_train)
 x_test = scaler.transform(x_test)
-print(np.min(x_train))  # 0.aa0
-print(np.min(x_test))   # -0.06211435623200334
-print(np.max(x_train))  # 1.0000000000000002
-print(np.max(x_test))   # 1.210017220702162
-
-date = datetime.datetime.now()
-date = date.strftime('%m%d_%H%M')
-path = 'c:/_data/_save/MCP/'
-filename = '{epoch:04d}-{val_loss:.4f}.hdf5'
-filepath = ''.join([path,'k_26_1_',date,'_',filename])
-
-
-
-es = EarlyStopping(monitor='val_loss' , mode = 'min', verbose= 1 , patience= 10 , restore_best_weights=True , )
-mcp = ModelCheckpoint(monitor = 'val_loss' , mode = 'min' , verbose = 1 , save_best_only=True, filepath = filepath )
 
 #2
 model = Sequential()
@@ -91,22 +67,54 @@ model.add(Dense(30))
 model.add(Dense(14))
 model.add(Dense(7))
 model.add(Dense(1))
+model.summary()
 
-#3
+# 3 컴파일, 훈련
 model.compile(loss='mse', optimizer='adam')
-start_time = time.time()
-model.fit(x_train,y_train,epochs=100,batch_size=1 , validation_split=0.2 , callbacks=[es,mcp] )
-end_time = time.time()
 
-#4
-loss = model.evaluate(x_test,y_test)
-y_predict = model.predict(x_test)
+from keras.callbacks import EarlyStopping ,ModelCheckpoint
+import datetime
+date= datetime.datetime.now()       # <class 'datetime.datetime'>
+print(date)                         # 2024-01-17 10:52:55.510197
+date = date.strftime('%m%d_%H%M')       # m = 달 , d = day 날 , H = 시간 , M = 분
+print(date)                         # <calss'str'>
+path ='../_data/_save/MCP/'     # 문자를 저장한것이다
+filename = '{epoch:04d}-{val_loss:.4f}.hdf5'        # d = 정수 , f = 소수점  04d = 4자리숫자까지 ,04f = 소수 4자리까지 / ex) 1000-0.3333.hdf5
+
+filepath = ''.join([path ,'k25_', date , '_' , filename])        # join = 이어주는것 
+# = '../_data/_save/MCP/k25_0117_1058_0101-0.3333.hdf5'
+
+
+mcp = ModelCheckpoint(monitor='val_loss' , mode= 'min' , verbose= 1 , save_best_only = True , filepath = filepath ) # mcp 모델만 mcp 에 넣음
+
+es = EarlyStopping(monitor='val_loss', mode='min' , patience=10 , verbose= 1 , restore_best_weights=True )
+
+
+hist = model.fit(x_train,y_train, epochs = 100 , batch_size= 10 , validation_split=0.2 , callbacks = [es, mcp] , verbose = 1 )
+# # 체크되는 지점마다 저장 // mode를 모르겠으면 auto 로 주면 된다. // save_best_only 가장 좋은 애만 저장한다.
+
+# model.save('../_data/_save/keras25_3_save_model.h5')    # 그냥 save 는 h5 , mcp 는 hdf5
+
+# model = load_model('../_data/_save/MCP/keras25_MCP1.hdf5')
+
+
+
+# 4 평가, 예측
+print('============================== 1. 기본 출력 ===============================')
+
+loss = model.evaluate(x_test,y_test,verbose=0)
+
+y_predict = model.predict(x_test,verbose=0)
 r2 = r2_score(y_test,y_predict)
+
 print(loss)
 print('R2 : ' , r2)
-print(end_time - start_time)            # python에서 기본으로 제공하는 시스템
-                                        # print는 함수
 
+
+# print(hist.history['val_loss'])
+
+# print(end_time - start_time)          # python에서 기본으로 제공하는 시스템
+                                        # print는 함수
 
 # #5/5 [==============================] - 0s 0s/step - loss: 23.7223
 # 5/5 [==============================] - 0s 4ms/step
@@ -146,23 +154,4 @@ print(end_time - start_time)            # python에서 기본으로 제공하는
 # 5/5 [==============================] - 0s 784us/step
 # R2 :  0.7210621160942314
 # 96.14459896087646
-
-
-
-# Epoch 500/500
-# 267/354 [=====================>........] - ETA: 0s - loss: 20.7551WARNING:tensorflow:Early stopping conditioned on metric `val_loss` which is not available. Available metrics are: loss
-# WARNING:tensorflow:Can save best model only with val_loss available, skipping.
-# 354/354 [==============================] - 0s 567us/step - loss: 22.7928
-# 5/5 [==============================] - 0s 1ms/step - loss: 25.0397
-# 5/5 [==============================] - 0s 743us/step
-# 25.039709091186523
-# R2 :  0.7368456322476744
-# 100.694020986557
-
-
-
-
-
-
-
 

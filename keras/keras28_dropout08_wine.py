@@ -2,7 +2,7 @@ from sklearn.datasets import load_wine
 import numpy as np
 import pandas as pd
 from keras.models import Sequential
-from keras.layers import Dense
+from keras.layers import Dense , Dropout
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, accuracy_score
 import matplotlib.pyplot as plt
@@ -48,7 +48,7 @@ date = datetime.datetime.now()
 date = date.strftime('%m%d-%H%M')
 path = 'c:/_data/_save/MCP/'
 filename = '{epoch:04d}-{val_loss:.4f}.hdf5'
-filepath = ''.join([path , 'k26_8_', date , '_', filename ])
+filepath = ''.join([path , 'k28_8_', date , '_', filename ])
 
 from sklearn.preprocessing import MinMaxScaler, MaxAbsScaler
 from sklearn.preprocessing import StandardScaler, RobustScaler
@@ -68,6 +68,7 @@ scaler = MinMaxScaler()
 model = Sequential()
 model.add(Dense(64,input_dim = 13))
 model.add(Dense(128))
+model.add(Dropout(0.3))
 model.add(Dense(64))
 model.add(Dense(32))
 model.add(Dense(16))
@@ -110,4 +111,5 @@ print("accuracy : ",acc)
 # RobustScaler
 # 결과 0.003748755669221282
 
-
+# Dropout
+# 결과 0.3985663652420044

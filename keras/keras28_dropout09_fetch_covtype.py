@@ -2,7 +2,7 @@ from sklearn.datasets import fetch_covtype
 import numpy as np
 import pandas as pd
 from keras.models import Sequential
-from keras.layers import Dense
+from keras.layers import Dense , Dropout
 from keras.callbacks import EarlyStopping , ModelCheckpoint
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
@@ -40,7 +40,7 @@ date = datetime.datetime.now()
 date = date.strftime('%m%d-%H%M')
 path = 'c:/_data/_save/MCP/'
 filename = '{epoch:04d}-{val_loss:.4f}.hdf5'
-filepath = ''.join([path , 'k26_9_', date , '_', filename ])
+filepath = ''.join([path , 'k28_9_', date , '_', filename ])
 
 # print(datasets.DESCR)
 
@@ -64,8 +64,11 @@ x_test = scaler.transform(x_test)
 model = Sequential()
 model.add(Dense(1024,input_dim = 54))
 model.add(Dense(512))
+model.add(Dropout(0.2))
 model.add(Dense(256))
+model.add(Dropout(0.7))
 model.add(Dense(128))
+model.add(Dropout(0.3))
 model.add(Dense(64))
 model.add(Dense(32))
 model.add(Dense(7,activation='softmax'))
@@ -156,5 +159,8 @@ print('reslut = ',result)
 # (174304,)
 # acc =  0.7246764273912245
 # reslut =  [0.6287251114845276, 0.7246764302253723]
+
+
+Dropout
 
 

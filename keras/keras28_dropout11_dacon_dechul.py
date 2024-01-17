@@ -1,6 +1,6 @@
 from keras.models import Sequential
 from keras.layers import Dense , Dropout
-from keras.callbacks import EarlyStopping ,ModelCheckpoint
+from keras.callbacks import EarlyStopping , ModelCheckpoint
 from keras.utils import to_categorical
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score , f1_score
@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import OneHotEncoder , LabelEncoder , MinMaxScaler
 import datetime
+
 
 #1
 path = 'c:/_data/dacon/dechul//'
@@ -47,6 +48,12 @@ train_csv['대출등급'] = encoder.transform(train_csv['대출등급'])
 
 
 
+date = datetime.datetime.now()
+date = date.strftime('%m%d-%H%M')
+path = 'c:/_data/_save/MCP/'
+filename = '{epoch:04d}-{val_loss:.4f}.hdf5'
+filepath = ''.join([path , 'k28_11_', date , '_', filename ])
+
 
 # print(train_csv.dtypes)
 # print(test_csv.dtypes)
@@ -62,7 +69,7 @@ train_csv['대출등급'] = encoder.transform(train_csv['대출등급'])
 
 
 
-train_csv['주택소유상태'] = train_csv['주택소유상태'].replace({'MORTGAGE' : 0 , 'OWN' : 1 , 'RENT': 2 , 'ANY' : 3}).astype(float)
+train_csv['주택소유상태'] = train_csv['주택소유상태'].replace({'MORTGAGE' : 0 , 'OWN' : 1 , 'RENT': 2 , 'ANY' : 0}).astype(float)
 test_csv['주택소유상태'] = test_csv['주택소유상태'].replace({'MORTGAGE' : 0 , 'OWN' : 1 , 'RENT': 2}).astype(float)
 
 train_csv['대출목적'] = train_csv['대출목적'].replace({'부채 통합' : 0 , '주택 개선' : 2 , '주요 구매': 4 , '휴가' : 9  
@@ -71,7 +78,7 @@ train_csv['대출목적'] = train_csv['대출목적'].replace({'부채 통합' :
 test_csv['대출목적'] = test_csv['대출목적'].replace({'부채 통합' : 0 , '주택 개선' : 2 , '주요 구매': 4 , '휴가' : 9 ,
                                              '의료' : 5 , '자동차' : 6 , '신용 카드' : 1 , '기타' : 3 , '주택개선' : 8,
                                              '소규모 사업' : 7 , '이사' :  8 , '주택': 10 , '재생 에너지' : 11 , 
-                                             '결혼' : 12 })
+                                             '결혼' : 0 })
 
 # 결혼은 train에 없는 라벨이다. 그래서 12 로 두든 2로 두든 아니면 없애든 값이 좋은걸로 비교해보면 된다.
 train_csv['대출기간'] = train_csv['대출기간'].replace({' 36 months' : 36 , ' 60 months' : 60 }).astype(int)
@@ -113,14 +120,9 @@ ohe = OneHotEncoder(sparse = False)
 ohe.fit(y)
 y_ohe = ohe.transform(y) 
 
-date = datetime.datetime.now()
-date = date.strftime('%m%d-%H%M')
-path = 'c:/_data/_save/MCP/'
-filename = '{epoch:04d}-{val_loss:.4f}.hdf5'
-filepath = ''.join([path , '대출_', date , '_', filename ])
 
 x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 0 , shuffle=True , stratify=y)    # 0
-# es = EarlyStopping(monitor='val_loss', mode='min' , patience= 500 , restore_best_weights=True , verbose= 1 )
+es = EarlyStopping(monitor='val_loss', mode='min' , patience= 10 , restore_best_weights=True , verbose= 1 )
 
 
 # print(y_train.shape)            # (67405, 7) // print(y_train.shape) = output 값 구하는 법
@@ -131,9 +133,9 @@ from sklearn.preprocessing import StandardScaler, RobustScaler
 
 ###################
 # scaler = MinMaxScaler()
-# scaler = StandardScaler()
+scaler = StandardScaler()
 # scaler = MaxAbsScaler()
-scaler = RobustScaler()
+# scaler = RobustScaler()
 
 scaler.fit(x_train)
 x_train = scaler.transform(x_train)
@@ -145,10 +147,14 @@ test_csv = scaler.transform(test_csv)
 #2
 model = Sequential()
 model.add(Dense(1024 ,input_dim= 13))
+model.add(Dropout(0.5))
 model.add(Dense(512))
+model.add(Dropout(0.1))
 model.add(Dense(256,activation= 'relu'))
+model.add(Dropout(0.3))
 model.add(Dense(128, activation= 'relu'))
 model.add(Dense(64,activation= 'relu'))
+model.add(Dropout(0.4))
 model.add(Dense(32,activation= 'relu'))
 model.add(Dense(7,activation='softmax'))
 
@@ -159,7 +165,7 @@ mcp = ModelCheckpoint(monitor='val_loss', mode='min' , verbose=1, save_best_only
 
 
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
-hist = model.fit(x_train,y_train, epochs = 10000000 , batch_size= 10000 , validation_split=0.2 , callbacks = [es] , verbose = 1 )
+model.fit(x_train,y_train, epochs = 10000000 , batch_size= 1000000 , validation_split=0.2 , callbacks = [es,mcp] , verbose= 2 )
 
 
 #4
@@ -174,6 +180,8 @@ submit =  np.argmax(y_submit,axis=1)
 
 y_submit = encoder.inverse_transform(submit)       # inverse_transform 처리하거나, 뽑을라면 argmax처리를 해줘야한다.
 submission_csv['대출등급'] = y_submit
+submission_csv.to_csv(path+'submission_0115_3.csv', index = False)
+
 
 
 def f1(arg_test,arg_pre) :
@@ -186,7 +194,7 @@ acc = acc(arg_test,arg_pre)
 
 
 
-submission_csv.to_csv(path+'submission_0117.csv', index = False)
+submission_csv.to_csv(path+'submission_0116.csv', index = False)
 
 
 print('y_submit = ', y_submit)
@@ -250,12 +258,6 @@ print("f1 = ",f1)
 # loss =  [0.34875673055648804, 0.8790196776390076]
 # f1 =  0.8497940978155077
 
+Dropout
 
 
-# Epoch 1931: early stopping
-# 903/903 [==============================] - 1s 848us/step - loss: 0.3281 - acc: 0.8892
-# 2007/2007 [==============================] - 2s 771us/step
-# 903/903 [==============================] - 1s 766us/step
-# y_submit =  ['B' 'B' 'A' ... 'D' 'C' 'A']
-# loss =  [0.32808682322502136, 0.8891619443893433]
-# f1 =  0.8574976165142344

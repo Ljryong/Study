@@ -7,6 +7,8 @@ from sklearn.metrics import accuracy_score , f1_score
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import OneHotEncoder , LabelEncoder , MinMaxScaler
+import datetime
+
 
 #1
 path = 'c:/_data/dacon/dechul//'
@@ -45,6 +47,12 @@ encoder.fit(train_csv['대출등급'])
 train_csv['대출등급'] = encoder.transform(train_csv['대출등급'])
 
 
+
+date = datetime.datetime.now()
+date = date.strftime('%m%d-%H%M')
+path = 'c:/_data/_save/MCP/'
+filename = '{epoch:04d}-{val_loss:.4f}.hdf5'
+filepath = ''.join([path , 'k26_11_', date , '_', filename ])
 
 
 # print(train_csv.dtypes)
@@ -149,11 +157,11 @@ model.add(Dense(7,activation='softmax'))
 
 #3
 from keras.callbacks import EarlyStopping ,ModelCheckpoint
-mcp = ModelCheckpoint(monitor='val_loss', mode='min' , verbose=1, save_best_only=True , filepath=  'c:/_data/_save/MCP/keras26_MCP11.hdf5'   )
+mcp = ModelCheckpoint(monitor='val_loss', mode='min' , verbose=1, save_best_only=True , filepath=  filepath   )
 
 
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
-model.fit(x_train,y_train, epochs = 10000000 , batch_size= 10000 , validation_split=0.2 , callbacks = [es,mcp] , verbose= 2 )
+model.fit(x_train,y_train, epochs = 10000000 , batch_size= 1000000 , validation_split=0.2 , callbacks = [es,mcp] , verbose= 2 )
 
 
 #4

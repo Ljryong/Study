@@ -1,11 +1,12 @@
 from keras.models import Sequential
-from keras.layers import Dense
+from keras.layers import Dense , Dropout
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score , accuracy_score , mean_squared_error
 import numpy as np
 import pandas as pd
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 import datetime
+
 
 #1 데이터
 path = "c:/_data/dacon/diabetes//"
@@ -47,13 +48,14 @@ date = datetime.datetime.now()
 date = date.strftime('%m%d-%H%M')
 path = 'c:/_data/_save/MCP/'
 filename = '{epoch:04d}-{val_loss:.4f}.hdf5'
-filepath = ''.join([path , 'k26_7_', date , '_', filename ])
+filepath = ''.join([path , 'k28_7_', date , '_', filename ])
 
 
 #2 모델구성
 model = Sequential()
 model.add(Dense(64,input_dim = 8))
 model.add(Dense(128))
+model.add(Dropout(0.3))
 model.add(Dense(64))
 model.add(Dense(32))
 model.add(Dense(16))
@@ -123,8 +125,9 @@ print("Acc = ",acc)
 # loss =  [0.5026631951332092, 0.75]
 # Acc =  0.75
 
-
-
+# Dropout
+# loss =  [0.5997169017791748, 0.7142857313156128]
+# Acc =  0.7142857142857143
 
 
 

@@ -2,12 +2,13 @@ import numpy as np
 from sklearn.datasets import load_breast_cancer
 from sklearn.metrics import r2_score , mean_squared_error , mean_squared_log_error , accuracy_score
 from keras.models import Sequential
-from keras.layers import Dense
+from keras.layers import Dense , Dropout
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from keras.callbacks import EarlyStopping , ModelCheckpoint
 import matplotlib.pyplot as plt
 import datetime
+
 
 #1 데이터                     ####################################      2진 분류        ###########################################
 datasets = load_breast_cancer()
@@ -29,7 +30,7 @@ date = datetime.datetime.now()
 date = date.strftime('%m%d-%H%M')
 path = 'c:/_data/_save/MCP/'
 filename = '{epoch:04d}-{val_loss:.4f}.hdf5'
-filepath = ''.join([path , 'k26_6_', date , '_', filename ])
+filepath = ''.join([path , 'k28_6_', date , '_', filename ])
 
 
 # y 안에 있는 array와 해당 array의 개수들을 알 수 있다.
@@ -61,6 +62,7 @@ x_test = scaler.transform(x_test)
 model = Sequential()
 model.add(Dense(1024 ,input_dim = 30))      # sigmoid = 0과 1 사이에서 값이 나온다. 0.5 이상이며 1이 되고 0.5미만이면 0이된다.
 model.add(Dense(512))
+model.add(Dropout(0.5))
 model.add(Dense(256))
 model.add(Dense(128))
 model.add(Dense(1, activation= 'sigmoid'))  # 2진분류 에서는 loss = binary_crossentropy , 
@@ -166,5 +168,8 @@ print('r2 = ', r2)
 # loss =  [0.8371858596801758, 0.9473684430122375, 0.05032849311828613, 0.05584089457988739]
 # r2 =  0.7837072917060004
 
-
-
+# Dropout
+# ACC :  0.20408860067123857
+# RMSLE :  0.14199040067527322
+# loss =  [0.30229422450065613, 0.9532163739204407, 0.04165215417742729, 0.0494750551879406]
+# r2 =  0.8209948970292394
