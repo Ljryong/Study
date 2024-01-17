@@ -1,7 +1,7 @@
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score , mean_squared_error
 from keras.models import Sequential
-from keras.layers import Dense
+from keras.layers import Dense , Dropout
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -48,7 +48,7 @@ date = datetime.datetime.now()
 date = date.strftime('%m%d-%H%M')
 path = 'c:/_data/_save/MCP/'
 filename = '{epoch:04d}-{val_loss:.4f}.hdf5'
-filepath = ''.join([path , 'k26_4_', date , '_', filename ])
+filepath = ''.join([path , 'k28_4_', date , '_', filename ])
 
 
 #2 모델 구성
@@ -58,6 +58,7 @@ model.add(Dense(1024, input_dim = 9  ))
 # model.add(Dense(1024))
 # model.add(Dense(2048))
 model.add(Dense(512))
+model.add(Dropout(0.3))
 model.add(Dense(256, activation= 'relu'))
 model.add(Dense(1))
 
@@ -149,5 +150,11 @@ print("RMSE : ", rmse)
 # loss :  [2221.02783203125, 2221.02783203125, 33.6120719909668]
 # RMSE :  47.12778052794729
 
-
-
+# Dropout
+# Epoch 26: early stopping
+# 14/14 [==============================] - 0s 1ms/step - loss: 2319.9834 - mse: 2319.9834 - mae: 35.9168
+# 23/23 [==============================] - 0s 813us/step
+# 14/14 [==============================] - 0s 0s/step
+# R2 :  0.6111217705229142
+# loss :  [2319.9833984375, 2319.9833984375, 35.91681671142578]
+# RMSE :  48.166203547336

@@ -1,7 +1,7 @@
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
 from keras.models import Sequential
-from keras.layers import Dense
+from keras.layers import Dense , Dropout
 from keras.callbacks import EarlyStopping , ModelCheckpoint
 import numpy as np
 import pandas as pd
@@ -35,7 +35,7 @@ date = datetime.datetime.now()
 date = date.strftime('%m%d-%H%M')
 path = 'c:/_data/_save/MCP/'
 filename = '{epoch:04d}-{val_loss:.4f}.hdf5'
-filepath = ''.join([path , 'k26_5_', date , '_', filename ])
+filepath = ''.join([path , 'k28_5_', date , '_', filename ])
 
 x_train , x_test , y_train , y_test = train_test_split(x,y,test_size=0.3 , random_state= 6974 ) #7
 # x_train_d, x_val , y_train_d, y_val  = train_test_split(x_train, y_train, train_size=0.8, random_state=10)
@@ -59,8 +59,11 @@ from sklearn.preprocessing import StandardScaler, RobustScaler
 model = Sequential()            # relu 0이하는 전부 0으로 바꾸고 양수는 그대로 놔둔다. 
 model.add(Dense(512, input_dim = 8 ))
 model.add(Dense(256, activation= 'relu'))
+model.add(Dropout(0.4))
 model.add(Dense(128))
+model.add(Dropout(0.4))
 model.add(Dense(64))
+model.add(Dropout(0.4))
 model.add(Dense(32,activation= 'relu'))
 model.add(Dense(16,activation= 'relu'))
 model.add(Dense(1))
@@ -154,8 +157,11 @@ print("음수갯수",submission_csv[submission_csv['count']<0].count())
 
 
 
-
-
+# Dropout
+# [6493 rows x 2 columns]
+# 로스는 :  [23057.0, 23057.0, 112.02766418457031]
+# 103/103 [==============================] - 0s 502us/step
+# R2 =  0.26880372940966746
 
 
 

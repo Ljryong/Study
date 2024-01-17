@@ -1,5 +1,5 @@
 from keras.models import Sequential
-from keras.layers import Dense
+from keras.layers import Dense , Dropout
 from keras.callbacks import EarlyStopping , ModelCheckpoint
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
@@ -79,9 +79,13 @@ mcp = ModelCheckpoint(monitor='val_loss', mode='min' , verbose=1, save_best_only
 model = Sequential()
 model.add(Dense(2048,input_dim = 12 ))
 model.add(Dense(1024))
+model.add(Dropout(0.7))
 model.add(Dense(512))
+model.add(Dropout(0.1))
 model.add(Dense(256))
+model.add(Dropout(0.5))
 model.add(Dense(128))
+model.add(Dropout(0.4))
 model.add(Dense(64))
 model.add(Dense(32))
 model.add(Dense(16))
@@ -261,8 +265,14 @@ print("Acc = ",acc)
 
 
 
-
-
-
+# Dropout
+# Epoch 18: val_loss did not improve from 1.13189
+# 308/308 [==============================] - 3s 11ms/step - loss: 1.1878 - acc: 0.5041 - val_loss: 1.1840 - val_acc: 0.5013
+# Epoch 18: early stopping
+# 52/52 [==============================] - 0s 3ms/step - loss: 1.0957 - acc: 0.5267
+# 52/52 [==============================] - 0s 2ms/step
+# 32/32 [==============================] - 0s 2ms/step
+# [1.095739483833313, 0.5266666412353516]
+# Acc =  0.5266666666666666
 
 

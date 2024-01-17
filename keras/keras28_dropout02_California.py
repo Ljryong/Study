@@ -2,7 +2,7 @@ from sklearn.datasets import fetch_california_housing
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
 from keras.models import Sequential
-from keras.layers import Dense
+from keras.layers import Dense , Dropout
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -35,12 +35,13 @@ date = datetime.datetime.now()
 path = 'c:/_data/_save/MCP/'
 date = date.strftime('%m%d-%H%M')
 filename = '{epoch:04d}-{val_loss:04f}.hdf5'
-filepath = ''.join([path,'k26_2_',date,"_",filename])
+filepath = ''.join([path,'k28_2_',date,"_",filename])
 
 
 #2 모델구성
 model = Sequential()
-model.add(Dense(1,input_dim = 8))
+model.add(Dense(5,input_dim = 8))
+model.add(Dropout(0.2))
 model.add(Dense(1))
 
 
@@ -113,3 +114,13 @@ print(r2)
 # 194/194 [==============================] - 0s 323us/step
 # [0.621303379535675, 0.621303379535675, 0.5649369359016418]
 # 0.5339887470787599
+
+
+# Dropout
+# Epoch 99: val_loss did not improve from 0.50111
+# 116/116 [==============================] - 0s 750us/step - loss: 0.5944 - mse: 0.5944 - mae: 0.5652 - val_loss: 0.5046 - val_mse: 0.5046 - val_mae: 0.5317
+# Epoch 99: early stopping
+# 194/194 [==============================] - 0s 435us/step - loss: 0.5698 - mse: 0.5698 - mae: 0.5393
+# 194/194 [==============================] - 0s 377us/step
+# [0.5697676539421082, 0.5697676539421082, 0.5393381714820862]
+# 0.5726433460952995
