@@ -62,7 +62,7 @@ train_csv['대출등급'] = encoder.transform(train_csv['대출등급'])
 
 
 
-train_csv['주택소유상태'] = train_csv['주택소유상태'].replace({'MORTGAGE' : 0 , 'OWN' : 1 , 'RENT': 2 , 'ANY' : 3}).astype(float)
+train_csv['주택소유상태'] = train_csv['주택소유상태'].replace({'MORTGAGE' : 0 , 'OWN' : 1 , 'RENT': 2 , 'ANY' : 0}).astype(float)
 test_csv['주택소유상태'] = test_csv['주택소유상태'].replace({'MORTGAGE' : 0 , 'OWN' : 1 , 'RENT': 2}).astype(float)
 
 train_csv['대출목적'] = train_csv['대출목적'].replace({'부채 통합' : 0 , '주택 개선' : 2 , '주요 구매': 4 , '휴가' : 9  
@@ -71,7 +71,7 @@ train_csv['대출목적'] = train_csv['대출목적'].replace({'부채 통합' :
 test_csv['대출목적'] = test_csv['대출목적'].replace({'부채 통합' : 0 , '주택 개선' : 2 , '주요 구매': 4 , '휴가' : 9 ,
                                              '의료' : 5 , '자동차' : 6 , '신용 카드' : 1 , '기타' : 3 , '주택개선' : 8,
                                              '소규모 사업' : 7 , '이사' :  8 , '주택': 10 , '재생 에너지' : 11 , 
-                                             '결혼' : 12 })
+                                             '결혼' : 0 })
 
 # 결혼은 train에 없는 라벨이다. 그래서 12 로 두든 2로 두든 아니면 없애든 값이 좋은걸로 비교해보면 된다.
 train_csv['대출기간'] = train_csv['대출기간'].replace({' 36 months' : 36 , ' 60 months' : 60 }).astype(int)
@@ -119,8 +119,8 @@ path = 'c:/_data/_save/MCP/'
 filename = '{epoch:04d}-{val_loss:.4f}.hdf5'
 filepath = ''.join([path , '대출_', date , '_', filename ])
 
-x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 0 , shuffle=True , stratify=y)    # 0
-# es = EarlyStopping(monitor='val_loss', mode='min' , patience= 500 , restore_best_weights=True , verbose= 1 )
+x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 19 , shuffle=True , stratify=y)    # 0
+es = EarlyStopping(monitor='val_loss', mode='min' , patience= 700 , restore_best_weights=True , verbose= 1 )
 
 
 # print(y_train.shape)            # (67405, 7) // print(y_train.shape) = output 값 구하는 법
@@ -144,12 +144,13 @@ test_csv = scaler.transform(test_csv)
 
 #2
 model = Sequential()
-model.add(Dense(1024 ,input_dim= 13))
-model.add(Dense(512))
-model.add(Dense(256,activation= 'relu'))
-model.add(Dense(128, activation= 'relu'))
-model.add(Dense(64,activation= 'relu'))
-model.add(Dense(32,activation= 'relu'))
+model.add(Dense(50, input_shape= (13,), activation= 'relu'))
+model.add(Dense(150,activation= 'relu'))
+model.add(Dropout(0.2))
+model.add(Dense(8,activation= 'relu'))
+model.add(Dense(100,activation= 'relu'))
+model.add(Dense(7, activation= 'relu'))
+model.add(Dense(50,activation= 'relu'))
 model.add(Dense(7,activation='softmax'))
 
 
@@ -159,7 +160,7 @@ mcp = ModelCheckpoint(monitor='val_loss', mode='min' , verbose=1, save_best_only
 
 
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
-hist = model.fit(x_train,y_train, epochs = 10000000 , batch_size= 10000 , validation_split=0.2 , callbacks = [es] , verbose = 1 )
+hist = model.fit(x_train,y_train, epochs = 10000000 , batch_size= 100 , validation_split=0.2 , callbacks = [es,mcp] , verbose = 1 )
 
 
 #4
@@ -186,7 +187,7 @@ acc = acc(arg_test,arg_pre)
 
 
 
-submission_csv.to_csv(path+'submission_0117.csv', index = False)
+submission_csv.to_csv(path+'submission_0118.csv', index = False)
 
 
 print('y_submit = ', y_submit)
