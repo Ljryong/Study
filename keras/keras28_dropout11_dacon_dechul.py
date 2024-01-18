@@ -121,8 +121,8 @@ ohe.fit(y)
 y_ohe = ohe.transform(y) 
 
 
-x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 0 , shuffle=True , stratify=y)    # 0
-es = EarlyStopping(monitor='val_loss', mode='min' , patience= 10 , restore_best_weights=True , verbose= 1 )
+x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 645 , shuffle=True , stratify=y)    # 0
+es = EarlyStopping(monitor='val_loss', mode='min' , patience= 1000 , restore_best_weights=True , verbose= 1 )
 
 
 # print(y_train.shape)            # (67405, 7) // print(y_train.shape) = output 값 구하는 법
@@ -146,13 +146,13 @@ test_csv = scaler.transform(test_csv)
 
 #2
 model = Sequential()
-model.add(Dense(1024 ,input_dim= 13))
+model.add(Dense(102 ,input_dim= 13,activation= 'relu'))
 model.add(Dropout(0.5))
-model.add(Dense(512))
+model.add(Dense(12,activation= 'relu'))
 model.add(Dropout(0.1))
 model.add(Dense(256,activation= 'relu'))
 model.add(Dropout(0.3))
-model.add(Dense(128, activation= 'relu'))
+model.add(Dense(12, activation= 'relu'))
 model.add(Dense(64,activation= 'relu'))
 model.add(Dropout(0.4))
 model.add(Dense(32,activation= 'relu'))
@@ -165,7 +165,7 @@ mcp = ModelCheckpoint(monitor='val_loss', mode='min' , verbose=1, save_best_only
 
 
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
-model.fit(x_train,y_train, epochs = 10000000 , batch_size= 1000000 , validation_split=0.2 , callbacks = [es,mcp] , verbose= 2 )
+model.fit(x_train,y_train, epochs = 10000000 , batch_size= 1000 , validation_split=0.2 , callbacks = [es,mcp] , verbose= 2 )
 
 
 #4
@@ -258,6 +258,6 @@ print("f1 = ",f1)
 # loss =  [0.34875673055648804, 0.8790196776390076]
 # f1 =  0.8497940978155077
 
-Dropout
+
 
 
