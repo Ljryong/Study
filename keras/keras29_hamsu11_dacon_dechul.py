@@ -1,6 +1,6 @@
-from keras.models import Sequential
-from keras.layers import Dense , Dropout
-from keras.callbacks import EarlyStopping ,ModelCheckpoint
+from keras.models import Sequential , Model
+from keras.layers import Dense , Dropout , Input
+from keras.callbacks import EarlyStopping , ModelCheckpoint
 from keras.utils import to_categorical
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score , f1_score
@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import OneHotEncoder , LabelEncoder , MinMaxScaler
 import datetime
+
 
 #1
 path = 'c:/_data/dacon/dechul//'
@@ -46,6 +47,12 @@ encoder.fit(train_csv['대출등급'])
 train_csv['대출등급'] = encoder.transform(train_csv['대출등급'])
 
 
+
+date = datetime.datetime.now()
+date = date.strftime('%m%d-%H%M')
+path = 'c:/_data/_save/MCP/'
+filename = '{epoch:04d}-{val_loss:.4f}.hdf5'
+filepath = ''.join([path , 'k28_11_', date , '_', filename ])
 
 
 # print(train_csv.dtypes)
@@ -113,14 +120,9 @@ ohe = OneHotEncoder(sparse = False)
 ohe.fit(y)
 y_ohe = ohe.transform(y) 
 
-date = datetime.datetime.now()
-date = date.strftime('%m%d-%H%M')
-path = 'c:/_data/_save/MCP/'
-filename = '{epoch:04d}-{val_loss:.4f}.hdf5'
-filepath = ''.join([path , '대출_', date , '_', filename ])
 
-x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 0 , shuffle=True , stratify=y)    # 0
-# es = EarlyStopping(monitor='val_loss', mode='min' , patience= 500 , restore_best_weights=True , verbose= 1 )
+x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 156 , shuffle=True , stratify=y)    # 0
+es = EarlyStopping(monitor='val_loss', mode='min' , patience= 10 , restore_best_weights=True , verbose= 1 )
 
 
 # print(y_train.shape)            # (67405, 7) // print(y_train.shape) = output 값 구하는 법
@@ -131,9 +133,9 @@ from sklearn.preprocessing import StandardScaler, RobustScaler
 
 ###################
 # scaler = MinMaxScaler()
-# scaler = StandardScaler()
+scaler = StandardScaler()
 # scaler = MaxAbsScaler()
-scaler = RobustScaler()
+# scaler = RobustScaler()
 
 scaler.fit(x_train)
 x_train = scaler.transform(x_train)
@@ -143,14 +145,39 @@ test_csv = scaler.transform(test_csv)
 
 
 #2
-model = Sequential()
-model.add(Dense(1024 ,input_dim= 13))
-model.add(Dense(512))
-model.add(Dense(256,activation= 'relu'))
-model.add(Dense(128, activation= 'relu'))
-model.add(Dense(64,activation= 'relu'))
-model.add(Dense(32,activation= 'relu'))
-model.add(Dense(7,activation='softmax'))
+# model = Sequential()
+# model.add(Dense(1024 ,input_shape= (13,)))
+# model.add(Dropout(0.5))
+# model.add(Dense(512))
+# model.add(Dropout(0.1))
+# model.add(Dense(256,activation= 'relu'))
+# model.add(Dropout(0.3))
+# model.add(Dense(128, activation= 'relu'))
+# model.add(Dense(64,activation= 'relu'))
+# model.add(Dropout(0.4))
+# model.add(Dense(32,activation= 'relu'))
+# model.add(Dense(7,activation='softmax'))
+
+#2-1
+input = Input(shape = (13,))
+d1 = Dense(1024)(input)
+drop1 = Dropout(0.5)(d1)
+d2 = Dense(512)(drop1)
+drop2 = Dropout(0.1)(d2)
+d3 = Dense(256,activation='relu')(drop2)
+drop3 = Dropout(0.3)(d3)
+d4 = Dense(128,activation='relu')(drop3)
+d5 = Dense(64,activation='relu')(d4)
+drop4 = Dropout(0.4)(d5)
+d6 = Dense(32,activation='relu')(drop4)
+output = Dense(7,activation='softmax')(d6)
+
+model = Model(inputs = input , outputs = output)
+
+
+
+
+
 
 
 #3
@@ -159,7 +186,7 @@ mcp = ModelCheckpoint(monitor='val_loss', mode='min' , verbose=1, save_best_only
 
 
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
-hist = model.fit(x_train,y_train, epochs = 10000000 , batch_size= 10000 , validation_split=0.2 , callbacks = [es] , verbose = 1 )
+model.fit(x_train,y_train, epochs = 10000000 , batch_size= 1000000 , validation_split=0.2 , callbacks = [es,mcp] , verbose= 2 )
 
 
 #4
@@ -174,6 +201,8 @@ submit =  np.argmax(y_submit,axis=1)
 
 y_submit = encoder.inverse_transform(submit)       # inverse_transform 처리하거나, 뽑을라면 argmax처리를 해줘야한다.
 submission_csv['대출등급'] = y_submit
+submission_csv.to_csv(path+'submission_0115_3.csv', index = False)
+
 
 
 def f1(arg_test,arg_pre) :
@@ -186,7 +215,7 @@ acc = acc(arg_test,arg_pre)
 
 
 
-submission_csv.to_csv(path+'submission_0118.csv', index = False)
+submission_csv.to_csv(path+'submission_0116.csv', index = False)
 
 
 print('y_submit = ', y_submit)
@@ -250,12 +279,6 @@ print("f1 = ",f1)
 # loss =  [0.34875673055648804, 0.8790196776390076]
 # f1 =  0.8497940978155077
 
+Dropout
 
 
-# Epoch 1931: early stopping
-# 903/903 [==============================] - 1s 848us/step - loss: 0.3281 - acc: 0.8892
-# 2007/2007 [==============================] - 2s 771us/step
-# 903/903 [==============================] - 1s 766us/step
-# y_submit =  ['B' 'B' 'A' ... 'D' 'C' 'A']
-# loss =  [0.32808682322502136, 0.8891619443893433]
-# f1 =  0.8574976165142344

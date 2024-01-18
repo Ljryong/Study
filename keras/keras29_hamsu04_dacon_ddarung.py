@@ -1,7 +1,7 @@
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score , mean_squared_error
-from keras.models import Sequential
-from keras.layers import Dense , Dropout
+from keras.models import Sequential , Model
+from keras.layers import Dense , Dropout , Input
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -52,12 +52,22 @@ filepath = ''.join([path , 'k28_4_', date , '_', filename ])
 
 
 #2 모델 구성
-model = Sequential()
-model.add(Dense(1024, input_dim = 9  ))
-model.add(Dense(512))
-model.add(Dropout(0.3))
-model.add(Dense(256, activation= 'relu'))
-model.add(Dense(1))
+# model = Sequential()
+# model.add(Dense(1024, input_shape = (9,)  ))
+# model.add(Dense(512))
+# model.add(Dropout(0.3))
+# model.add(Dense(256, activation= 'relu'))
+# model.add(Dense(1))
+
+# 2-1
+input = Input(shape=(9,))
+d1 = Dense(1024)(input)
+d2 = Dense(512)(d1)
+drop1 = Dropout(0.3)(d2)
+d3 = Dense(256)(drop1)
+output = Dense(1)(d3)
+model = Model(inputs =input , outputs= output)
+
 
 #3 컴파일, 훈련
 model.compile(loss='mse', optimizer='adam' , metrics = ['mse' , 'mae'])
