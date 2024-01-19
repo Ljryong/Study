@@ -121,8 +121,8 @@ ohe.fit(y)
 y_ohe = ohe.transform(y) 
 
 
-x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 645 , shuffle=True , stratify=y)    # 0
-es = EarlyStopping(monitor='val_loss', mode='min' , patience= 1000 , restore_best_weights=True , verbose= 1 )
+x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 62 , shuffle=True , stratify=y)    # 0 86
+es = EarlyStopping(monitor='val_loss', mode='min' , patience= 500 , restore_best_weights=True , verbose= 1 )
 
 
 # print(y_train.shape)            # (67405, 7) // print(y_train.shape) = output 값 구하는 법
@@ -133,9 +133,9 @@ from sklearn.preprocessing import StandardScaler, RobustScaler
 
 ###################
 # scaler = MinMaxScaler()
-scaler = StandardScaler()
+# scaler = StandardScaler()
 # scaler = MaxAbsScaler()
-# scaler = RobustScaler()
+scaler = RobustScaler()
 
 scaler.fit(x_train)
 x_train = scaler.transform(x_train)
@@ -146,16 +146,13 @@ test_csv = scaler.transform(test_csv)
 
 #2
 model = Sequential()
-model.add(Dense(102 ,input_dim= 13,activation= 'relu'))
-model.add(Dropout(0.5))
-model.add(Dense(12,activation= 'relu'))
-model.add(Dropout(0.1))
-model.add(Dense(256,activation= 'relu'))
-model.add(Dropout(0.3))
-model.add(Dense(12, activation= 'relu'))
-model.add(Dense(64,activation= 'relu'))
-model.add(Dropout(0.4))
-model.add(Dense(32,activation= 'relu'))
+model.add(Dense(94 ,input_shape= (13,),activation='relu'))
+model.add(Dropout(0.2))
+model.add(Dense(9,activation= 'relu'))
+model.add(Dense(84,activation= 'relu'))
+model.add(Dropout(0.2))
+model.add(Dense(7, activation= 'relu'))
+model.add(Dense(74,activation= 'relu'))
 model.add(Dense(7,activation='softmax'))
 
 
@@ -180,7 +177,6 @@ submit =  np.argmax(y_submit,axis=1)
 
 y_submit = encoder.inverse_transform(submit)       # inverse_transform 처리하거나, 뽑을라면 argmax처리를 해줘야한다.
 submission_csv['대출등급'] = y_submit
-submission_csv.to_csv(path+'submission_0115_3.csv', index = False)
 
 
 
@@ -194,7 +190,7 @@ acc = acc(arg_test,arg_pre)
 
 
 
-submission_csv.to_csv(path+'submission_0116.csv', index = False)
+submission_csv.to_csv(path+'submission_0119.csv', index = False)
 
 
 print('y_submit = ', y_submit)
