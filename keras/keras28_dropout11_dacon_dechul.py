@@ -69,7 +69,7 @@ filepath = ''.join([path , 'k28_11_', date , '_', filename ])
 
 
 
-train_csv['주택소유상태'] = train_csv['주택소유상태'].replace({'MORTGAGE' : 0 , 'OWN' : 1 , 'RENT': 2 , 'ANY' : 0}).astype(float)
+train_csv['주택소유상태'] = train_csv['주택소유상태'].replace({'MORTGAGE' : 0 , 'OWN' : 1 , 'RENT': 2 , 'ANY' : 3}).astype(float)
 test_csv['주택소유상태'] = test_csv['주택소유상태'].replace({'MORTGAGE' : 0 , 'OWN' : 1 , 'RENT': 2}).astype(float)
 
 train_csv['대출목적'] = train_csv['대출목적'].replace({'부채 통합' : 0 , '주택 개선' : 2 , '주요 구매': 4 , '휴가' : 9  
@@ -78,7 +78,7 @@ train_csv['대출목적'] = train_csv['대출목적'].replace({'부채 통합' :
 test_csv['대출목적'] = test_csv['대출목적'].replace({'부채 통합' : 0 , '주택 개선' : 2 , '주요 구매': 4 , '휴가' : 9 ,
                                              '의료' : 5 , '자동차' : 6 , '신용 카드' : 1 , '기타' : 3 , '주택개선' : 8,
                                              '소규모 사업' : 7 , '이사' :  8 , '주택': 10 , '재생 에너지' : 11 , 
-                                             '결혼' : 0 })
+                                             '결혼' : 12 })
 
 # 결혼은 train에 없는 라벨이다. 그래서 12 로 두든 2로 두든 아니면 없애든 값이 좋은걸로 비교해보면 된다.
 train_csv['대출기간'] = train_csv['대출기간'].replace({' 36 months' : 36 , ' 60 months' : 60 }).astype(int)
@@ -121,8 +121,8 @@ ohe.fit(y)
 y_ohe = ohe.transform(y) 
 
 
-x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 62 , shuffle=True , stratify=y)    # 0 86
-es = EarlyStopping(monitor='val_loss', mode='min' , patience= 500 , restore_best_weights=True , verbose= 1 )
+x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 645 , shuffle=True , stratify=y)    # 0
+es = EarlyStopping(monitor='val_loss', mode='min' , patience= 1000 , restore_best_weights=True , verbose= 1 )
 
 
 # print(y_train.shape)            # (67405, 7) // print(y_train.shape) = output 값 구하는 법
@@ -146,13 +146,16 @@ test_csv = scaler.transform(test_csv)
 
 #2
 model = Sequential()
-model.add(Dense(94 ,input_shape= (13,),activation='relu'))
-model.add(Dropout(0.2))
-model.add(Dense(9,activation= 'relu'))
-model.add(Dense(84,activation= 'relu'))
-model.add(Dropout(0.2))
-model.add(Dense(7, activation= 'relu'))
-model.add(Dense(74,activation= 'relu'))
+model.add(Dense(102 ,input_dim= 13,activation= 'relu'))
+model.add(Dropout(0.5))
+model.add(Dense(12,activation= 'relu'))
+model.add(Dropout(0.1))
+model.add(Dense(256,activation= 'relu'))
+model.add(Dropout(0.3))
+model.add(Dense(12, activation= 'relu'))
+model.add(Dense(64,activation= 'relu'))
+model.add(Dropout(0.4))
+model.add(Dense(32,activation= 'relu'))
 model.add(Dense(7,activation='softmax'))
 
 
@@ -162,7 +165,7 @@ mcp = ModelCheckpoint(monitor='val_loss', mode='min' , verbose=1, save_best_only
 
 
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
-model.fit(x_train,y_train, epochs = 10000000 , batch_size= 1000 , validation_split=0.2 , callbacks = [es,mcp] , verbose= 2 )
+model.fit(x_train,y_train, epochs = 10000000 , batch_size= 800 , validation_split=0.2 , callbacks = [es,mcp] , verbose= 2 )
 
 
 #4
@@ -172,11 +175,12 @@ y_submit = model.predict(test_csv)
 y_predict = model.predict(x_test)
 arg_pre = np.argmax(y_predict,axis=1)
 arg_test = np.argmax(y_test,axis=1)
-
 submit =  np.argmax(y_submit,axis=1)
+
 
 y_submit = encoder.inverse_transform(submit)       # inverse_transform 처리하거나, 뽑을라면 argmax처리를 해줘야한다.
 submission_csv['대출등급'] = y_submit
+submission_csv.to_csv(path+'submission_0115_3.csv', index = False)
 
 
 
@@ -190,7 +194,7 @@ acc = acc(arg_test,arg_pre)
 
 
 
-submission_csv.to_csv(path+'submission_0119.csv', index = False)
+submission_csv.to_csv(path+'submission_0116.csv', index = False)
 
 
 print('y_submit = ', y_submit)
