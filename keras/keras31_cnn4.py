@@ -90,7 +90,7 @@ def ACC(y_test,y_predict) :
     return accuracy_score(y_test,y_predict)
 acc = ACC(y_test,y_predict)
 
-print(acc)
+print("Acc =",acc)
 
 
 
