@@ -1,5 +1,5 @@
 from keras.models import Sequential
-from keras.layers import Dense , Dropout
+from keras.layers import Dense , Dropout , LeakyReLU
 from keras.callbacks import EarlyStopping , ModelCheckpoint
 from keras.utils import to_categorical
 from sklearn.model_selection import train_test_split
@@ -121,8 +121,8 @@ ohe.fit(y)
 y_ohe = ohe.transform(y) 
 
 
-x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 645 , shuffle=True , stratify=y)    # 0
-es = EarlyStopping(monitor='val_loss', mode='min' , patience= 1000 , restore_best_weights=True , verbose= 1 )
+x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 51 , shuffle=True , stratify=y)    # 0
+es = EarlyStopping(monitor='val_loss', mode='min' , patience= 100 , restore_best_weights=True , verbose= 1 )
 
 
 # print(y_train.shape)            # (67405, 7) // print(y_train.shape) = output 값 구하는 법
@@ -146,18 +146,17 @@ test_csv = scaler.transform(test_csv)
 
 #2
 model = Sequential()
-model.add(Dense(102 ,input_dim= 13,activation= 'relu'))
-model.add(Dropout(0.5))
-model.add(Dense(12,activation= 'relu'))
-model.add(Dropout(0.1))
-model.add(Dense(256,activation= 'relu'))
-model.add(Dropout(0.3))
-model.add(Dense(12, activation= 'relu'))
-model.add(Dense(64,activation= 'relu'))
-model.add(Dropout(0.4))
-model.add(Dense(32,activation= 'relu'))
-model.add(Dense(7,activation='softmax'))
-
+model.add(Dense(19, activation='relu', input_shape=(13,)))
+model.add(Dropout(0.2))
+model.add(Dense(97, activation='relu'))
+model.add(Dropout(0.2))
+model.add(Dense(9, activation='relu'))
+model.add(Dense(21, activation='relu'))
+model.add(Dropout(0.2))
+model.add(Dense(16, activation='relu'))
+model.add(Dense(21, activation='relu'))
+model.add(Dropout(0.2))
+model.add(Dense(7, activation='softmax'))
 
 #3
 from keras.callbacks import EarlyStopping ,ModelCheckpoint
@@ -165,7 +164,7 @@ mcp = ModelCheckpoint(monitor='val_loss', mode='min' , verbose=1, save_best_only
 
 
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
-model.fit(x_train,y_train, epochs = 10000000 , batch_size= 800 , validation_split=0.2 , callbacks = [es,mcp] , verbose= 2 )
+model.fit(x_train,y_train, epochs = 10000 , batch_size= 1000 , validation_split=0.2 , callbacks = [es,mcp] , verbose= 2 )
 
 
 #4
