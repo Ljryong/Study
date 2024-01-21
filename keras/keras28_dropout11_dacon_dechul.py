@@ -121,8 +121,8 @@ ohe.fit(y)
 y_ohe = ohe.transform(y) 
 
 
-x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 51 , shuffle=True , stratify=y)    # 0
-es = EarlyStopping(monitor='val_loss', mode='min' , patience= 100 , restore_best_weights=True , verbose= 1 )
+x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 5000 , shuffle=True , stratify=y)    # 0
+es = EarlyStopping(monitor='val_loss' , mode = 'min', verbose=1, patience= 100 , restore_best_weights=True )
 
 
 # print(y_train.shape)            # (67405, 7) // print(y_train.shape) = output 값 구하는 법
@@ -146,17 +146,13 @@ test_csv = scaler.transform(test_csv)
 
 #2
 model = Sequential()
-model.add(Dense(19, activation='relu', input_shape=(13,)))
-model.add(Dropout(0.2))
-model.add(Dense(97, activation='relu'))
-model.add(Dropout(0.2))
-model.add(Dense(9, activation='relu'))
-model.add(Dense(21, activation='relu'))
-model.add(Dropout(0.2))
-model.add(Dense(16, activation='relu'))
-model.add(Dense(21, activation='relu'))
-model.add(Dropout(0.2))
-model.add(Dense(7, activation='softmax'))
+model.add(Dense(102 ,input_shape= (13,), activation='relu'))
+model.add(Dense(15,activation= 'relu'))
+model.add(Dense(132,activation= 'relu'))
+model.add(Dense(13, activation= 'relu'))
+model.add(Dense(64,activation= 'relu'))
+model.add(Dense(7,activation='softmax'))
+
 
 #3
 from keras.callbacks import EarlyStopping ,ModelCheckpoint
@@ -193,7 +189,7 @@ acc = acc(arg_test,arg_pre)
 
 
 
-submission_csv.to_csv(path+'submission_0116.csv', index = False)
+submission_csv.to_csv(path+'submission_0119.csv', index = False)
 
 
 print('y_submit = ', y_submit)
