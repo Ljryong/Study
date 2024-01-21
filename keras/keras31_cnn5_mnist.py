@@ -43,7 +43,7 @@ es = EarlyStopping(monitor='val_loss' , mode='min' , verbose= 1 , patience = 100
 # model.add(Dropout(0.2))
 # model.add(Dense(10,activation='softmax'))
 
-
+#2 - 1 모델구성
 model = Sequential()
 model.add(Conv2D(150, (2, 2), activation='relu', input_shape=(32, 32, 3)))
 model.add(MaxPooling2D((2, 2)))
