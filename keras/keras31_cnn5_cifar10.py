@@ -16,55 +16,36 @@ from sklearn.preprocessing import RobustScaler , StandardScaler , MaxAbsScaler ,
 # print(x_test.shape,y_test.shape)                    # (10000, 32, 32, 3) (10000, 1)
 # print(np.unique(y_train,return_counts=True))        # (array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], dtype=uint8)
 
-y_train= y_train.reshape(y_train.shape[0])            # get_dummies 에서는 (50000,1)을 벡터가 아닌 행렬로 인신해서 바꿔줘야 된다.
+y_train= y_train.reshape(y_train.shape[0])
 y_test = y_test.reshape(y_test.shape[0])
 
 
 y_train = pd.get_dummies(y_train)
-y_test = pd.get_dummies(y_test) 
+y_test = pd.get_dummies(y_test)
 
-es = EarlyStopping(monitor='val_loss' , mode='min' , verbose= 1 , patience = 50 ,restore_best_weights=True )
+es = EarlyStopping(monitor='val_loss' , mode='min' , verbose= 1 , patience = 100 ,restore_best_weights=True )
 
 #2 모델구성
-# model = Sequential()
-# model.add(Conv2D(80,(3,3),input_shape = (32,32,3),activation='sigmoid'))
-# model.add(MaxPooling2D(pool_size=(3,3)))
-# model.add(Dropout(0.2))
-# model.add(Conv2D(6,(3,3),activation='relu'))
-# model.add(Conv2D(98,(3,3),activation='relu'))
-# model.add(MaxPooling2D(pool_size=(3,3)))
-# model.add(Dropout(0.2))
-# model.add(Flatten())
-# model.add(Dense(8,activation='relu'))
-# model.add(Dense(86,activation='relu'))
-# model.add(Dropout(0.2))
-# model.add(Dense(8,activation='relu'))
-# model.add(Dense(104,activation='relu'))
-# model.add(Dropout(0.2))
-# model.add(Dense(10,activation='softmax'))
-
-#2 - 1 모델구성
 model = Sequential()
-model.add(Conv2D(150, (2, 2), activation='relu', input_shape=(32, 32, 3)))
-model.add(MaxPooling2D((2, 2), strides=(2, 2)))
-model.add(Dropout(0.3))
-
-model.add(Conv2D(150, (2, 2), activation='relu'))
-model.add(MaxPooling2D((2, 2), strides=(2, 2)))
-model.add(Dropout(0.3))
-
-model.add(Conv2D(150, (2, 2), activation='relu'))
-model.add(MaxPooling2D((2, 2), strides=(2, 2)))
-model.add(Dropout(0.3))
-
-model.add(Flatten())        # reshape랑 동일한 개념인데 그냥 쭉 펴는 느낌
-model.add(Dense(256, activation='relu'))
-model.add(Dropout(0.5))
-model.add(Dense(10, activation='softmax'))
+model.add(Conv2D(80,(3,3),input_shape = (32,32,3),activation='sigmoid'))
+model.add(MaxPooling2D(pool_size=(2,2)))
+model.add(Dropout(0.2))
+model.add(Conv2D(6,(3,3),activation='relu'))
+model.add(Conv2D(98,(3,3),activation='relu'))
+model.add(MaxPooling2D(pool_size=(2,2)))
+model.add(Dropout(0.2))
+model.add(Flatten())
+model.add(Dense(8,activation='relu'))
+model.add(Dense(86,activation='relu'))
+model.add(Dropout(0.2))
+model.add(Dense(8,activation='relu'))
+model.add(Dense(104,activation='relu'))
+model.add(Dropout(0.2))
+model.add(Dense(10,activation='softmax'))
 
 #3 컴파일, 훈련
 model.compile(loss = 'categorical_crossentropy' , optimizer='adam' , metrics=['acc'])
-model.fit(x_train,y_train,epochs = 10000 ,batch_size= 20000 , verbose= 2 , callbacks=[es] , validation_split=0.2 )
+model.fit(x_train,y_train,epochs = 100000 ,batch_size= 1000 , verbose= 2 , callbacks=[es] , validation_split=0.2 )
 
 #4 평가, 예측
 loss = model.evaluate(x_test,y_test)
@@ -76,9 +57,6 @@ print('loss',loss[0])
 print('loss_acc',loss[1])
 print('acc', accuracy_score(y_test,y_predict) )
 
-import matplotlib.pyplot as plt
-plt.imshow(x_train[15],'gray')       # 이미지를 시각화해주는 것이다.
-plt.show()
 
 
 # loss 1.8195503950119019
@@ -134,18 +112,3 @@ plt.show()
 
 
 
-# Epoch 551: early stopping
-# 313/313 [==============================] - 0s 1ms/step - loss: 0.8568 - acc: 0.6991
-# 313/313 [==============================] - 0s 766us/step
-# loss 0.8567680716514587
-# loss_acc 0.6991000175476074
-# acc 0.6991
-
-
-
-# Epoch 258: early stopping
-# 313/313 [==============================] - 1s 1ms/step - loss: 0.5819 - acc: 0.8018
-# 313/313 [==============================] - 0s 876us/step
-# loss 0.5818811655044556
-# loss_acc 0.801800012588501
-# acc 0.8018

@@ -1,5 +1,5 @@
 from keras.models import Sequential
-from keras.layers import Dense , Dropout , BatchNormalization
+from keras.layers import Dense , Dropout
 from keras.callbacks import EarlyStopping , ModelCheckpoint
 from keras.utils import to_categorical
 from sklearn.model_selection import train_test_split
@@ -121,8 +121,8 @@ ohe.fit(y)
 y_ohe = ohe.transform(y) 
 
 
-x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 1289 , shuffle=True , stratify=y)    # 0 1502 41
-es = EarlyStopping(monitor='val_loss', mode='min' , patience= 300 , restore_best_weights=True , verbose= 1 )
+x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 41 , shuffle=True , stratify=y)    # 0 1502
+es = EarlyStopping(monitor='val_loss', mode='min' , patience= 500 , restore_best_weights=True , verbose= 1 )
 
 
 # print(y_train.shape)            # (67405, 7) // print(y_train.shape) = output 값 구하는 법
@@ -146,9 +146,7 @@ test_csv = scaler.transform(test_csv)
 
 #2
 model = Sequential()
-model.add(Dense(102 ,input_shape= (13,),activation='relu'))
-model.add(BatchNormalization())
-model.add(Dropout(0.2))
+model.add(Dense(102 ,input_shape= (13,)))
 model.add(Dense(15,activation= 'relu'))
 model.add(BatchNormalization())
 model.add(Dense(132,activation= 'relu'))
@@ -168,7 +166,7 @@ mcp = ModelCheckpoint(monitor='val_loss', mode='min' , verbose=1, save_best_only
 
 
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
-model.fit(x_train,y_train, epochs = 100000 , batch_size= 1000 , validation_split=0.2 , callbacks = [es,mcp] , verbose= 2 )
+model.fit(x_train,y_train, epochs = 10000000 , batch_size= 800 , validation_split=0.2 , callbacks = [es,mcp] , verbose= 2 )
 
 
 #4
@@ -183,7 +181,9 @@ submit =  np.argmax(y_submit,axis=1)
 
 y_submit = encoder.inverse_transform(submit)       # inverse_transform 처리하거나, 뽑을라면 argmax처리를 해줘야한다.
 submission_csv['대출등급'] = y_submit
-submission_csv.to_csv(path+'submission_0119.csv', index = False)
+submission_csv.to_csv(path+'submission_0115_3.csv', index = False)
+
+
 
 def f1(arg_test,arg_pre) :
     return f1_score(arg_test,arg_pre, average='macro')
@@ -192,6 +192,11 @@ f1 = f1(arg_test,arg_pre)
 def acc(arg_test,arg_pre) :
     return accuracy_score(arg_test,arg_pre)
 acc = acc(arg_test,arg_pre)
+
+
+
+submission_csv.to_csv(path+'submission_0119.csv', index = False)
+
 
 print('y_submit = ', y_submit)
 
