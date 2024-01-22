@@ -30,24 +30,11 @@ es =  EarlyStopping(monitor='val_loss', mode = 'min' , patience= 100 ,restore_be
 
 #2 모델구성
 model = Sequential()
-model.add(Conv2D(150,(2,2),input_shape = (32,32,3),activation='relu'))
-model.add(BatchNormalization())
-model.add(MaxPooling2D((2,2), strides=(2,2)))
+model.add(Conv2D(150,(2,2),input_shape = (32,32,3),activation='relu', strides=2 , padding='valid'))
 model.add(Dropout(0.3))
-
-model.add(Conv2D(14,(2,2),activation='relu'))
-model.add(BatchNormalization())
-model.add(MaxPooling2D((2,2), strides=(2,2)))
-
-model.add(Conv2D(96,(2,2),activation='relu'))
-model.add(BatchNormalization())
-model.add(MaxPooling2D((2,2), strides=(2,2)))
-model.add(Dropout(0.2))
-
-model.add(Conv2D(9,(2,2),activation='relu'))
-model.add(BatchNormalization())
-model.add(MaxPooling2D((2,2), strides=(2,2)))
-
+model.add(Conv2D(14,(2,2),activation='relu',strides=2))
+model.add(Conv2D(96,(2,2),activation='relu',padding='same'))
+model.add(Conv2D(9,(2,2),activation='relu' , padding='same'))
 model.add(Flatten())
 model.add(Dense(91,activation='relu'))
 model.add(Dropout(0.3))

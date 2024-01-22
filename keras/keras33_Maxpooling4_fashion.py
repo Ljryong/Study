@@ -1,51 +1,49 @@
 from keras.datasets import fashion_mnist
 from keras.models import Sequential
-from keras.layers import Dense , Conv2D , BatchNormalization , Dropout , MaxPooling2D , Flatten
+from keras.layers import Dense , Conv2D , Dropout , Flatten , MaxPooling2D
 from keras.callbacks import EarlyStopping
+from keras.utils import to_categorical
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 import numpy as np
-import pandas as pd 
+import pandas as pd
 import matplotlib.pyplot as plt
-from keras.utils import to_categorical
 
 #1 데이터 
-(x_train, y_train),(x_test,y_test) = fashion_mnist.load_data()
+(x_train,y_train), (x_test,y_test) = fashion_mnist.load_data()
 
-# print(x_train.shape)        # (60000, 28, 28)
-# print(y_train.shape)        # (60000,)
-
-# print(x_test.shape,y_test.shape)        # (10000, 28, 28) (10000,)
-
-# print(np.unique(y_test,return_counts=True))     # (array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], dtype=uint8)
+print(x_train.shape,y_train.shape)      # (60000, 28, 28) (60000,)
+print(x_test.shape,y_test.shape)        # (10000, 28, 28) (10000,)
 
 x_train = x_train.reshape(60000,28,28,1)
 x_test = x_test.reshape(10000,28,28,1)
 
-# print(x_train.shape)
-# print(x_test.shape)
+print(np.unique(y_test))       # [0 1 2 3 4 5 6 7 8 9]
 
 y_train = to_categorical(y_train)
 y_test = to_categorical(y_test)
 
-es = EarlyStopping(monitor='val_loss' , mode = 'min' , patience= 50 , restore_best_weights=True , verbose= 1  )
+es = EarlyStopping(monitor='val_loss' , mode='min' , patience=10 , restore_best_weights=True , verbose= 1 )
 
 #2 모델구성
-model = Sequential(Conv2D(41, (2,2) , input_shape = (28,28,1) , activation='relu' ))
+model = Sequential(Conv2D(41, (2,2) , input_shape = (28,28,1) , activation='relu' , padding='same' , strides=1 ))
+model.add(MaxPooling2D())
 model.add(Dropout(0.3))
-model.add(Conv2D(21 , (2,2) , activation='relu'))
+model.add(Conv2D(21 , (2,2) , activation='relu', padding='same' , strides=1))
 model.add(Dropout(0.2))
-model.add(Conv2D(38 , (3,3) , activation='relu'))
+model.add(Conv2D(38 , (2,2) , activation='relu', padding='same' , strides=1))
 model.add(Dropout(0.3))
-model.add(Conv2D(19 , (3,3) , activation='relu'))
+model.add(Conv2D(19 , (2,2) , activation='relu', padding='same' , strides=1))
 model.add(Dropout(0.2))
-model.add(Conv2D(48 , (2,2) , activation='relu'))
+model.add(Conv2D(48 , (2,2) , activation='relu', padding='same' , strides=1))
 model.add(Dropout(0.3))
 model.add(Flatten())
 model.add(Dense(27,activation='relu'))
 model.add(Dropout(0.2))
 model.add(Dense(9,activation='relu'))
 model.add(Dense(10,activation='softmax'))
+
+
 
 #3 컴파일, 훈련
 model.compile(loss='categorical_crossentropy' , optimizer='adam' , metrics=['acc'] )
@@ -78,6 +76,25 @@ plt.show()
 # 313/313 [==============================] - 1s 2ms/step
 # loss =  [0.20921477675437927, 0.9294999837875366]
 # acc =  0.9295
+
+# Epoch 124: early stopping
+# 313/313 [==============================] - 1s 1ms/step - loss: 0.2452 - acc: 0.9149
+# 313/313 [==============================] - 0s 802us/step
+# loss =  [0.2452477514743805, 0.914900004863739]
+# acc =  0.9149
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

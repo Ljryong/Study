@@ -2,7 +2,7 @@ import numpy as np
 from keras.datasets import mnist
 import pandas as pd
 from keras.models import Sequential
-from keras.layers import Dense , Conv2D , Flatten       # Flatten : 평평한
+from keras.layers import Dense , Conv2D , Flatten , MaxPooling2D      # Flatten : 평평한
 from keras.callbacks import EarlyStopping
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
@@ -29,7 +29,7 @@ print(pd.value_counts(y_test))
 
 print(x_train.shape , x_test.shape)     # (60000, 28, 28, 1) (10000, 28, 28, 1)
 
-es = EarlyStopping(monitor='val_loss' , mode = 'min' , patience= 300 , verbose= 1 , restore_best_weights=True  )
+es = EarlyStopping(monitor='val_loss' , mode = 'min' , patience= 50 , verbose= 1 , restore_best_weights=True  )
 
 onehot_train = pd.get_dummies(y_train)
 onehot_test = pd.get_dummies(y_test)
@@ -41,10 +41,13 @@ model.add(Conv2D(  70   ,(2,2),input_shape = (28,28,1) ))        # 10 = 필터 /
 #                              shape = (batch_size(model.fit에 들어가는 batch_size // 행이랑 똑같다),rows,columns,channels)
 #                              shape = (batch_size,heights,widths,channels)
 
-model.add(Conv2D( filters = 6  ,  kernel_size = (3,3)))
-model.add(Conv2D( 20 ,(4,4),activation='relu'))
+model.add(Conv2D( filters = 6  ,  kernel_size = (3,3), strides= 2 , padding='valid'))
+model.add(Conv2D( 20 ,(4,4),activation='relu',padding='same'))
+model.add(MaxPooling2D())
+model.add(MaxPooling2D())
 model.add(Conv2D( 13 ,(2,2)))
-model.add(Conv2D( 20 ,(3,3),activation='relu'))
+model.add(Conv2D( 20 ,(3,3),activation='relu',padding='same'))
+model.add(MaxPooling2D())
 model.add(Flatten())
 model.add(Dense(units= 84 ))
 model.add(Dense(units= 6 ,input_shape = (8,)))
@@ -112,3 +115,10 @@ print("Acc =",acc)
 # 시간 =  261.86352729797363
 
 
+# Epoch 80: early stopping
+# 313/313 [==============================] - 1s 1ms/step - loss: 0.0672 - acc: 0.9797
+# loss =  0.06718617677688599
+# acc =  0.9797000288963318
+# 시간 =  40.695334911346436
+# 313/313 [==============================] - 0s 828us/step
+# Acc = 0.9797
