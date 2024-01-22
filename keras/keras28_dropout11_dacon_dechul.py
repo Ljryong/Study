@@ -1,5 +1,5 @@
 from keras.models import Sequential
-from keras.layers import Dense , Dropout , LeakyReLU
+from keras.layers import Dense , Dropout , LeakyReLU , BatchNormalization
 from keras.callbacks import EarlyStopping , ModelCheckpoint
 from keras.utils import to_categorical
 from sklearn.model_selection import train_test_split
@@ -121,7 +121,7 @@ ohe.fit(y)
 y_ohe = ohe.transform(y) 
 
 
-x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 5000 , shuffle=True , stratify=y)    # 0
+x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 41 , shuffle=True , stratify=y)    # 0
 es = EarlyStopping(monitor='val_loss' , mode = 'min', verbose=1, patience= 100 , restore_best_weights=True )
 
 
@@ -146,13 +146,20 @@ test_csv = scaler.transform(test_csv)
 
 #2
 model = Sequential()
-model.add(Dense(102 ,input_shape= (13,), activation='relu'))
+model.add(Dense(102 ,input_shape= (13,),activation='relu'))
+model.add(BatchNormalization())
+model.add(Dropout(0.2))
 model.add(Dense(15,activation= 'relu'))
+model.add(BatchNormalization())
 model.add(Dense(132,activation= 'relu'))
+model.add(BatchNormalization())
+model.add(Dropout(0.2))
 model.add(Dense(13, activation= 'relu'))
+model.add(BatchNormalization())
 model.add(Dense(64,activation= 'relu'))
+model.add(BatchNormalization())
+model.add(Dropout(0.2))
 model.add(Dense(7,activation='softmax'))
-
 
 #3
 from keras.callbacks import EarlyStopping ,ModelCheckpoint
@@ -189,7 +196,7 @@ acc = acc(arg_test,arg_pre)
 
 
 
-submission_csv.to_csv(path+'submission_0119.csv', index = False)
+submission_csv.to_csv(path+'submission_0122.csv', index = False)
 
 
 print('y_submit = ', y_submit)
