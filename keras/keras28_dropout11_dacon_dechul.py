@@ -146,16 +146,14 @@ test_csv = scaler.transform(test_csv)
 
 #2
 model = Sequential()
-model.add(Dense(95 ,input_shape= (13,),activation='relu'))
-model.add(Dropout(0.3))
-model.add(Dense(9,activation= 'relu'))
-model.add(Dense(131,activation= 'relu'))
-model.add(Dropout(0.3))
-model.add(Dense(12, activation= 'relu'))
-model.add(Dense(84,activation= 'relu'))
+model.add(Dense(102 ,input_shape= (13,)))
 model.add(Dropout(0.2))
+model.add(Dense(15,activation= 'relu'))
+model.add(Dense(132,activation= 'relu'))
+model.add(Dropout(0.2))
+model.add(Dense(13, activation= 'relu'))
+model.add(Dense(64,activation= 'relu'))
 model.add(Dense(7,activation='softmax'))
-
 
 #3
 from keras.callbacks import EarlyStopping ,ModelCheckpoint
