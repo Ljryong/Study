@@ -1,5 +1,5 @@
 from keras.models import Sequential
-from keras.layers import Dense , Dropout , LeakyReLU
+from keras.layers import Dense , Dropout , LeakyReLU, BatchNormalization
 from keras.callbacks import EarlyStopping , ModelCheckpoint
 from keras.utils import to_categorical
 from sklearn.model_selection import train_test_split
@@ -121,8 +121,8 @@ ohe.fit(y)
 y_ohe = ohe.transform(y) 
 
 
-x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 5000 , shuffle=True , stratify=y)    # 0
-es = EarlyStopping(monitor='val_loss' , mode = 'min', verbose=1, patience= 100 , restore_best_weights=True )
+x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 48 , shuffle=True , stratify=y)    # 0
+es = EarlyStopping(monitor='val_loss' , mode = 'min', verbose=1, patience= 150 , restore_best_weights=True )
 
 
 # print(y_train.shape)            # (67405, 7) // print(y_train.shape) = output 값 구하는 법
@@ -146,16 +146,18 @@ test_csv = scaler.transform(test_csv)
 
 #2
 model = Sequential()
-model.add(Dense(102 ,input_shape= (13,), activation='relu'))
-model.add(Dense(15,activation= 'relu'))
-model.add(BatchNormalization())
-model.add(Dense(132,activation= 'relu'))
-model.add(BatchNormalization())
-model.add(Dropout(0.2))
-model.add(Dense(13, activation= 'relu'))
-model.add(BatchNormalization())
-model.add(Dense(64,activation= 'relu'))
-model.add(BatchNormalization())
+model.add(Dense(95 ,input_shape= (13,),activation='relu'))
+model.add(LeakyReLU())
+model.add(Dropout(0.3))
+model.add(Dense(17,activation= 'relu'))
+model.add(LeakyReLU())
+model.add(Dense(131,activation= 'relu'))
+model.add(LeakyReLU())
+model.add(Dropout(0.3))
+model.add(Dense(26, activation= 'relu'))
+model.add(LeakyReLU())
+model.add(Dense(79,activation= 'relu'))
+model.add(LeakyReLU())
 model.add(Dropout(0.2))
 model.add(Dense(7,activation='softmax'))
 
@@ -279,3 +281,10 @@ print("f1 = ",f1)
 # = 0.92
 
 
+# Epoch 1339: early stopping
+# 903/903 [==============================] - 2s 2ms/step - loss: 0.3268 - acc: 0.8832
+# 2007/2007 [==============================] - 3s 1ms/step
+# 903/903 [==============================] - 1s 1ms/step
+# y_submit =  ['B' 'B' 'A' ... 'D' 'C' 'A']
+# loss =  [0.3267748951911926, 0.8832427859306335]
+# f1 =  0.8589572604407046
