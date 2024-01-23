@@ -41,10 +41,10 @@ model.add(Conv2D(  70   ,(2,2),input_shape = (28,28,1) ))        # 10 = 필터 /
 #                              shape = (batch_size(model.fit에 들어가는 batch_size // 행이랑 똑같다),rows,columns,channels)
 #                              shape = (batch_size,heights,widths,channels)
 
-model.add(Conv2D( filters = 6  ,  kernel_size = (3,3)))
-model.add(Conv2D( 20 ,(4,4),activation='relu'))
+model.add(Conv2D( filters = 6  ,  kernel_size = (3,3), strides= 2 , padding='valid'))
+model.add(Conv2D( 20 ,(4,4),activation='relu',padding='same'))
 model.add(Conv2D( 13 ,(2,2)))
-model.add(Conv2D( 20 ,(3,3),activation='relu'))
+model.add(Conv2D( 20 ,(3,3),activation='relu',padding='same'))
 model.add(Flatten())
 model.add(Dense(units= 84 ))
 model.add(Dense(units= 6 ,input_shape = (8,)))
