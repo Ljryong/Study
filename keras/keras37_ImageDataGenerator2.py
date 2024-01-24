@@ -99,7 +99,7 @@ model.add(Conv2D(12,(3,3), activation='relu' ))
 model.add(Dropout(0.2))
 model.add(Conv2D(97,(2,2), activation='relu' ))
 model.add(Dropout(0.2))
-model.add(Conv2D(13,(3,3) ))
+model.add(Conv2D(13,(3,3) , activation='relu' ))
 model.add(Flatten())
 model.add(Dense(91,activation='relu'))
 model.add(Dropout(0.2))
@@ -135,6 +135,17 @@ print('Acc = ' , accuracy_score(y_test,y_predict))
 # loss [0.39580318331718445, 0.824999988079071]
 # Acc =  0.825
 
+# Epoch 94: early stopping
+# 4/4 [==============================] - 0s 84ms/step - loss: 0.5294 - acc: 0.7333
+# 4/4 [==============================] - 0s 16ms/step
+# loss [0.5294187664985657, 0.7333333492279053]
+# Acc =  0.7333333333333333
+
+
+
+#####################################################
+
+
 
 # Epoch 178: early stopping
 # 4/4 [==============================] - 0s 83ms/step - loss: 0.0509 - acc: 0.9750
@@ -147,10 +158,3 @@ print('Acc = ' , accuracy_score(y_test,y_predict))
 # 4/4 [==============================] - 0s 11ms/step
 # loss [0.025711089372634888, 0.9916666746139526]
 # Acc =  0.9916666666666667
-
-
-
-
-
-
-

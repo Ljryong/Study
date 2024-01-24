@@ -1,3 +1,5 @@
+
+
 # 과제
 
 import numpy as np
@@ -34,40 +36,48 @@ path_test = 'c:/_data/image/catdog/Test//'
 
 xy_train = train_datagen.flow_from_directory(path_train, 
                                              target_size = (120,120),
-                                             batch_size = 100000,        # 통배치 하는 이유는 데이터가 작아서 커지면 커질수록 통배치는 사용 X 
+                                             batch_size = 1000,        # 통배치 하는 이유는 데이터가 작아서 커지면 커질수록 통배치는 사용 X 
                                              class_mode='binary', 
                                              shuffle=True)
 
 
 
+xy_train = np.concatenate(xy_train[19:])
+
 x_train = xy_train[0][0]  
 y_train = xy_train[0][1]
 
 
-x_train , x_test, y_train , y_test = train_test_split(x_train,y_train , test_size=0.3 , random_state= 615 , stratify=y_train , shuffle=True )
+x_train , x_test, y_train , y_test = train_test_split(x_train,y_train , test_size=0.3 , random_state= 3 , stratify=y_train , shuffle=True ) # 3
 
 
 end = time.time()
 
 
 # print(xy_train.next())
-es = EarlyStopping(monitor='val_loss' , mode = 'min' , patience= 15 , restore_best_weights=True , verbose= 1  )
+es = EarlyStopping(monitor='val_loss' , mode = 'min' , patience= 20 , restore_best_weights=True , verbose= 1  )
 
 
 #2 모델구성
 model = Sequential()
-model.add(Conv2D(94,(3,3),input_shape = (120,120,3), padding='valid' , strides=1 , activation='relu' ))
+model.add(Conv2D(97,(3,3),input_shape = (120,120,3), padding='valid' , strides=1 , activation='relu' ))
 model.add(MaxPooling2D())
+model.add(Dropout(0.2))
 
 model.add(Conv2D(12,(3,3), activation='relu' ))
 model.add(MaxPooling2D())
 
-model.add(Flatten())
-
-model.add(Dense(73,activation='relu'))
+model.add(Conv2D(86,(3,3), activation='relu' ))
 model.add(Dropout(0.2))
 
-model.add(Dense(12))
+model.add(Conv2D(13,(3,3) ))
+
+model.add(Flatten())
+
+model.add(Dense(103,activation='relu'))
+model.add(Dropout(0.2))
+
+model.add(Dense(7))
 
 model.add(Dense(42,activation='relu'))
 model.add(Dropout(0.2))
@@ -78,7 +88,7 @@ model.add(Dense(1,activation='sigmoid'))
 
 #3 컴파일, 훈련
 model.compile(loss= 'binary_crossentropy' , optimizer='adam' , metrics=['acc'] )
-model.fit(x_train,y_train, epochs = 100 , batch_size= 30 , validation_split= 0.2, verbose= 1 ,callbacks=[es])
+model.fit(x_train,y_train, epochs = 1000 , batch_size= 10 , validation_split= 0.2, verbose= 1 ,callbacks=[es])
 
 
 #4 평가, 예측
@@ -133,3 +143,10 @@ print('time : ' , end - start )
 # loss [0.6521573662757874, 0.6113333106040955]
 # Acc =  0.6113333333333333
 # time :  76.63124442100525
+
+# Epoch 38: early stopping
+# 1/1 [==============================] - 0s 22ms/step - loss: 0.6548 - acc: 0.6667
+# 1/1 [==============================] - 0s 49ms/step
+# loss [0.6548318266868591, 0.6666666865348816]
+# Acc =  0.6666666666666666
+# time :  0.5508816242218018

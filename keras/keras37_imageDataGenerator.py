@@ -2,7 +2,7 @@ import numpy as np
 from keras.preprocessing.image import ImageDataGenerator
 
 
-train_datagen = ImageDataGenerator(rescale=1/255.,
+train_datagen = ImageDataGenerator(rescale=1/255.,           # ImageDataGenerator = 데이터 변환기
                                    horizontal_flip=True,     # 수평 뒤집기
                                    vertical_flip=True,       # 수직 뒤집기
                                    width_shift_range=0.1,    # 평행이동 / 수평이동 0.1이면 10%까지 랜덤으로 이동한다(1%도 되고 10%까지 다 됨)
