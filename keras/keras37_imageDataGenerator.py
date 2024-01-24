@@ -16,8 +16,8 @@ train_datagen = ImageDataGenerator(rescale=1/255.,
 
 test_datagen = ImageDataGenerator(rescale=1./255)      # test 데이터는 train에서 훈련한 것과 비교하는 실제 데이터로 해야되기 때문에 rescale만 쓴다.
 
-path_train = 'c:/study/image/brain/train//'
-path_test = 'c:/study/image/brain/test//'
+path_train = 'c:/_data/image/brain/train//'
+path_test = 'c:/_data/image/brain/test//'
 
 
 xy_train = train_datagen.flow_from_directory(                                   # 그림들을 가져와서 수치화해주는 것 (이터레이터형태)

@@ -15,13 +15,13 @@ from sklearn.preprocessing import OneHotEncoder
 #1 데이터
 
 train_datagen = ImageDataGenerator(rescale=1/255.,
-                                #    horizontal_flip=True,     # 수평 뒤집기
-                                #    vertical_flip=True,       # 수직 뒤집기
-                                #    width_shift_range=0.1,    # 평행이동
-                                #    height_shift_range=0.1,   # 평행이동
-                                #    rotation_range=5,         # 정해진 각도만큼 이미지를 회전
-                                #    zoom_range=1.2,           # 축소 또는 확대
-                                #    shear_range=0.7,          # 좌표하나를 고정시키고 다른 몇개의 좌표를 이동시키는 변환
+                                   horizontal_flip=True,     # 수평 뒤집기
+                                   vertical_flip=True,       # 수직 뒤집기
+                                   width_shift_range=0.1,    # 평행이동
+                                   height_shift_range=0.1,   # 평행이동
+                                   rotation_range=5,         # 정해진 각도만큼 이미지를 회전
+                                   zoom_range=1.2,           # 축소 또는 확대
+                                   shear_range=0.7,          # 좌표하나를 고정시키고 다른 몇개의 좌표를 이동시키는 변환
                                    fill_mode='nearest'       # 너의 빈자리를 가장 비슷한 책으로 채워
                                                              # 0로 나타내 주는것도 잇으니 찾아보기
                                     
@@ -29,8 +29,8 @@ train_datagen = ImageDataGenerator(rescale=1/255.,
 
 test_datagen = ImageDataGenerator(rescale=1./255)      # test 데이터는 train에서 훈련한 것과 비교하는 실제 데이터로 해야되기 때문에 rescale만 쓴다.
 
-path_train = 'c:/study/image/brain/train//'
-path_test = 'c:/study/image/brain/test//'
+path_train = 'c:/_data/image/brain/train//'
+path_test = 'c:/_data/image/brain/test//'
 
 
 xy_train = train_datagen.flow_from_directory(                                   # 그림들을 가져와서 수치화해주는 것 (이터레이터형태)
@@ -92,9 +92,11 @@ es = EarlyStopping(monitor='val_loss' , mode = 'min' , patience= 70 , restore_be
 
 #2 모델구성
 model = Sequential()
-model.add(Conv2D(108,(2,2),input_shape = (150,150,3), padding='valid' , strides=1 , activation='relu' ))
+model.add(Conv2D(108,(2,2),input_shape = (150,150,3), padding='same' , strides=1 , activation='relu' ))
+model.add(Dropout(0.2))
 model.add(MaxPooling2D())
 model.add(Conv2D(12,(3,3), activation='relu' ))
+model.add(Dropout(0.2))
 model.add(Conv2D(97,(2,2), activation='relu' ))
 model.add(Dropout(0.2))
 model.add(Conv2D(13,(3,3) ))
@@ -110,7 +112,7 @@ model.add(Dense(1,activation='sigmoid'))
 
 #3 컴파일, 훈련
 model.compile(loss= 'binary_crossentropy' , optimizer='adam' , metrics=['acc'] )
-model.fit(x_train,y_train, epochs = 10000 , batch_size= 500 , validation_split= 0.2, verbose= 1 ,callbacks=[es])
+model.fit(x_train,y_train, epochs = 10000 , batch_size= 100 , validation_split= 0.2, verbose= 1 ,callbacks=[es])
 
 
 #4 평가, 예측
@@ -145,3 +147,10 @@ print('Acc = ' , accuracy_score(y_test,y_predict))
 # 4/4 [==============================] - 0s 11ms/step
 # loss [0.025711089372634888, 0.9916666746139526]
 # Acc =  0.9916666666666667
+
+
+
+
+
+
+

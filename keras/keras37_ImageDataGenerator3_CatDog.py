@@ -11,6 +11,10 @@ import pandas as pd
 from sklearn.preprocessing import OneHotEncoder
 import time
 
+############################ 사진이 꺠져있음 , 확인방법 #########
+# 1. 사진의 파일 크기를 확인하여 제거할 수 있다.
+
+
 
 
 start = time.time()
@@ -23,8 +27,8 @@ train_datagen = ImageDataGenerator(rescale=1./255,
 
 test_datagen = ImageDataGenerator(rescale=1./255)
 
-path_train = 'c:/study/image/catdog/Train//'
-path_test = 'c:/study/image/catdog/Test//'
+path_train = 'c:/_data/image/catdog/Train//'
+path_test = 'c:/_data/image/catdog/Test//'
 
 
 xy_train = train_datagen.flow_from_directory(path_train, 
