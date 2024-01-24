@@ -17,7 +17,7 @@ sumission_csv = pd.read_csv(path + 'sample_submission.csv')
 
 # print(train_csv)
 
-led = LabelEncoder()
+led = LabelEncoder() #
 led.fit(train_csv['대출기간'])
 train_csv['대출기간'] = led.transform(train_csv['대출기간'])
 print(train_csv)
