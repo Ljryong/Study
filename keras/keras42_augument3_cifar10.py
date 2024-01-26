@@ -56,7 +56,7 @@ print(x_augummented.shape)      # (10000, 32, 32, 3)
             
             
 x_augummented = train_datagen.flow(
-    x_augummented, y_augummented ,
+    x_augummented, y_augummented ,          # x,y 가 다 있어야 뭐가 뭔지 판단할 수 있다.
     batch_size=argumet_size,
     shuffle = False
 ).next()[0]                    # .next 뒤에 [0] 을 쓰면 x 값만 나온다.
