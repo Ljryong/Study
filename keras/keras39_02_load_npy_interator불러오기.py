@@ -15,51 +15,38 @@ import time
 # 1. 사진의 파일 크기를 확인하여 제거할 수 있다.
 
 
-
-
-start = time.time()
 #1
-train_datagen = ImageDataGenerator(rescale=1./255, )
-                                #    horizontal_flip= True , vertical_flip = True ,
-                                #    width_shift_range = 0.1,height_shift_range = 0.1,
-                                #    rotation_range = 5 , zoom_range = 1.2,
-                                #    shear_range = 0.7 , 
-                                #    fill_mode = 'nearest')
+np_path = 'c:/_data/_save_npy//'
+# np.save(np_path + 'keras39_1_x_train.npy' , arr=xy_train[0][0] )
+# # arr=xy_train[0][0] 파일을 np_path 경로에 'keras39_1_x_train.npy'이름으로 저장한다.
+# np.save(np_path + 'keras39_1_y_train.npy' , arr=xy_train[0][1] )
+# np.save(np_path + 'keras39_1_x_test.npy' , arr=xy_train[0][0] )
+# np.save(np_path + 'keras39_1_y_test.npy' , arr=xy_train[0][1] )
 
-test_datagen = ImageDataGenerator(rescale=1./255)
+# x_train = xy_train[0][0]  
+# y_train = xy_train[0][1]
 
-path_train = 'c:/_data/image/catdog/Train//'
-path_test = 'c:/_data/image/catdog/Test//'
-
-
-xy_train = train_datagen.flow_from_directory(path_train, 
-                                             target_size = (100,100),
-                                             batch_size = 1000,        # 통배치 하는 이유는 데이터가 작아서 커지면 커질수록 통배치는 사용 X 
-                                             class_mode='binary', 
-                                            #  color_mode= 'grayscale',
-                                             shuffle=True)
+x_train = np.load(np_path + 'keras39_1_x_train.npy')
+y_train = np.load(np_path + 'keras39_1_y_train.npy')
+x_test = np.load(np_path + 'keras39_1_x_test.npy')
+y_test = np.load(np_path + 'keras39_1_y_test.npy')
 
 
 
-x_train = xy_train[0][0]  
-y_train = xy_train[0][1]
 
+print(x_train)
+print(x_train.shape,y_train.shape)          # (160, 100, 100, 1)  (160,)
+print(x_test.shape,y_test.shape)            # (160, 100, 100, 1) (160,)
 
 #배치로 잘린 데이터 합치기    / 선의형
-x_train = []
-y_train = []
-for i in range(xy_train.samples // xy_train.batch_size):
-    batch = next(xy_train)
-    x_train.append(batch[0])
-    y_train.append(batch[1])
-x_train = np.concatenate(x_train)
-y_train = np.concatenate(y_train)
-
-
-x_train , x_test, y_train , y_test = train_test_split(x_train,y_train , test_size=0.3 , random_state= 3 , stratify=y_train , shuffle=True )
-
-
-end = time.time()
+# x_train = []
+# y_train = []
+# for i in range(xy_train.samples // xy_train.batch_size):
+#     batch = next(xy_train)
+#     x_train.append(batch[0])
+#     y_train.append(batch[1])
+# x_train = np.concatenate(x_train)
+# y_train = np.concatenate(y_train)
 
 
 # print(xy_train.next())
@@ -68,7 +55,7 @@ es = EarlyStopping(monitor='val_loss' , mode = 'min' , patience= 15 , restore_be
 
 #2 모델구성
 model = Sequential()
-model.add(Conv2D(94,(3,3),input_shape = (130,130,3), padding='valid' , strides=1 , activation='relu' ))
+model.add(Conv2D(94,(3,3),input_shape = (100,100,1), padding='valid' , strides=1 , activation='relu' ))
 model.add(MaxPooling2D())
 model.add(Dropout(0.2))
 
@@ -81,19 +68,6 @@ model.add(Dropout(0.2))
 
 model.add(Conv2D(9,(3,3), activation='relu' ))
 model.add(MaxPooling2D())
-
-model.add(Conv2D(92,(2,2), activation='relu' ))
-model.add(MaxPooling2D())
-model.add(Dropout(0.2))
-
-# model.add(Conv2D(15,(2,2), activation='relu' ))
-# model.add(MaxPooling2D())
-
-# model.add(Conv2D(99,(2,2), activation='relu' ))
-# model.add(MaxPooling2D())
-# model.add(Dropout(0.2))
-
-model.add(Conv2D(11,(2,2),activation='relu'))
 
 model.add(Flatten())
 
@@ -109,9 +83,24 @@ model.add(Dense(1,activation='sigmoid'))
 
 # model.summary()
 
+
 #3 컴파일, 훈련
 model.compile(loss= 'binary_crossentropy' , optimizer='adam' , metrics=['acc'] )
-model.fit(x_train,y_train, epochs = 100 , batch_size= 10 , validation_split= 0.2, verbose= 1 ,callbacks=[es])
+model.fit(x_train,y_train, epochs = 100 , batch_size=10 , verbose= 1 ,callbacks=[es], validation_steps=0.2 , steps_per_epoch=17 )
+                    # batch_size= 10 // batch 사이즈를 위에서 지정해주고 fit에서 지정하지 않는다.
+                    # validation_data = xy_test // validation 스플릿 대신에 쓰는것
+                    # UserWarning: `Model.fit_generator` is deprecated and will be removed in a future version. Please use `Model.fit`, which supports generators.
+                    # steps_per_epoch = 전체 데이터/batch = 160/10 = 16 // 이보다 높은 숫자는 안됨 / 낮은 숫자는 잘라서 버린다.
+                    # 17은 error // 15는 데이터 손실
+                    
+                    
+                    
+# model.fit(xy_train, epochs = 100  , verbose= 1 ,callbacks=[es], validation_data = xy_test  )
+# validation 스플릿은 텐서와 넘파이만 받을 수 있어서 인터레이터 형태를 받지 못한다.
+# == fit 안에 fit_generator 가 들어가있다. generator 를 쓰지 않아도 fit으로 쓸 수 있다.
+# batch_size= 10 // fit 안에 썻어도 위에 쓴 batch로 들어간다 / fit에서는 써도 먹히지 않는다.      
+
+              
 
 
 #4 평가, 예측
@@ -120,13 +109,11 @@ y_predict = model.predict(x_test)
 
 print('loss',loss)
 
+
 y_test = np.round(y_test)
 y_predict = np.round(y_predict)
 
 print('Acc = ' , accuracy_score(y_test,y_predict))
-
-print('time : ' , end - start )
-
 
 # time :  128.8634068965912  (150,150)
 
@@ -171,4 +158,13 @@ print('time : ' , end - start )
 # loss [0.6932511925697327, 0.5005263090133667]
 # Acc =  0.5005263157894737
 # time :  23.81118869781494
+
+
+# 17/17 [==============================] - 0s 16ms/step - loss: 0.0011 - acc: 1.0000
+# 5/5 [==============================] - 0s 4ms/step - loss: 1.3497e-04 - acc: 1.0000
+# 5/5 [==============================] - 0s 7ms/step
+# loss [0.0001349706872133538, 1.0]
+# Acc =  1.0
+
+
 

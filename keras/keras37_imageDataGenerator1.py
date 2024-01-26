@@ -10,8 +10,9 @@ train_datagen = ImageDataGenerator(rescale=1/255.,           # ImageDataGenerato
                                    rotation_range=5,         # 정해진 각도만큼 이미지를 회전
                                    zoom_range=1.2,           # 축소 또는 확대
                                    shear_range=0.7,          # 좌표하나를 고정시키고 다른 몇개의 좌표를 이동시키는 변환
-                                   fill_mode='nearest'       # 너의 빈자리를 가장 비슷한 책으로 채워
+                                   fill_mode='nearest',      # 너의 빈자리를 가장 비슷한 책으로 채워
                                                              # 0로 나타내 주는것도 잇으니 찾아보기
+                                   color_mode = 'grayscale'                          
                                     )
 
 test_datagen = ImageDataGenerator(rescale=1./255)      # test 데이터는 train에서 훈련한 것과 비교하는 실제 데이터로 해야되기 때문에 rescale만 쓴다.
@@ -25,7 +26,8 @@ xy_train = train_datagen.flow_from_directory(                                   
                                              target_size = (200,200) ,          # 내가 정한 수치까지 그림들의 사이즈를 줄이거나 늘린다// 
                                              batch_size =  160,                 # 160 이상의 수를 쓰면 x의 통 데이터(160)로 들어간다
                                              class_mode='binary',               # 2중 분류를 나타내는 것, 다중 분류 일 때에는 categorical을 사용한다. 
-                                             shuffle=True                       # 그림을 섞는 것 
+                                             shuffle=True,                      # 그림을 섞는 것 
+                                             color_mode= 'grayscale'            # 컬러 모드 gray //default = rgb(빛의 삼원색)
                                              )       
 
 
@@ -41,7 +43,8 @@ xy_test = test_datagen.flow_from_directory(
                                              target_size = (200,200) ,   
                                              batch_size =  160, 
                                              class_mode='binary',
-                                             shuffle=False              # test는 섞는것이 아니다 // 건드리면 데이터 조작이다.
+                                             shuffle=False,             # test는 섞는것이 아니다 // 건드리면 데이터 조작이다.
+                                             color_mode= 'grayscale'
                                              )       
 
 # Found 120 images belonging to 2 classes.

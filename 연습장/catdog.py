@@ -36,13 +36,13 @@ path_test = 'c:/_data/image/catdog/Test//'
 
 xy_train = train_datagen.flow_from_directory(path_train, 
                                              target_size = (120,120),
-                                             batch_size = 1000,        # 통배치 하는 이유는 데이터가 작아서 커지면 커질수록 통배치는 사용 X 
+                                             batch_size = 5000,        # 통배치 하는 이유는 데이터가 작아서 커지면 커질수록 통배치는 사용 X 
                                              class_mode='binary', 
                                              shuffle=True)
 
 
 
-xy_train = np.concatenate(xy_train[19:])
+xy_train = np.concatenate()
 
 x_train = xy_train[0][0]  
 y_train = xy_train[0][1]
@@ -55,7 +55,7 @@ end = time.time()
 
 
 # print(xy_train.next())
-es = EarlyStopping(monitor='val_loss' , mode = 'min' , patience= 20 , restore_best_weights=True , verbose= 1  )
+es = EarlyStopping(monitor='val_loss' , mode = 'min' , patience= 10 , restore_best_weights=True , verbose= 1  )
 
 
 #2 모델구성
