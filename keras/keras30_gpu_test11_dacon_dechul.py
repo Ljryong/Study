@@ -89,7 +89,7 @@ train_csv['근로기간'] = train_csv['근로기간'].replace({'10+ years' : 10 
                                                       'Unknown' : 0 , '5 years' : 5 , '4 years' : 4 , '8 years' : 8 ,
                                                       '6 years' : 6 , '7 years' : 7 , '9 years' : 9 , '10+years' : 11,
                                                       '<1 year' : 0.5 , '3' : 3 , '1 years' : 1.5 })
-
+    
 test_csv['근로기간'] = test_csv['근로기간'].replace({'10+ years' : 10 ,            # 10으로 둘지 그 이상으로 둘지 고민
                                                       '2 years' : 2 , '< 1 year' : 0.7 , '3 years' : 3.5 , '1 year' : 1 ,
                                                       'Unknown' : 0 , '5 years' : 5 , '4 years' : 4 , '8 years' : 8 ,
@@ -219,7 +219,6 @@ acc = acc(arg_test,arg_pre)
 
 
 submission_csv.to_csv(path+'submission_0116.csv', index = False)
-
 
 print('y_submit = ', y_submit)
 

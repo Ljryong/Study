@@ -2,13 +2,12 @@ import numpy as np
 from keras.datasets import mnist
 import pandas as pd
 from keras.models import Sequential
-from keras.layers import Dense , Conv2D , Flatten       # Flatten : 평평한
+from keras.layers import Dense , Conv2D , Flatten ,Dropout      # Flatten : 평평한
 from keras.callbacks import EarlyStopping
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 import time
-
-
+from sklearn.preprocessing import MinMaxScaler , StandardScaler
 
 #1 데이터
 (x_train , y_train), (x_test, y_test)  =  mnist.load_data()
@@ -21,15 +20,46 @@ print(np.unique(y_train, return_counts=True))
 # (array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], dtype=uint8), array([5923, 6742, 5958, 6131, 5842, 5421, 5918, 6265, 5851, 5949],dtype=int64))
 print(pd.value_counts(y_test))
 
-# x_train = x_train.reshape(60000,28,28,1)
-# x_test = x_test.reshape(10000,28,28,1)
+
+# 정규화 = 데이터를 정제해서 집어 넣어주는 것
+
+
+##################################### 스케일링을 하는것이 훨씬 좋다. 이미지에서는 minmax scaler를 제일 많이 쓴다.
+####### 스케일링(minmaxscaler) 1 
+x_train = x_train/255.
+x_test = x_test/255.
+
+######## 스케일링(minmaxscaler) 2
+x_train = x_train.reshape(60000,28*28*1)
+x_test = x_test.reshape(10000,28*28*1)
+
+scaler = MinMaxScaler()
+x_train = scaler.fit_transform(x_train)
+s_test = scaler.transform(x_test)
+
+##################################
+
+# 다시 행렬로 바꿔주기 
+
+x_train = x_train.reshape(60000,28,28,1)
+x_test = x_test.reshape(10000,28,28,1)
+
+############################### 
+
+#[-1~1] 까지 만드는 법 // x_train = (x_train-127.5)/127.5 = standard scaler(일반화)=0을 기준으로 퍼져 있음/ 중심은 같지만 standardscaler랑은 다르다
+
+
+
+
+
+
 # print(x_train.shape[0])         # 60000
 
 # x_test = x_test.reshape(x_test[0],x_test[1],x_test[2],1)        # 위에 10000,28,28,1 이랑 같다. 이렇게 쓰는게 나중에 전처리하고 test가 달라졌을 때 좋을수도 있다.
 
 print(x_train.shape , x_test.shape)     # (60000, 28, 28, 1) (10000, 28, 28, 1)
 
-es = EarlyStopping(monitor='val_loss' , mode = 'min' , patience= 300 , verbose= 1 , restore_best_weights=True  )
+es = EarlyStopping(monitor='val_loss' , mode = 'min' , patience= 70 , verbose= 1 , restore_best_weights=True  )
 
 onehot_train = pd.get_dummies(y_train)
 onehot_test = pd.get_dummies(y_test)
@@ -43,16 +73,22 @@ model.add(Conv2D(  70   ,(2,2),input_shape = (28,28,1) ))        # 10 = 필터 /
 
 model.add(Conv2D( filters = 6  ,  kernel_size = (3,3)))
 model.add(Conv2D( 20 ,(4,4),activation='relu'))
+model.add(Dropout(0.2))
 model.add(Conv2D( 13 ,(2,2)))
+model.add(Dropout(0.2))
 model.add(Conv2D( 20 ,(3,3),activation='relu'))
+model.add(Dropout(0.2))
 model.add(Flatten())
 model.add(Dense(units= 84 ))
+model.add(Dropout(0.2))
 model.add(Dense(units= 6 ,input_shape = (8,)))
 #                             shape = (batch_size , input_dim )
 
 model.add(Dense(97,activation='relu'))
+model.add(Dropout(0.2))
 model.add(Dense(9))
 model.add(Dense(81,activation='relu'))
+model.add(Dropout(0.2))
 model.add(Dense(10,activation= 'softmax'))
 
 model.summary()
@@ -111,4 +147,22 @@ print("Acc =",acc)
 # acc =  0.9824000000953674
 # 시간 =  261.86352729797363
 
+
+# scaler
+# Epoch 110: early stopping
+# 313/313 [==============================] - 1s 2ms/step - loss: 0.0592 - acc: 0.9821
+# loss =  0.05923796817660332
+# acc =  0.9821000099182129
+# 시간 =  170.60928010940552
+# 313/313 [==============================] - 0s 1ms/step
+# Acc = 0.9821
+
+
+# Epoch 110: early stopping
+# 313/313 [==============================] - 1s 2ms/step - loss: 0.0385 - acc: 0.9884
+# loss =  0.03852350264787674
+# acc =  0.9883999824523926
+# 시간 =  144.24833369255066
+# 313/313 [==============================] - 0s 994us/step
+# Acc = 0.9884
 

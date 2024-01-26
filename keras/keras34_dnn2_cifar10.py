@@ -1,6 +1,6 @@
 from keras.datasets import cifar10
-from keras.models import Sequential
-from keras.layers import Dense , Conv2D , Dropout , Flatten , MaxPooling2D
+from keras.models import Sequential 
+from keras.layers import Dense , Conv2D , Dropout , Flatten , MaxPooling2D 
 from keras.callbacks import EarlyStopping
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
