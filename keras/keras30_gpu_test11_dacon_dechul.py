@@ -205,7 +205,6 @@ submit =  np.argmax(y_submit,axis=1)
 
 y_submit = encoder.inverse_transform(submit)       # inverse_transform 처리하거나, 뽑을라면 argmax처리를 해줘야한다.
 submission_csv['대출등급'] = y_submit
-submission_csv.to_csv(path+'submission_0115_3.csv', index = False)
 
 
 
