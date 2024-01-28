@@ -132,10 +132,10 @@ y_ohe = ohe.transform(y)
 # end = time.time()
 # print('시간' , end - start)
 
-######################################################
+# ######################################################
 
-x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 144 , shuffle=True , stratify=y)    # 0 1502
-es = EarlyStopping(monitor='val_loss', mode='min' , patience= 80 , restore_best_weights=True , verbose= 1 )
+x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 28 , shuffle=True , stratify=y)    # 0 1502
+es = EarlyStopping(monitor='val_loss', mode='min' , patience= 100 , restore_best_weights=True , verbose= 1 )
 
 
 
@@ -148,9 +148,9 @@ from sklearn.preprocessing import StandardScaler, RobustScaler
 
 ###################
 # scaler = MinMaxScaler()
-scaler = StandardScaler()
+# scaler = StandardScaler()
 # scaler = MaxAbsScaler()
-# scaler = RobustScaler()
+scaler = RobustScaler()
 
 scaler.fit(x_train)
 x_train = scaler.transform(x_train)
@@ -179,9 +179,11 @@ model = Sequential()
 model.add(Dense(80 ,input_shape= (13,),activation='relu'))
 model.add(Dropout(0.2))
 model.add(Dense(60,activation= 'relu'))
+model.add(Dropout(0.3))
 model.add(Dense(70,activation= 'relu'))
 model.add(Dropout(0.3))
 model.add(Dense(50,activation= 'relu'))
+model.add(Dropout(0.3))
 model.add(Dense(60,activation= 'relu'))
 model.add(Dropout(0.3))
 model.add(Dense(30,activation= 'relu'))
@@ -221,7 +223,7 @@ acc = acc(arg_test,arg_pre)
 
 
 
-submission_csv.to_csv(path+'submission_0119.csv', index = False)
+submission_csv.to_csv(path+'submission_0127.csv', index = False)
 
 
 print('y_submit = ', y_submit)
