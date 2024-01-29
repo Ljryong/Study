@@ -134,7 +134,7 @@ print('시간' , end - start)
 
 # ######################################################
 
-x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 27 , shuffle=True , stratify=y)    # 0 1502 28 
+x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 27 , shuffle=True , stratify=y)    # 0 1502 28 27
 es = EarlyStopping(monitor='val_loss', mode='min' , patience= 500 , restore_best_weights=True , verbose= 1 )
 
 
@@ -179,7 +179,7 @@ model = Sequential()
 model.add(Dense(19, input_shape= (13, ),activation='relu'))
 model.add(Dense(97,activation='relu'))
 model.add(Dropout(0.2))
-model.add(Dense(9,activation='relu'))
+model.add(Dense(23,activation='relu'))
 model.add(Dense(32,activation='relu'))
 model.add(Dense(16,activation='relu'))
 model.add(Dense(21,activation='relu'))

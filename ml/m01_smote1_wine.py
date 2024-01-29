@@ -100,7 +100,7 @@ print(f1_score(y_test, y_predict , average='macro' ))
 print('smote 적용')
 
 from imblearn.over_sampling import SMOTE        # 옛날에는 다운을 받았어야 됬는데 anaconda가 다 끌어옴
-import sklearn as sk
+import sklearn as sk1
 print('사이킷 런 :' , sk.__version__)
 
 smote = SMOTE(random_state=0)
@@ -117,7 +117,7 @@ model.add(Dense(3, activation='softmax'))
 
 #3 컴파일, 훈련
 model.compile(loss = 'sparse_categorical_crossentropy' , optimizer='adam' , metrics=['acc'] )
-model.fit(x_train,y_train , epochs= 100, validation_batch_size=0.2)
+model.fit(x_train,y_train , epochs= 1000, validation_batch_size=0.2 )
 
 # 'sparce_categorical_crossentropy' = 다중분류에서 OneHot을 사용하기 싫을 때 쓴다. 자동으로 OneHot이 들어가있음
 

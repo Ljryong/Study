@@ -43,8 +43,6 @@ for i in range(len(xy)):
 x = np.concatenate(x,axis=0)
 y = np.concatenate(y,axis=0)
 
-# 증폭 시점 고쳐보기
-
 x_train , x_test , y_train , y_test = train_test_split(x,y,test_size=0.3, random_state= 0 ,  stratify=y , shuffle=True )
 
 print('split ok')
