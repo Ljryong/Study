@@ -123,19 +123,19 @@ y_ohe = ohe.transform(y)
 
 ######################################################
 
-# start = time.time()
-# smote = SMOTE(random_state= 43 )
-# x_train , y_train = smote.fit_resample(x , y_ohe )
-# # unique, count = np.unique(x_train,return_counts=True)
-# # print(unique, count)
-# # print(pd.value_counts(y_train))
-# end = time.time()
-# print('시간' , end - start)
+start = time.time()
+smote = SMOTE(random_state= 43 )
+x_train , y_train = smote.fit_resample(x , y_ohe )
+# unique, count = np.unique(x_train,return_counts=True)
+# print(unique, count)
+# print(pd.value_counts(y_train))
+end = time.time()
+print('시간' , end - start)
 
 # ######################################################
 
-x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 28 , shuffle=True , stratify=y)    # 0 1502
-es = EarlyStopping(monitor='val_loss', mode='min' , patience= 100 , restore_best_weights=True , verbose= 1 )
+x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 27 , shuffle=True , stratify=y)    # 0 1502 28 
+es = EarlyStopping(monitor='val_loss', mode='min' , patience= 500 , restore_best_weights=True , verbose= 1 )
 
 
 
@@ -176,18 +176,14 @@ model.add(Dense(7,activation='softmax'))
 '''
 # 2-1 
 model = Sequential()
-model.add(Dense(80 ,input_shape= (13,),activation='relu'))
+model.add(Dense(19, input_shape= (13, ),activation='relu'))
+model.add(Dense(97,activation='relu'))
 model.add(Dropout(0.2))
-model.add(Dense(60,activation= 'relu'))
-model.add(Dropout(0.3))
-model.add(Dense(70,activation= 'relu'))
-model.add(Dropout(0.3))
-model.add(Dense(50,activation= 'relu'))
-model.add(Dropout(0.3))
-model.add(Dense(60,activation= 'relu'))
-model.add(Dropout(0.3))
-model.add(Dense(30,activation= 'relu'))
-model.add(Dense(7,activation='softmax'))
+model.add(Dense(9,activation='relu'))
+model.add(Dense(32,activation='relu'))
+model.add(Dense(16,activation='relu'))
+model.add(Dense(21,activation='relu'))
+model.add(Dense(7, activation='softmax'))
 
 
 #3
@@ -196,7 +192,7 @@ mcp = ModelCheckpoint(monitor='val_loss', mode='min' , verbose=1, save_best_only
 
 
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
-model.fit(x_train,y_train, epochs = 100000 , batch_size= 800 , validation_split=0.2 , callbacks = [es,mcp] , verbose= 2 )
+model.fit(x_train,y_train, epochs = 10000 , batch_size= 300 , validation_split=0.2 , callbacks = [es,mcp] , verbose= 2 )
 
 
 #4
@@ -223,7 +219,7 @@ acc = acc(arg_test,arg_pre)
 
 
 
-submission_csv.to_csv(path+'submission_0127.csv', index = False)
+submission_csv.to_csv(path+'submission_0129.csv', index = False)
 
 
 print('y_submit = ', y_submit)
