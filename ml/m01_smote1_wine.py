@@ -100,7 +100,7 @@ print(f1_score(y_test, y_predict , average='macro' ))
 print('smote 적용')
 
 from imblearn.over_sampling import SMOTE        # 옛날에는 다운을 받았어야 됬는데 anaconda가 다 끌어옴
-import sklearn as sk1
+import sklearn as sk
 print('사이킷 런 :' , sk.__version__)
 
 smote = SMOTE(random_state=0)

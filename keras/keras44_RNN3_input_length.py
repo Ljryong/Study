@@ -18,34 +18,20 @@ print(x.shape)               # (7, 3, 1)
 
 #2 모델구성
 model = Sequential()
-model.add(SimpleRNN(units=10 ,input_shape = (3,1), activation='relu'))        # (행무시 , 열우선)  = 행인 7을 제외하고 (3,1)이 인풋
+# model.add(SimpleRNN(units=32,input_shape = (3,1)))        # (행무시 , 열우선)  = 행인 7을 제외하고 (3,1)이 인풋
 # input_shape = timesteps, features
 # 3-D tensor with shape (batch_size, timesteps, features)
 # output 을 units 라고 부르고 숫자만 올 시 생략이 가능하다.
-model.add(Dense(7 ,activation='relu'))
+model.add(SimpleRNN(units=10 ,input_shape = (3,1)))          # 위아래 3개는 동일하다.
+model.add(SimpleRNN(10, input_length =3 , input_dim = 1))
+model.add(SimpleRNN(10, input_dim = 1, input_length =3  ))      # 하지만 얘는 가독성이 떨어져서 위에처럼 쓰지만 써도는 된다.
+
+model.add(Dense(64 ,activation='relu'))
+model.add(Dense(16 ,activation='relu'))
+model.add(Dense(8 ,activation='relu'))
 model.add(Dense(1))
 
-model.summary()
 
-# _________________________________________________________________
-#  Layer (type)                Output Shape              Param #
-# =================================================================
-#  simple_rnn (SimpleRNN)      (None, 10)                120
-
-#  dense (Dense)               (None, 7)                 77
-
-#  dense_1 (Dense)             (None, 1)                 8
-
-# =================================================================
-# Total params: 205
-# Trainable params: 205
-# Non-trainable params: 0
-# _________________________________________________________________
-
-# 120개의 비밀 
-# 파라미터 갯수 = units*(units+bias+feature )
-
-'''
 #3 컴파일, 훈련
 model.compile(loss = 'mse' , optimizer='adam')
 model.fit(x,y,epochs= 300, batch_size=1  )
@@ -86,5 +72,3 @@ print('결과' , y_predict)
 
 
 
-
-'''
