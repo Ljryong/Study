@@ -173,17 +173,30 @@ model.add(BatchNormalization())
 model.add(Dense(128,activation= 'relu'))
 model.add(Dropout(0.3))
 model.add(Dense(7,activation='softmax'))
-'''
+
+
 # 2-1 
 model = Sequential()
-model.add(Dense(19, input_shape= (13, ),activation='relu'))
-model.add(Dense(97,activation='relu'))
+model.add(Dense(19, input_shape= (13, ),activation='swish'))
+model.add(Dense(97,activation='swish'))
 model.add(Dropout(0.2))
-model.add(Dense(23,activation='relu'))
-model.add(Dense(32,activation='relu'))
-model.add(Dense(16,activation='relu'))
-model.add(Dense(21,activation='relu'))
+model.add(Dense(23,activation='swish'))
+model.add(Dense(32,activation='swish'))
+model.add(Dense(16,activation='swish'))
+model.add(Dense(21,activation='swish'))
 model.add(Dense(7, activation='softmax'))
+'''
+
+#2-2
+model = Sequential()
+model.add(Dense(128 ,input_shape= (13,),activation= 'swish'))
+model.add(Dense(64,activation= 'swish'))
+model.add(Dense(32,activation= 'swish'))
+model.add(Dense(64, activation= 'swish'))
+model.add(Dense(32,activation= 'swish'))
+model.add(Dense(64, activation= 'swish'))
+model.add(Dense(32,activation= 'swish'))
+model.add(Dense(7,activation='softmax'))
 
 
 #3
@@ -192,7 +205,7 @@ mcp = ModelCheckpoint(monitor='val_loss', mode='min' , verbose=1, save_best_only
 
 
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
-model.fit(x_train,y_train, epochs = 10000 , batch_size= 300 , validation_split=0.2 , callbacks = [es,mcp] , verbose= 2 )
+model.fit(x_train,y_train, epochs = 1000000 , batch_size= 700 , validation_split=0.2 , callbacks = [es,mcp] , verbose= 2 )
 
 
 #4

@@ -5,7 +5,7 @@ size = 5            # 자르는 사이즈(time steps)
 
 def split_x(dataset,size) :         # dataset = a
     aaa=[]                          # aaa 리스트 만들기
-    for i in range(len(dataset) - size+1):          # range(1~10 에서 5빼고 1 더하기 ) = 그냥 공식 같은 것
+    for i in range(len(dataset) - size+1):          # range(1~10 에서 5빼고 1 더하기 ) = 반복 횟수(행의 갯수를 알 수 있음)
                                                     # dataset의 길이에서 size를 뺀 만큼 반복합니다(6 = 행의 갯수 ). 이렇게 함으로써 생성할 부분 시계열 데이터의 개수(행)를 결정합니다
         subset = dataset[ i : ( i + size ) ]        # range(1:11)[i:(i+5)] i가 0 일때 0 : 0 + 5 = 1,2,3,4,5 를 뜻한다.
         aaa.append(subset)      # 이어 붙이기        # for문(반복문)이어서 반복된걸 append(이어 붙여준다)
