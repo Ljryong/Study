@@ -23,7 +23,7 @@ test_datagen = ImageDataGenerator(1./255)
 path_train = 'C:\_data\image\horse_human\\'
 
 
-xy_train = train_datagen.flow_from_directory(
+xy = train_datagen.flow_from_directory(
     path_train,
     target_size=(100,100),
     color_mode='rgb',
@@ -33,20 +33,10 @@ xy_train = train_datagen.flow_from_directory(
     
 )
 
-submit = test_datagen.flow_from_directory(
-    path_test,
-    target_size=(100,100),
-    color_mode='rgb',
-    class_mode='binary',
-    batch_size=1000,
-    shuffle=False
-
-)
-
 x=[]
 y=[]
-for i in range(len(xy_train)):
-    a, b = xy_train.next()
+for i in range(len(xy)):
+    a, b = xy.next()
     x.append(a)
     y.append(b)
 
@@ -59,7 +49,7 @@ x_train , x_test , y_train , y_test = train_test_split(x,y,test_size=0.3, random
 
 print('split ok')
 
-augument_size = 10000
+augument_size = 100
 
 data_gen = ImageDataGenerator(
     # rescale=1/255. ,
@@ -72,7 +62,7 @@ data_gen = ImageDataGenerator(
     fill_mode='nearest',
     shear_range=10
 )
-randidx = np.random.randint(x_train.shape[0], size=augument_size)
+randidx = np.random.randint(x_train.shape[0], size=augument_size)       # x_train.shape[0] : 수량체크
 x_aug = x_train[randidx].copy()
 y_aug = y_train[randidx].copy()
 x_aug = data_gen.flow(
@@ -87,7 +77,7 @@ es =  EarlyStopping(monitor='val_loss', mode = 'min' , patience= 10 ,restore_bes
 
 
 #2 모델구성
-input = Input(shape=(300,300,3))
+input = Input(shape=(100,100,3))
 c1 = Conv2D(64,(3,3),activation='relu')(input)
 max1 = MaxPooling2D()(c1)
 c2 = Conv2D(128,(2,2),activation='relu')(max1)
@@ -102,7 +92,7 @@ d2 = Dense(128,activation='relu')(drop1)
 drop2 = Dropout(0.2)(d1)
 d3 = Dense(64,activation='relu')(drop2)
 drop3 = Dropout(0.2)(d1)
-output = Dense(2,activation='softmax')(drop3)
+output = Dense(1,activation='sigmoid')(drop3)
 
 model = Model(inputs = input , outputs = output )
 
@@ -111,7 +101,7 @@ model.summary()
 
 
 #3 컴파일, 훈련
-model.compile(loss = 'categorical_crossentropy' , optimizer='adam' , metrics=['acc'] )
+model.compile(loss = 'binary_crossentropy' , optimizer='adam' , metrics=['acc'] )
 model.fit(x_train,y_train,epochs= 10000 , validation_split=0.2 , verbose= 1 , callbacks=[es] , batch_size=32 )
 
 #4 평가, 예측
@@ -148,3 +138,12 @@ print('ACC',accuracy_score(y_test,y_predict))
 # loss 0.002332329051569104
 # acc 1.0
 # ACC 1.0
+
+
+# 증폭
+# Epoch 13: early stopping
+# 10/10 [==============================] - 0s 6ms/step - loss: 0.0864 - acc: 0.9676
+# 10/10 [==============================] - 0s 3ms/step
+# loss 0.08642079681158066
+# acc 0.9676375389099121
+# ACC 0.9676375404530745

@@ -117,7 +117,7 @@ model.add(Dense(3, activation='softmax'))
 
 #3 컴파일, 훈련
 model.compile(loss = 'sparse_categorical_crossentropy' , optimizer='adam' , metrics=['acc'] )
-model.fit(x_train,y_train , epochs= 100, validation_batch_size=0.2)
+model.fit(x_train,y_train , epochs= 1000, validation_batch_size=0.2 )
 
 # 'sparce_categorical_crossentropy' = 다중분류에서 OneHot을 사용하기 싫을 때 쓴다. 자동으로 OneHot이 들어가있음
 
