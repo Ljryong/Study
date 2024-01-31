@@ -76,6 +76,7 @@ data_gen = ImageDataGenerator(
 randidx = np.random.randint(x_train.shape[0], size=augument_size)
 x_aug = x_train[randidx].copy()
 y_aug = y_train[randidx].copy()
+
 x_aug = data_gen.flow(
     x_aug, y_aug,
     batch_size=augument_size,
