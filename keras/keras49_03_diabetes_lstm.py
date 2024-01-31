@@ -16,7 +16,7 @@ y = datasets.target
 print(x.shape,y.shape)          # (442, 10) (442,)
 print(datasets.feature_names)   #['age', 'sex', 'bmi', 'bp', 's1', 's2', 's3', 's4', 's5', 's6']
 
-x = x.reshape(442,2,5,1)
+x = x.reshape(442,2,5)
 
 print(x.shape)              # (442, 2, 5, 1)    
 
@@ -60,9 +60,9 @@ filepath = ''.join([path , 'k28_3_', date , '_', filename ])
 
 #2-2
 model = Sequential()
-model.add(Conv2D(50,(2,2),input_shape = (2,5,1), padding='same', strides= 1))
-model.add(Conv2D(5,(2,2),padding='same'))
-model.add(Flatten())
+model.add(LSTM(50,input_shape = (2,5)))
+# model.add(Conv2D(5,(2,2),padding='same'))
+# model.add(Flatten())
 model.add(Dense(20))
 model.add(Dense(1))
 
@@ -158,7 +158,12 @@ print('시간 : ',end_time - start_time)
 # 시간 :  4.744539260864258
 
 # LSTM
-
+# Epoch 47: early stopping
+# 5/5 [==============================] - 0s 1ms/step - loss: 3634.8538 - mse: 3634.8538 - mae: 49.2136
+# 5/5 [==============================] - 0s 4ms/step
+# 0.40499806410451633
+# [3634.853759765625, 3634.853759765625, 49.21356964111328]
+# 시간 :  7.854551553726196
 
 
 

@@ -189,15 +189,17 @@ model.add(Dense(7, activation='softmax'))
 
 #2-2
 model = Sequential()
-model.add(Dense(128 ,input_shape= (13,),activation= 'swish'))
-model.add(Dense(64,activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
-model.add(Dense(64, activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
-model.add(Dense(64, activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
+model.add(Dense(64 ,input_shape= (13,),activation='relu'))
+model.add(Dense(32,activation= 'relu'))
+model.add(Dense(64,activation= 'relu'))
+model.add(Dense(32, activation= 'relu'))
+model.add(Dense(64,activation= 'relu'))
+model.add(Dense(32,activation= 'relu'))
+model.add(Dense(64,activation= 'relu'))
+model.add(Dense(32,activation= 'relu'))
+model.add(Dense(64,activation= 'relu'))
+model.add(Dense(32,activation= 'relu'))
 model.add(Dense(7,activation='softmax'))
-
 
 #3
 from keras.callbacks import EarlyStopping ,ModelCheckpoint
