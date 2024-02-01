@@ -34,14 +34,14 @@ onehot_test = pd.get_dummies(y_test)
 
 #2 모델구성
 model = Sequential()
-model.add(Dense(9,input_shape = (28,28,1)))         # 28,28,9
+model.add(Dense(9,input_shape = (28,28,1)))         # 28,28,9           Conv2D = 앞에꺼 2개 곱한다.
 # model.add(Conv2D(  70   ,(2,2),input_shape = (28,28,1) ))  
 model.add(Conv2D( 6,(3,3)))                         # 26,26,6
 model.add(Reshape(target_shape=(26*26,6)))          # 676,6
 model.add(Conv3D(10,(4)))                           # 673,10
 model.add(LSTM(8,return_sequences=True))            # 673,8
 model.add(Conv1D(15,2))                             # 672,15
-model.add(Reshape(target_shape=(10080,)))           # 10080,
+model.add(Reshape(target_shape=(10080,)))           # 10080,             Conv1D = 2개 곱한다.
 # model.add(Flatten())              # 7220의 연산량을 가지고 있음
 
 model.add(Dense(10,activation='softmax'))

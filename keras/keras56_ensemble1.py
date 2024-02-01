@@ -52,6 +52,10 @@ merge2 = Dense(7,name='mg2')(merge1)
 merge3 = Dense(11,name = 'mg3')(merge2)
 last_output = Dense(1,name='last')(merge3)
 
+# concatenate , Concatenate 2개의 차이점 / 사용 방법이 조금 다름 대문자 Concatenate는 ()가 더 있음 / 차이는 없음 사용법만 다름
+# merge1 = concatenate([output1,output11], name = 'mg1' )                                         # merge : 합치다 , 병합
+# merge1 = Concatenate()([output1,output11], name = 'mg1' )   
+
 model = Model(inputs = [input1,input11] , outputs = [last_output] )
 model.summary()
 

@@ -124,8 +124,8 @@ ohe.fit(y)
 y_ohe = ohe.transform(y) 
 
 
-x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 5132 , shuffle=True , stratify=y)    # 0 1502
-es = EarlyStopping(monitor='val_loss', mode='min' , patience= 100 , restore_best_weights=True , verbose= 1 )
+x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 27 , shuffle=True , stratify=y)    # 0 1502
+es = EarlyStopping(monitor='val_loss', mode='min' , patience= 500 , restore_best_weights=True , verbose= 1 )
 
 
 
@@ -147,23 +147,32 @@ x_train = scaler.transform(x_train)
 x_test = scaler.transform(x_test)
 test_csv = scaler.transform(test_csv)
 
-######################################################
-
-start = time.time()
-smote = SMOTE(random_state=0)
-x_train, y_train = smote.fit_resample(x_train , y_train)
-
-# print(pd.value_counts(x_train))
-# print(pd.value_counts(y_train))
-end = time.time()
-print('시간' , end - start)
-
-######################################################
-
-
-
 
 #2
+model = Sequential()
+model.add(Dense(64 ,input_shape= (13,),activation='swish'))
+model.add(Dense(16,activation= 'swish'))
+model.add(Dense(64,activation= 'swish'))
+model.add(Dense(16, activation= 'swish'))
+model.add(Dense(64,activation= 'swish'))
+model.add(Dense(16,activation= 'swish'))
+model.add(Dense(32,activation= 'swish'))
+model.add(Dense(16, activation= 'swish'))
+model.add(Dense(32,activation= 'swish'))
+model.add(Dense(16,activation= 'swish'))
+model.add(Dense(32,activation= 'swish'))
+model.add(Dense(16, activation= 'swish'))
+model.add(Dense(64,activation= 'swish'))
+model.add(Dense(16,activation= 'swish'))
+model.add(Dense(64,activation= 'swish'))
+model.add(Dense(16, activation= 'swish'))
+model.add(Dense(32,activation= 'swish'))
+model.add(Dense(16,activation= 'swish'))
+model.add(Dense(32,activation= 'swish'))
+model.add(Dense(8, activation= 'swish'))
+model.add(Dense(7,activation='softmax'))
+
+'''
 model = Sequential()
 model.add(Dense(64 ,input_shape= (13,),activation='swish'))
 model.add(Dense(16,activation= 'swish'))
@@ -179,33 +188,6 @@ model.add(Dense(32,activation= 'swish'))
 model.add(Dense(16,activation= 'swish'))
 model.add(Dense(7,activation='softmax'))
 
-'''
-
-# 2-1 
-model = Sequential()
-model.add(Dense(19, input_shape= (13, ),activation='swish'))
-model.add(Dense(97,activation='swish'))
-model.add(Dropout(0.2))
-model.add(Dense(23,activation='swish'))
-model.add(Dense(32,activation='swish'))
-model.add(Dense(16,activation='swish'))
-model.add(Dense(21,activation='swish'))
-model.add(Dense(7, activation='softmax'))
-
-
-#2-2
-model = Sequential()
-model.add(Dense(64 ,input_shape= (13,),activation='relu'))
-model.add(Dense(32,activation= 'relu'))
-model.add(Dense(64,activation= 'relu'))
-model.add(Dense(32, activation= 'relu'))
-model.add(Dense(64,activation= 'relu'))
-model.add(Dense(32,activation= 'relu'))
-model.add(Dense(64,activation= 'relu'))
-model.add(Dense(32,activation= 'relu'))
-model.add(Dense(64,activation= 'relu'))
-model.add(Dense(32,activation= 'relu'))
-model.add(Dense(7,activation='softmax'))
 '''
 #3
 from keras.callbacks import EarlyStopping ,ModelCheckpoint
@@ -243,7 +225,7 @@ acc = acc(arg_test,arg_pre)
 
 
 
-submission_csv.to_csv(path+'submission_0131.csv', index = False)
+submission_csv.to_csv(path+'submission_0201.csv', index = False)
 
 
 print('y_submit = ', y_submit)
