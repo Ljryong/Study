@@ -9,8 +9,8 @@ from keras.preprocessing.text import Tokenizer
 
 
 word_index = reuters.get_word_index()       # 단어의 숫자를 뽑아내는 것
-정룡이는 못생겼다
-print(len(np.unique(x_train))) 
+
+print(np.unique(word_index))
 
 print(x_train)
 print(x_train.shape,x_test.shape)           # (8982,) (2246,)
@@ -49,18 +49,18 @@ es = EarlyStopping(monitor='val_loss' , mode= 'min' ,patience= 100 , restore_bes
 
 #2 모델구성
 model = Sequential()
-model.add(Embedding(100,80,input_length=100))
-model.add(Conv1D(10,2,activation='relu'))
-model.add(Conv1D(50,2,activation='relu'))
-model.add(Conv1D(10,2,activation='relu'))
-model.add(Conv1D(40,2,activation='relu'))
-model.add(Conv1D(10,2,activation='relu'))
-model.add(Conv1D(30,2,activation='relu'))
-model.add(Conv1D(10,2,activation='relu'))
+model.add(Embedding(100,128,input_length=100))
+model.add(Conv1D(32,2,activation='relu'))
+model.add(Conv1D(64,2,activation='relu'))
+model.add(Conv1D(32,2,activation='relu'))
+model.add(Conv1D(64,2,activation='relu'))
+model.add(Conv1D(32,2,activation='relu'))
+model.add(Conv1D(64,2,activation='relu'))
+model.add(Conv1D(16,2,activation='relu'))
 model.add(Flatten())
-model.add(Dense(10,activation='relu'))
-model.add(Dense(50,activation='relu'))
-model.add(Dense(10,activation='relu'))
+model.add(Dense(64,activation='relu'))
+model.add(Dense(32,activation='relu'))
+model.add(Dense(64,activation='relu'))
 model.add(Dense(46,activation='softmax'))
 
 #3 컴파일, 훈련
@@ -71,12 +71,22 @@ model.fit(x_train,y_train,epochs=10000 , batch_size= 100 , validation_split=0.2 
 loss = model.evaluate(x_test,y_test)
 pre = model.predict(x_test)
 
-y_test = np.argmax(y_test)
-pre = np.argmax(pre)
+pre = np.argmax(pre,axis=1)
 
-print('loss = ',loss)
+# sparse_categorical_crossentropy 를 사용하면 onehot을 따로 하지 않아서 y값에 argmax를 사용하지 않아도 된다.
+
+print('loss = ',loss[0])
+print('acc = ',loss[1])
 print('ACC = ', accuracy_score(y_test,pre) )
 
 
+
+
+# Epoch 116: early stopping
+# 71/71 [==============================] - 0s 2ms/step - loss: 1.7901 - acc: 0.5503
+# 71/71 [==============================] - 0s 957us/step
+# loss =  1.7900980710983276
+# acc =  0.5503116846084595
+# ACC =  0.5503116651825467
 
 
