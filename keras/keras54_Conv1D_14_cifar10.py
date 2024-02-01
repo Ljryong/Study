@@ -3,7 +3,7 @@ from keras.preprocessing.image import ImageDataGenerator
 import numpy as np
 import matplotlib.pyplot as plt
 from keras.models import Sequential
-from keras.layers import Dense , Dropout , Conv2D , MaxPooling2D , Flatten , LSTM
+from keras.layers import Dense , Dropout , Conv2D , MaxPooling2D , Flatten , LSTM , Conv1D
 from keras.utils import to_categorical
 from keras.callbacks import EarlyStopping
 from sklearn.metrics import accuracy_score
@@ -87,7 +87,9 @@ es = EarlyStopping(monitor= 'val_loss' , mode = 'min' , patience = 30 , restore_
 
 #2 모델구성 
 model = Sequential()
-model.add(LSTM(50,input_shape = (96,32)))
+model.add(Conv1D(50,2,input_shape = (96,32)))
+model.add(Conv1D(5,2))
+model.add(Flatten())
 model.add(Dense(30))
 model.add(Dense(15))
 model.add(Dense(27))
@@ -130,3 +132,15 @@ print('acc', accuracy_score(y_test,y_predict) )
 # loss 1.3565789461135864
 # loss_acc 0.5144000053405762
 # acc 0.5144
+
+
+# Conv1D
+# Epoch 100/100
+# 4/4 - 0s - loss: 1.6944 - acc: 0.4217 - val_loss: 1.7415 - val_acc: 0.4031 - 232ms/epoch - 58ms/step
+# 313/313 [==============================] - 1s 1ms/step - loss: 1.7169 - acc: 0.4080
+# 313/313 [==============================] - 0s 712us/step
+# loss 1.7168841361999512
+# loss_acc 0.40799999237060547
+# acc 0.408
+
+

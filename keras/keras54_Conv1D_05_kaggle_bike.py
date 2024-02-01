@@ -1,7 +1,7 @@
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
 from keras.models import Sequential , Model
-from keras.layers import Dense , Dropout , Input ,Conv2D , Flatten , LSTM
+from keras.layers import Dense , Dropout , Input ,Conv2D , Flatten , LSTM ,Conv1D
 from keras.callbacks import EarlyStopping , ModelCheckpoint
 import numpy as np
 import pandas as pd
@@ -102,7 +102,8 @@ test_csv = test_csv.values.reshape(6493,4,2)
 
 # 2-2
 model = Sequential()
-model.add(LSTM(20,input_shape = (4,2)))
+model.add(Conv1D(20,2,input_shape = (4,2)))
+model.add(Flatten())
 model.add(Dense(5))
 model.add(Dense(7))
 model.add(Dense(1))
@@ -228,3 +229,12 @@ print("음수갯수",submission_csv[submission_csv['count']<0].count())
 # count       0
 # dtype: int64
 
+# Conv1D
+# [6493 rows x 2 columns]
+# 로스는 :  [23865.8671875, 23865.8671875, 116.0575180053711]
+# 103/103 [==============================] - 0s 474us/step
+# R2 =  0.24315265498677285
+# 시간 :  9.174778461456299
+# 음수갯수 datetime    143
+# count       143
+# dtype: int64

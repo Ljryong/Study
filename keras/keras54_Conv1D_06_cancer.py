@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.datasets import load_breast_cancer
 from sklearn.metrics import r2_score , mean_squared_error , mean_squared_log_error , accuracy_score
 from keras.models import Sequential , Model
-from keras.layers import Dense , Dropout, Input , Conv2D , Flatten , LSTM
+from keras.layers import Dense , Dropout, Input , Conv2D , Flatten , LSTM , Conv1D
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from keras.callbacks import EarlyStopping , ModelCheckpoint
@@ -88,8 +88,9 @@ from sklearn.preprocessing import StandardScaler, RobustScaler
 
 #2-2
 model = Sequential()
-model.add(LSTM(150,input_shape = (5,6),activation='relu'))
-model.add(Dense(76,activation='relu'))
+model.add(Conv1D(36,2,input_shape = (5,6),activation='relu'))
+model.add(Flatten())
+model.add(Dense(64,activation='relu'))
 model.add(Dense(7,activation='relu'))
 model.add(Dense(1))
 
@@ -226,3 +227,9 @@ print('시간 :' , end_time - start_time)
 
 
 
+# Conv1D
+# ACC :  48.30790049805112
+# RMSLE :  3.135423254960872
+# loss =  [5.618140697479248, 0.6315789222717285, 2333.6533203125, 37.389137268066406]
+# r2 =  -10028.152660014144
+# 시간 : 2.886108875274658

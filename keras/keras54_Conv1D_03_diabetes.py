@@ -2,7 +2,7 @@ from sklearn.datasets import load_diabetes
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
 from keras.models import Sequential , Model
-from keras.layers import Dense , Dropout , Input , Conv2D , Flatten , LSTM
+from keras.layers import Dense , Dropout , Input , Conv2D , Flatten , LSTM , Conv1D
 import numpy as np
 import time
 import matplotlib.pyplot as plt
@@ -60,9 +60,8 @@ filepath = ''.join([path , 'k28_3_', date , '_', filename ])
 
 #2-2
 model = Sequential()
-model.add(LSTM(50,input_shape = (2,5)))
-# model.add(Conv2D(5,(2,2),padding='same'))
-# model.add(Flatten())
+model.add(Conv1D(50,2,input_shape = (2,5)))
+model.add(Flatten())
 model.add(Dense(20))
 model.add(Dense(1))
 
@@ -166,4 +165,10 @@ print('시간 : ',end_time - start_time)
 # 시간 :  7.854551553726196
 
 
-
+# Conv1D
+# Epoch 43: early stopping
+# 5/5 [==============================] - 0s 764us/step - loss: 3449.3381 - mse: 3449.3381 - mae: 47.8824
+# 5/5 [==============================] - 0s 814us/step
+# 0.4353658037766295
+# [3449.338134765625, 3449.338134765625, 47.88240051269531]
+# 시간 :  3.2784316539764404

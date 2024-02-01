@@ -1,5 +1,5 @@
-from keras.models import Sequential
-from keras.layers import Dense , Dropout , LeakyReLU , BatchNormalization
+from keras.models import Sequential , Model
+from keras.layers import Dense , Dropout , Input , Conv2D , MaxPooling2D , Flatten , LSTM , Conv1D
 from keras.callbacks import EarlyStopping , ModelCheckpoint
 from keras.utils import to_categorical
 from sklearn.model_selection import train_test_split
@@ -8,7 +8,6 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import OneHotEncoder , LabelEncoder , MinMaxScaler
 import datetime
-from imblearn.over_sampling import SMOTE
 import time
 
 #1
@@ -70,7 +69,7 @@ filepath = ''.join([path , 'k28_11_', date , '_', filename ])
 
 
 
-train_csv['주택소유상태'] = train_csv['주택소유상태'].replace({'MORTGAGE' : 0 , 'OWN' : 1 , 'RENT': 2 , 'ANY' : 3}).astype(float)
+train_csv['주택소유상태'] = train_csv['주택소유상태'].replace({'MORTGAGE' : 0 , 'OWN' : 1 , 'RENT': 2 , 'ANY' : 0}).astype(float)
 test_csv['주택소유상태'] = test_csv['주택소유상태'].replace({'MORTGAGE' : 0 , 'OWN' : 1 , 'RENT': 2}).astype(float)
 
 train_csv['대출목적'] = train_csv['대출목적'].replace({'부채 통합' : 0 , '주택 개선' : 2 , '주요 구매': 4 , '휴가' : 9  
@@ -98,12 +97,9 @@ test_csv['근로기간'] = test_csv['근로기간'].replace({'10+ years' : 10 , 
                                                       '<1 year' : 0.5 , '3' : 3 , '1 years' : 1.5 })
 
 
-encoder.fit(train_csv['대출등급'])
-train_csv['대출등급'] = encoder.transform(train_csv['대출등급'])
-
 # print(train_csv['대출기간'])
 
-print(pd.value_counts(test_csv['대출목적']))       # pd.value_counts() = 컬럼의 이름과 수를 알 수 있다.
+# print(pd.value_counts(test_csv['근로기간']))       # pd.value_counts() = 컬럼의 이름과 수를 알 수 있다.
 
 x = train_csv.drop(['대출등급'],axis = 1 )
 y = train_csv['대출등급']
@@ -119,17 +115,25 @@ y = train_csv['대출등급']
 
 y = y.values.reshape(-1,1)       # (96294, 1)
 
-
 # print(y.shape) 
 ohe = OneHotEncoder(sparse = False)
 ohe.fit(y)
 y_ohe = ohe.transform(y) 
 
 
-x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 19 , shuffle=True , stratify=y)    # 0 1502
-es = EarlyStopping(monitor='val_loss', mode='min' , patience= 100 , restore_best_weights=True , verbose= 1 )
+x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 156 , shuffle=True , stratify=y)    # 0
+es = EarlyStopping(monitor='val_loss', mode='min' , patience= 50 , restore_best_weights=True , verbose= 1 )
+
+print(x_train.shape)        # (67405, 13)
 
 
+print(x_test.shape)         # (28889, 13)
+print(test_csv.shape)       # (64197, 13)
+
+
+x_train = x_train.values.reshape(-1,13,1)
+x_test = x_test.values.reshape(-1,13,1)
+test_csv = test_csv.values.reshape(-1,13,1)
 
 
 # print(y_train.shape)            # (67405, 7) // print(y_train.shape) = output 값 구하는 법
@@ -142,39 +146,57 @@ from sklearn.preprocessing import StandardScaler, RobustScaler
 # scaler = MinMaxScaler()
 # scaler = StandardScaler()
 # scaler = MaxAbsScaler()
-scaler = RobustScaler()
+# scaler = RobustScaler()
 
-scaler.fit(x_train)
-x_train = scaler.transform(x_train)
-x_test = scaler.transform(x_test)
-test_csv = scaler.transform(test_csv)
-
-######################################################
-
-start = time.time()
-smote = SMOTE(random_state=0)
-x_train, y_train = smote.fit_resample(x_train , y_train)
-
-# print(pd.value_counts(x_train))
-# print(pd.value_counts(y_train))
-end = time.time()
-print('시간' , end - start)
-
-######################################################
-
+# scaler.fit(x_train)
+# x_train = scaler.transform(x_train)
+# x_test = scaler.transform(x_test)
+# test_csv = scaler.transform(test_csv)
 
 
 
 #2
+# model = Sequential()
+# model.add(Dense(1024 ,input_shape= (13,)))
+# model.add(Dropout(0.5))
+# model.add(Dense(512))
+# model.add(Dropout(0.1))
+# model.add(Dense(256,activation= 'relu'))
+# model.add(Dropout(0.3))
+# model.add(Dense(128, activation= 'relu'))
+# model.add(Dense(64,activation= 'relu'))
+# model.add(Dropout(0.4))
+# model.add(Dense(32,activation= 'relu'))
+# model.add(Dense(7,activation='softmax'))
+
+#2-1
+# input = Input(shape = (13,))
+# d1 = Dense(1024)(input)
+# drop1 = Dropout(0.5)(d1)
+# d2 = Dense(512)(drop1)
+# drop2 = Dropout(0.1)(d2)
+# d3 = Dense(256,activation='relu')(drop2)
+# drop3 = Dropout(0.3)(d3)
+# d4 = Dense(128,activation='relu')(drop3)
+# d5 = Dense(64,activation='relu')(d4)
+# drop4 = Dropout(0.4)(d5)
+# d6 = Dense(32,activation='relu')(drop4)
+# output = Dense(7,activation='softmax')(d6)
+
+# model = Model(inputs = input , outputs = output)
+
+# 2-2
 model = Sequential()
-model.add(Dense(102 ,input_shape= (13,)))
-model.add(Dropout(0.3))
-model.add(Dense(15,activation= 'relu'))
-model.add(Dense(132,activation= 'relu'))
-model.add(Dropout(0.3))
-model.add(Dense(13, activation= 'relu'))
-model.add(Dense(64,activation= 'relu'))
-model.add(Dense(7,activation='softmax'))
+model.add(Conv1D(20,2,input_shape =(13,1)))
+model.add(Flatten())
+model.add(Dense(6))
+model.add(Dense(10,activation='relu'))
+model.add(Dense(7 , activation='softmax'))
+
+
+
+
+
 
 #3
 from keras.callbacks import EarlyStopping ,ModelCheckpoint
@@ -182,7 +204,11 @@ mcp = ModelCheckpoint(monitor='val_loss', mode='min' , verbose=1, save_best_only
 
 
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
-model.fit(x_train,y_train, epochs = 100000 , batch_size= 700 , validation_split=0.2 , callbacks = [es,mcp] , verbose= 2 )
+
+start_time = time.time()
+
+model.fit(x_train,y_train, epochs = 10000 , batch_size= 1000 , validation_split=0.2 , callbacks = [es , mcp] , verbose= 2 )
+end_time = time.time()
 
 
 #4
@@ -192,11 +218,13 @@ y_submit = model.predict(test_csv)
 y_predict = model.predict(x_test)
 arg_pre = np.argmax(y_predict,axis=1)
 arg_test = np.argmax(y_test,axis=1)
-submit =  np.argmax(y_submit,axis=1)
 
+submit =  np.argmax(y_submit,axis=1)
 
 y_submit = encoder.inverse_transform(submit)       # inverse_transform 처리하거나, 뽑을라면 argmax처리를 해줘야한다.
 submission_csv['대출등급'] = y_submit
+submission_csv.to_csv(path+'submission_0115_3.csv', index = False)
+
 
 
 def f1(arg_test,arg_pre) :
@@ -209,13 +237,14 @@ acc = acc(arg_test,arg_pre)
 
 
 
-submission_csv.to_csv(path+'submission_0119.csv', index = False)
+submission_csv.to_csv(path+'submission_0116.csv', index = False)
 
 
 print('y_submit = ', y_submit)
 
 print('loss = ',loss)
 print("f1 = ",f1)
+print('시간 :' , end_time - start_time)
 
 
 # y_submit =  ['B' 'B' 'B' ... 'B' 'C' 'B']
@@ -274,25 +303,38 @@ print("f1 = ",f1)
 # f1 =  0.8497940978155077
 
 
+# cpu
+# 시간 : 525.7857625484467
+# gpu
+# 시간 : 49.125765323638916
 
 
-# #2
-# model = Sequential()
-# model.add(Dense(102 ,input_shape= (13,)))
-# model.add(Dense(15,activation= 'swish'))
-# model.add(Dense(132,activation= 'swish'))
-# model.add(Dense(13, activation= 'swish'))
-# model.add(Dense(64,activation= 'swish'))
-# model.add(Dense(7,activation='softmax'))
-# Epoch 3597: early stopping
-# 903/903 [==============================] - 1s 876us/step - loss: 0.2848 - acc: 0.9255
-# 2007/2007 [==============================] - 1s 505us/step
-# 903/903 [==============================] - 0s 545us/step
-# y_submit =  ['B' 'B' 'A' ... 'D' 'C' 'A']
-# loss =  [0.2847670018672943, 0.9255425930023193]
-# f1 =  0.9094408160608632
-# = 0.92
+
+# Cnn
+# loss =  [73.19720458984375, 0.3726331889629364]
+# f1 =  0.2820974433545684
+# 시간 : 21.618022918701172
 
 
+
+# LSTM
+# Epoch 325: early stopping
+# 903/903 [==============================] - 1s 1ms/step - loss: 1.4084 - acc: 0.3799
+# 2007/2007 [==============================] - 2s 821us/step
+# 903/903 [==============================] - 1s 901us/step
+# y_submit =  ['B' 'B' 'A' ... 'B' 'B' 'B']
+# loss =  [1.408402681350708, 0.3798677623271942]
+# f1 =  0.20790150251223957
+# 시간 : 60.58427596092224
+
+# Conv1D
+# Epoch 314: early stopping
+# 903/903 [==============================] - 1s 1ms/step - loss: 1.7614 - acc: 0.2993
+# 2007/2007 [==============================] - 1s 615us/step
+# 903/903 [==============================] - 1s 638us/step
+# y_submit =  ['B' 'B' 'B' ... 'B' 'B' 'B']
+# loss =  [1.7613980770111084, 0.2993180751800537]
+# f1 =  0.06585083640089567
+# 시간 : 33.594499349594116
 
 

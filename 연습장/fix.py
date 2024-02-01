@@ -70,15 +70,15 @@ filepath = ''.join([path , 'k28_11_', date , '_', filename ])
 
 
 
-train_csv['주택소유상태'] = train_csv['주택소유상태'].replace({'MORTGAGE' : 0 , 'OWN' : 1 , 'RENT': 2 , 'ANY' : 3}).astype(float)
+train_csv['주택소유상태'] = train_csv['주택소유상태'].replace({'MORTGAGE' : 0 , 'OWN' : 1 , 'RENT': 2 , 'ANY' : 0}).astype(float)
 test_csv['주택소유상태'] = test_csv['주택소유상태'].replace({'MORTGAGE' : 0 , 'OWN' : 1 , 'RENT': 2}).astype(float)
 
 train_csv['대출목적'] = train_csv['대출목적'].replace({'부채 통합' : 0 , '주택 개선' : 2 , '주요 구매': 4 , '휴가' : 9  
                                                      , '의료' : 5 , '자동차' : 6 , '신용 카드' : 1 , '기타' : 3 , '주택개선' : 8,
-                                                      '소규모 사업' : 7 , '이사' :  8 , '주택': 10 , '재생 에너지' : 11 })
+                                                      '소규모 사업' : 7 , '이사' :  12 , '주택': 10 , '재생 에너지' : 11 })
 test_csv['대출목적'] = test_csv['대출목적'].replace({'부채 통합' : 0 , '주택 개선' : 2 , '주요 구매': 4 , '휴가' : 9 ,
                                              '의료' : 5 , '자동차' : 6 , '신용 카드' : 1 , '기타' : 3 , '주택개선' : 8,
-                                             '소규모 사업' : 7 , '이사' :  8 , '주택': 10 , '재생 에너지' : 11 , 
+                                             '소규모 사업' : 7 , '이사' :  12 , '주택': 10 , '재생 에너지' : 11 , 
                                              '결혼' : 0 })
 
 # 결혼은 train에 없는 라벨이다. 그래서 12 로 두든 2로 두든 아니면 없애든 값이 좋은걸로 비교해보면 된다.
@@ -98,8 +98,6 @@ test_csv['근로기간'] = test_csv['근로기간'].replace({'10+ years' : 10 , 
                                                       '<1 year' : 0.5 , '3' : 3 , '1 years' : 1.5 })
 
 
-encoder.fit(train_csv['대출등급'])
-train_csv['대출등급'] = encoder.transform(train_csv['대출등급'])
 
 # print(train_csv['대출기간'])
 
@@ -126,8 +124,8 @@ ohe.fit(y)
 y_ohe = ohe.transform(y) 
 
 
-x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 19 , shuffle=True , stratify=y)    # 0 1502
-es = EarlyStopping(monitor='val_loss', mode='min' , patience= 100 , restore_best_weights=True , verbose= 1 )
+x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 27 , shuffle=True , stratify=y)    # 0 1502
+es = EarlyStopping(monitor='val_loss', mode='min' , patience= 500 , restore_best_weights=True , verbose= 1 )
 
 
 
@@ -149,33 +147,48 @@ x_train = scaler.transform(x_train)
 x_test = scaler.transform(x_test)
 test_csv = scaler.transform(test_csv)
 
-######################################################
-
-start = time.time()
-smote = SMOTE(random_state=0)
-x_train, y_train = smote.fit_resample(x_train , y_train)
-
-# print(pd.value_counts(x_train))
-# print(pd.value_counts(y_train))
-end = time.time()
-print('시간' , end - start)
-
-######################################################
-
-
-
 
 #2
 model = Sequential()
-model.add(Dense(102 ,input_shape= (13,)))
-model.add(Dropout(0.3))
-model.add(Dense(15,activation= 'relu'))
-model.add(Dense(132,activation= 'relu'))
-model.add(Dropout(0.3))
-model.add(Dense(13, activation= 'relu'))
-model.add(Dense(64,activation= 'relu'))
+model.add(Dense(64 ,input_shape= (13,),activation='swish'))
+model.add(Dense(16,activation= 'swish'))
+model.add(Dense(64,activation= 'swish'))
+model.add(Dense(16, activation= 'swish'))
+model.add(Dense(64,activation= 'swish'))
+model.add(Dense(16,activation= 'swish'))
+model.add(Dense(32,activation= 'swish'))
+model.add(Dense(16, activation= 'swish'))
+model.add(Dense(32,activation= 'swish'))
+model.add(Dense(16,activation= 'swish'))
+model.add(Dense(32,activation= 'swish'))
+model.add(Dense(16, activation= 'swish'))
+model.add(Dense(64,activation= 'swish'))
+model.add(Dense(16,activation= 'swish'))
+model.add(Dense(64,activation= 'swish'))
+model.add(Dense(16, activation= 'swish'))
+model.add(Dense(32,activation= 'swish'))
+model.add(Dense(16,activation= 'swish'))
+model.add(Dense(32,activation= 'swish'))
+model.add(Dense(8, activation= 'swish'))
 model.add(Dense(7,activation='softmax'))
 
+'''
+model = Sequential()
+model.add(Dense(64 ,input_shape= (13,),activation='swish'))
+model.add(Dense(16,activation= 'swish'))
+model.add(Dense(64,activation= 'swish'))
+model.add(Dense(16,activation= 'swish'))
+model.add(Dense(64,activation= 'swish'))
+model.add(Dense(16,activation= 'swish'))
+model.add(Dense(32,activation= 'swish'))
+model.add(Dense(16,activation= 'swish'))
+model.add(Dense(32,activation= 'swish'))
+model.add(Dense(16,activation= 'swish'))
+model.add(Dense(32,activation= 'swish'))
+model.add(Dense(16,activation= 'swish'))
+model.add(Dense(7,activation='softmax'))
+
+'''
 #3
 from keras.callbacks import EarlyStopping ,ModelCheckpoint
 mcp = ModelCheckpoint(monitor='val_loss', mode='min' , verbose=1, save_best_only=True , filepath=  filepath   )
@@ -195,6 +208,9 @@ arg_test = np.argmax(y_test,axis=1)
 submit =  np.argmax(y_submit,axis=1)
 
 
+
+
+
 y_submit = encoder.inverse_transform(submit)       # inverse_transform 처리하거나, 뽑을라면 argmax처리를 해줘야한다.
 submission_csv['대출등급'] = y_submit
 
@@ -209,7 +225,7 @@ acc = acc(arg_test,arg_pre)
 
 
 
-submission_csv.to_csv(path+'submission_0119.csv', index = False)
+submission_csv.to_csv(path+'submission_0201.csv', index = False)
 
 
 print('y_submit = ', y_submit)
@@ -292,7 +308,6 @@ print("f1 = ",f1)
 # loss =  [0.2847670018672943, 0.9255425930023193]
 # f1 =  0.9094408160608632
 # = 0.92
-
 
 
 

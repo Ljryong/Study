@@ -3,7 +3,7 @@ from keras.preprocessing.image import ImageDataGenerator
 import numpy as np
 import matplotlib.pyplot as plt
 from keras.models import Sequential , Model
-from keras.layers import Dense , Input , Conv2D , MaxPooling2D , Dropout ,Flatten , LSTM
+from keras.layers import Dense , Input , Conv2D , MaxPooling2D , Dropout ,Flatten , LSTM , Conv1D
 from keras.callbacks import EarlyStopping
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
@@ -90,7 +90,7 @@ y_test = to_categorical(y_test)
 
 #2 모델구성
 model = Sequential()
-model.add(LSTM(41, input_shape = (28,28) , activation='relu' ))
+model.add(Conv1D(41,2, input_shape = (28,28) , activation='relu' ))
 # model.add(MaxPooling2D())
 # model.add(Dropout(0.3))
 # model.add(Conv2D(21 , (2,2) , activation='relu', strides=1))
@@ -102,6 +102,11 @@ model.add(LSTM(41, input_shape = (28,28) , activation='relu' ))
 # model.add(Conv2D(48 , (2,2) , activation='relu' , strides=1))
 # model.add(Dropout(0.3))
 # model.add(Flatten())
+model.add(Conv1D(4,2))
+model.add(Conv1D(45,2))
+model.add(Conv1D(6,2))
+model.add(Conv1D(49,2))
+model.add(Flatten())
 model.add(Dense(27,activation='relu'))
 model.add(Dropout(0.2))
 model.add(Dense(9,activation='relu'))
@@ -154,6 +159,32 @@ print(accuracy_score(y_test,y_predict))
 # 313/313 [==============================] - 1s 4ms/step
 # loss =  [0.5635167956352234, 0.7904000282287598]
 # 0.7904
+
+
+# Conv1D
+# Epoch 10/10
+# 48/48 [==============================] - 0s 4ms/step - loss: 0.5153 - acc: 0.8165 - val_loss: 0.4612 - val_acc: 0.8323
+# 313/313 [==============================] - 1s 1ms/step - loss: 0.4784 - acc: 0.8273
+# 313/313 [==============================] - 0s 763us/step
+# loss =  [0.4784472584724426, 0.8273000121116638]
+# 0.8273
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

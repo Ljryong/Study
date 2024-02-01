@@ -2,7 +2,7 @@ from sklearn.datasets import fetch_covtype
 import numpy as np
 import pandas as pd
 from keras.models import Sequential , Model
-from keras.layers import Dense , Dropout , Input , Conv2D , MaxPooling2D , Flatten , LSTM
+from keras.layers import Dense , Dropout , Input , Conv2D , MaxPooling2D , Flatten , LSTM , Conv1D
 from keras.callbacks import EarlyStopping , ModelCheckpoint
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
@@ -94,9 +94,11 @@ mcp = ModelCheckpoint(monitor='val_loss', mode='min' , verbose=1, save_best_only
 
 #2-2
 model = Sequential()
-model.add(LSTM(20,input_shape = (9,6)))
+model.add(Conv1D(20,2,input_shape = (9,6)))
+model.add(Conv1D(10,2))
+model.add(Flatten())
 model.add(Dense(12))
-model.add(Dense(78))
+model.add(Dense(36))
 model.add(Dense(7,activation='softmax'))
 
 
@@ -215,3 +217,20 @@ print('시간 : ',end_time - start_time)
 # acc =  0.6367209014136221
 # reslut =  [0.7894095182418823, 0.6367208957672119]
 # 시간 :  29.61864185333252
+
+# Conv1D
+# Epoch 80: early stopping
+# 5447/5447 [==============================] - 6s 1ms/step - loss: 1.4231 - acc: 0.5509
+# 5447/5447 [==============================] - 3s 625us/step
+# (174304,)
+# (174304,)
+# acc =  0.5508938406462273
+# reslut =  [1.4231102466583252, 0.5508938431739807]
+# 시간 :  15.65010380744934
+
+
+
+
+
+
+

@@ -1,5 +1,5 @@
 from keras.models import Sequential ,Model
-from keras.layers import Dense , Input , Dropout , MaxPooling2D , Conv2D ,Flatten , LSTM
+from keras.layers import Dense , Input , Dropout , MaxPooling2D , Conv2D ,Flatten , LSTM ,Conv1D
 from keras.callbacks import EarlyStopping
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
@@ -18,12 +18,15 @@ x = x.reshape(-1,450,150)
 
 x_train , x_test, y_train ,y_test = train_test_split(x,y, test_size=0.3 , random_state= 0 , shuffle=True, stratify=y )
 
-es = EarlyStopping(monitor='val_loss' , mode='min' , patience= 10 , restore_best_weights=True , verbose=1 )
+es = EarlyStopping(monitor='val_loss' , mode='min' , patience= 100 , restore_best_weights=True , verbose=1 )
 
 #2 모델구성
 input = Input(shape=(450,150))
-l1 = LSTM(64,activation='relu')(input)
-d1 = Dense(64,activation='relu')(l1)
+c1 = Conv1D(64,3,activation='relu')(input)
+c2 = Conv1D(6,3,activation='relu')(c1)
+c3 = Conv1D(64,2,activation='relu')(c2)
+f1 = Flatten()(c3)
+d1 = Dense(64,activation='relu')(f1)
 drop1 = Dropout(0.3)(d1)
 d2 = Dense(128,activation='relu')(drop1)
 drop2 = Dropout(0.3)(d1)
@@ -62,3 +65,14 @@ print('Acc =' ,accuracy_score(y_test, y_predict))
 # 24/24 [==============================] - 3s 132ms/step
 # loss 5.353571891784668
 # acc 0.3399471044540405
+
+# Conv1D
+# Epoch 14: early stopping
+# 24/24 [==============================] - 0s 4ms/step - loss: 1.0817 - acc: 0.4101
+# 24/24 [==============================] - 0s 2ms/step
+# loss 1.081734299659729
+# acc 0.4100528955459595
+# Acc = 0.031746031746031744
+
+
+

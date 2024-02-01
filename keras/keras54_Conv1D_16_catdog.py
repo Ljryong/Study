@@ -3,7 +3,7 @@
 import numpy as np
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
-from keras.layers import Dense , Conv2D ,Flatten , MaxPooling2D , Dropout, LSTM
+from keras.layers import Dense , Conv2D ,Flatten , MaxPooling2D , Dropout, LSTM , Conv1D
 from keras.callbacks import EarlyStopping
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
@@ -35,8 +35,8 @@ es = EarlyStopping(monitor='val_loss' , mode = 'min' , patience= 10 , restore_be
 
 #2 모델구성
 model = Sequential()
-model.add(LSTM(64,input_shape = (300,100) , activation='relu' ))
-model.add(Dense(80,activation='relu'))
+model.add(Conv1D(64,2,input_shape = (300,100) , activation='relu' ))
+model.add(Flatten())
 model.add(Dense(40, activation= 'relu'))
 model.add(Dense(16,activation='relu'))
 model.add(Dense(1,activation='sigmoid'))
@@ -45,7 +45,7 @@ model.add(Dense(1,activation='sigmoid'))
 
 #3 컴파일, 훈련
 model.compile(loss= 'binary_crossentropy' , optimizer='adam' , metrics=['acc'] )
-model.fit(x_train,y_train, epochs = 1 , batch_size= 10 , validation_split= 0.2, verbose= 1 ,callbacks=[es])
+model.fit(x_train,y_train, epochs = 1 , batch_size= 1000 , validation_split= 0.2, verbose= 1 ,callbacks=[es])
 
 
 #4 평가, 예측
@@ -144,3 +144,18 @@ model.save('C:\\_data\\_save\\models\\kaggle\\cat_dog\\'+ date + '_' + file_acc 
 # 188/188 [==============================] - 16s 87ms/step - loss: 0.6925 - acc: 0.5383
 # 157/157 [==============================] - 14s 87ms/step
 # loss [0.6924639344215393, 0.5383333563804626]
+
+
+
+# Conv1D
+# 12/12 [==============================] - 3s 48ms/step - loss: 0.9702 - acc: 0.5061 - val_loss: 0.6954 - val_acc: 0.5014
+# 188/188 [==============================] - 0s 2ms/step - loss: 0.6947 - acc: 0.5005
+# 157/157 [==============================] - 0s 1ms/step
+# loss [0.6946752071380615, 0.5005000233650208]
+
+
+
+
+
+
+

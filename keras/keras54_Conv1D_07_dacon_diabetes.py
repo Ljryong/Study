@@ -1,5 +1,5 @@
 from keras.models import Sequential , Model
-from keras.layers import Dense , Dropout , Input , Conv2D , Flatten , MaxPooling1D , LSTM
+from keras.layers import Dense , Dropout , Input , Conv2D , Flatten , MaxPooling1D , LSTM , Conv1D
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score , accuracy_score , mean_squared_error
 import numpy as np
@@ -89,8 +89,8 @@ filepath = ''.join([path , 'k28_7_', date , '_', filename ])
 
 # 2-2
 model = Sequential()
-model.add(LSTM(64,input_shape = (4,2) ))
-model.add(Dense(63,activation='relu'))
+model.add(Conv1D(64,2,input_shape = (4,2) ))
+model.add(Flatten())
 model.add(Dense(36,activation='relu'))
 model.add(Dense(1,activation='sigmoid'))
 
@@ -178,3 +178,8 @@ print('시간 : ',end_time - start_time)
 # loss =  [0.5519381761550903, 0.7346938848495483]
 # Acc =  0.7346938775510204
 # 시간 :  4.619797468185425
+
+# Conv1D
+# loss =  [0.6207653880119324, 0.6632652878761292]
+# Acc =  0.6632653061224489
+# 시간 :  3.481691598892212

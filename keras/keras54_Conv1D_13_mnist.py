@@ -2,7 +2,7 @@ import numpy as np
 from keras.datasets import mnist
 import pandas as pd
 from keras.models import Sequential , Model
-from keras.layers import Dense , Conv2D , Flatten  , MaxPooling2D  , Input   ,LSTM  # Flatten : 평평한
+from keras.layers import Dense , Conv2D , Flatten  , MaxPooling2D  , Input   ,LSTM , Conv1D # Flatten : 평평한
 from keras.utils import to_categorical
 from sklearn.metrics import accuracy_score
 from keras.callbacks import EarlyStopping
@@ -65,8 +65,12 @@ es = EarlyStopping(monitor='val_loss'  , mode='min' , patience=50 ,restore_best_
 
 #2-1 모델구성 함수형
 input = Input(shape=(28,28))
-d1 = LSTM(60,activation='relu')(input)
-d2 = Dense(65,activation='relu')(d1)
+c1 = Conv1D(60,2,activation='relu')(input)
+c2 = Conv1D(2,2,activation='relu')(c1)
+c3 = Conv1D(43,2,activation='relu')(c2)
+c4 = Conv1D(4,2,activation='relu')(c3)
+f1 = Flatten()(c4)
+d2 = Dense(65,activation='relu')(f1)
 d3 = Dense(45,activation='relu')(d2)
 d4= Dense(55,activation='relu')(d3)
 d5 = Dense(30,activation='relu')(d4)
@@ -132,3 +136,11 @@ print(accuracy_score(y_test,y_predict))
 # loss = [2.0935513973236084, 0.23019999265670776]
 # 0.2302
 
+
+# Conv1D
+# Epoch 10/10
+# 48/48 [==============================] - 0s 4ms/step - loss: 0.2130 - acc: 0.9424 - val_loss: 0.2241 - val_acc: 0.9403
+# 313/313 [==============================] - 1s 1ms/step - loss: 0.2266 - acc: 0.9383
+# 313/313 [==============================] - 0s 931us/step
+# loss = [0.22656545042991638, 0.9383000135421753]
+# 0.9383

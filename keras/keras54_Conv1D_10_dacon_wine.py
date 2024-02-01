@@ -1,5 +1,5 @@
 from keras.models import Sequential , Model
-from keras.layers import Dense , Dropout , Input ,Conv2D , Flatten , MaxPooling2D , LSTM
+from keras.layers import Dense , Dropout , Input ,Conv2D , Flatten , MaxPooling2D , LSTM , Conv1D
 from keras.callbacks import EarlyStopping , ModelCheckpoint
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
@@ -125,7 +125,9 @@ mcp = ModelCheckpoint(monitor='val_loss', mode='min' , verbose=1, save_best_only
 
 # 2-2
 model = Sequential()
-model.add(LSTM(12,input_shape = (4,3)))
+model.add(Conv1D(12,2,input_shape = (4,3)))
+model.add(Conv1D(2,2))
+model.add(Flatten())
 model.add(Dense(12))
 model.add(Dense(5))
 model.add(Dense(7,activation = 'softmax'))
@@ -340,3 +342,14 @@ print('시간 :' , end_time - start_time)
 # Acc =  0.5430303030303031
 # 시간 : 29.529901027679443S
 
+
+
+# Conv1D
+# Epoch 1000: val_loss improved from 1.27934 to 1.27927, saving model to c:/_data/_save/MCP\k26_10_0131-1447_1000-1.2793.hdf5
+# 1/1 [==============================] - 0s 30ms/step - loss: 1.2449 - acc: 0.4683 - val_loss: 1.2793 - val_acc: 0.4338
+# 52/52 [==============================] - 0s 2ms/step - loss: 1.2568 - acc: 0.4612
+# 52/52 [==============================] - 0s 714us/step
+# 32/32 [==============================] - 0s 2ms/step
+# [1.2567776441574097, 0.4612121284008026]
+# Acc =  0.4612121212121212
+# 시간 : 32.623046875

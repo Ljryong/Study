@@ -1,6 +1,6 @@
 from keras.datasets import cifar100
 from keras.models import Sequential
-from keras.layers import Dense , Conv2D , Dropout , Flatten , MaxPooling2D , BatchNormalization , LSTM
+from keras.layers import Dense , Conv2D , Dropout , Flatten , MaxPooling2D , BatchNormalization , LSTM , Conv1D
 from keras.callbacks import EarlyStopping
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
@@ -32,7 +32,9 @@ x_test = x_test.reshape(-1,96,32)
 
 #2 모델구성
 model = Sequential()
-model.add(LSTM(150,input_shape = (96,32),activation='relu'))
+model.add(Conv1D(150,2,input_shape = (96,32),activation='relu'))
+model.add(Conv1D(38,2))
+model.add(Flatten())
 model.add(Dense(91,activation='relu'))
 model.add(Dropout(0.3))
 model.add(Dense(70,activation='relu'))
@@ -91,3 +93,11 @@ plt.show()
 # 313/313 [==============================] - 9s 27ms/step
 # loss = [4.602112293243408, 0.020800000056624413]
 # ACC =  0.0208
+
+
+# Conv1D
+# Epoch 293: early stopping
+# 313/313 [==============================] - 1s 1ms/step - loss: 3.8088 - acc: 0.1302
+# 313/313 [==============================] - 0s 676us/step
+# loss = [3.808804988861084, 0.13019999861717224]
+# ACC =  0.1302

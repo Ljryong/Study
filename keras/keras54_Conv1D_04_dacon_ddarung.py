@@ -1,7 +1,7 @@
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score , mean_squared_error
 from keras.models import Sequential , Model
-from keras.layers import Dense , Dropout , Input , Flatten , Conv2D
+from keras.layers import Dense , Dropout , Input , Flatten , Conv2D ,Conv1D
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -89,10 +89,10 @@ filepath = ''.join([path , 'k28_4_', date , '_', filename ])
 
 # 2-2
 model = Sequential()
-model.add(Conv2D(256,(2,2),input_shape = (3,3,1) , padding='same' , strides=1 ))
+model.add(Conv1D(64,2,input_shape = (3,3,1) , padding='same' , strides=1 ))
 # model.add(Conv2D(26,(2,2),padding='same'))
 # model.add(Conv2D(126,(2,2),padding='same'))
-model.add(Conv2D(13,(2,2),padding='same'))
+model.add(Conv2D(13,1))
 model.add(Flatten())
 model.add(Dense(128))
 model.add(Dense(26))
@@ -216,5 +216,17 @@ print('시간 :' , end_time - start_time)
 # loss :  [5650.50048828125, 5650.50048828125, 59.81694412231445]
 # RMSE :  75.16980827282218
 # 시간 : 3.717210292816162
+
+
+# Conv1D
+# R2 :  0.5289572550555011
+# loss :  [2810.16259765625, 2810.16259765625, 39.02404022216797]
+# RMSE :  53.0109711906648
+# 시간 : 2.5706210136413574
+
+
+
+
+
 
 

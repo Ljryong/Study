@@ -2,7 +2,7 @@ from sklearn.datasets import load_wine
 import numpy as np
 import pandas as pd
 from keras.models import Sequential , Model
-from keras.layers import Dense , Dropout , Input , Conv2D , Flatten , MaxPooling2D , LSTM
+from keras.layers import Dense , Dropout , Input , Conv2D , Flatten , MaxPooling2D , LSTM , Conv1D
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, accuracy_score
 import matplotlib.pyplot as plt
@@ -91,7 +91,8 @@ from sklearn.preprocessing import StandardScaler, RobustScaler
 
 #2-2
 model = Sequential()
-model.add(LSTM(20,input_shape = (13,1)))
+model.add(Conv1D(20,2,input_shape = (13,1)))
+model.add(Flatten())
 model.add(Dense(6))
 model.add(Dense(10))
 model.add(Dense(3,activation='softmax'))
@@ -166,3 +167,14 @@ print('시간 :' , end_time - start_time)
 #  0 0 2 2 1 1 1 0 1 1 2 1 2 1 1 0 0]
 # accuracy :  0.9629629629629629
 # 시간 : 19.852130651474
+
+
+
+
+# Conv1D
+# 결과 0.20015136897563934
+# acc 0.9259259104728699
+# [0 1 0 0 1 2 1 2 0 2 0 1 2 0 2 2 0 1 2 1 0 2 1 1 1 1 0 2 2 1 1 2 0 1 1 0 0
+#  0 0 2 2 1 1 1 0 1 1 2 1 2 2 1 0 0]
+# accuracy :  0.9259259259259259
+# 시간 : 7.492092847824097
