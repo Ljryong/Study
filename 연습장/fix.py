@@ -70,17 +70,17 @@ x = train_csv.drop(['대출등급'],axis = 1 )
 y = train_csv['대출등급']
 
 
-y = y.values.reshape(-1,1)       # (96294, 1)
+y = y.values.reshape(-1)       # (96294, 1)
 
 
-# print(y.shape) 
-ohe = OneHotEncoder(sparse = False)
-ohe.fit(y)
-y_ohe = ohe.transform(y) 
+# # print(y.shape) 
+# ohe = OneHotEncoder(sparse = False)
+# ohe.fit(y)
+# y_ohe = ohe.transform(y) 
 
 
-x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 27 , shuffle=True , stratify=y)    # 0 1502
-es = EarlyStopping(monitor='val_loss', mode='min' , patience= 500 , restore_best_weights=True , verbose= 1 )
+x_train ,x_test , y_train , y_test = train_test_split(x,y,test_size = 0.3, random_state= 111 , shuffle=True , stratify=y)    # 0 1502
+es = EarlyStopping(monitor='val_loss', mode='min' , patience= 400 , restore_best_weights=True , verbose= 1 )
 
 
 
@@ -105,32 +105,25 @@ test_csv = scaler.transform(test_csv)        # test_csv도 같이 학습 시켜�
 
 #2
 model = Sequential()
-model.add(Dense(64 ,input_shape= (13,),activation='swish'))
-model.add(Dense(16,activation= 'swish'))
-model.add(Dense(64,activation= 'swish'))
-model.add(Dense(16, activation= 'swish'))
-model.add(Dense(64,activation= 'swish'))
-model.add(Dense(16,activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
-model.add(Dense(16, activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
-model.add(Dense(16,activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
-model.add(Dense(16, activation= 'swish'))
-model.add(Dense(64,activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
-model.add(Dense(16, activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
-model.add(Dense(16,activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
-model.add(Dense(16, activation= 'swish'))
-model.add(Dense(64,activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
-model.add(Dense(16,activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
-model.add(Dense(8, activation= 'swish'))
-model.add(Dense(7,activation='softmax'))
+model.add(Dense(37,input_shape=(13,), activation='swish'))
+model.add(Dense(13, activation='swish'))
+model.add(Dense(31, activation='swish'))
+model.add(Dense(13, activation='swish'))
+model.add(Dense(41, activation='swish'))
+model.add(Dense(11, activation='swish'))
+model.add(Dense(37, activation='swish'))
+model.add(Dense(17, activation='swish'))
+model.add(Dense(37, activation='swish'))
+model.add(Dense(19, activation='swish'))
+model.add(Dense(39, activation='swish'))
+model.add(Dense(13, activation='swish'))
+model.add(Dense(41, activation='swish'))
+model.add(Dense(19, activation='swish'))
+model.add(Dense(37, activation='swish'))
+model.add(Dense(11, activation='swish'))
+model.add(Dense(47, activation='swish'))
+model.add(Dense(17, activation='swish'))
+model.add(Dense(7, activation='softmax'))
 
 '''
 model = Sequential()
@@ -165,8 +158,8 @@ from keras.callbacks import EarlyStopping ,ModelCheckpoint
 mcp = ModelCheckpoint(monitor='val_loss', mode='min' , verbose=1, save_best_only=True , filepath=  filepath   )
 
 
-model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
-model.fit(x_train,y_train, epochs = 100000 , batch_size= 700 , validation_split=0.2 , callbacks = [es,mcp] , verbose= 2 )
+model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['acc'])
+model.fit(x_train,y_train, epochs = 100000 , batch_size= 1000 , validation_split=0.2 , callbacks = [es,mcp] , verbose= 2 )
 
 
 #4
@@ -175,7 +168,7 @@ loss = model.evaluate(x_test,y_test)
 y_submit = model.predict(test_csv)
 y_predict = model.predict(x_test)
 arg_pre = np.argmax(y_predict,axis=1)
-arg_test = np.argmax(y_test,axis=1)
+# arg_test = np.argmax(y_test,axis=1)
 submit =  np.argmax(y_submit,axis=1)
 
 
@@ -188,15 +181,15 @@ submission_csv['대출등급'] = y_submit
 
 def f1(arg_test,arg_pre) :
     return f1_score(arg_test,arg_pre, average='macro')
-f1 = f1(arg_test,arg_pre)
+f1 = f1(y_test,arg_pre)
 
 def acc(arg_test,arg_pre) :
     return accuracy_score(arg_test,arg_pre)
-acc = acc(arg_test,arg_pre)
+acc = acc(y_test,arg_pre)
 
 
 
-submission_csv.to_csv(path+'submission_0201.csv', index = False)
+submission_csv.to_csv(path+'submission_0202.csv', index = False)
 
 
 print('y_submit = ', y_submit)
