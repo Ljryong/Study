@@ -6,6 +6,10 @@ from sklearn.metrics import accuracy_score
 
 
 #1 데이터
+# docs = ['너무 재미있다.' , '참 최고에요.' , '참 잘만든 영화에요.' , '추천하고 싶은 영화입니다.' , '한 번 더 보고 싶어요' ,
+#         '글쎄, 싫다' , '별로에요' , '생각보다 지루해요' , '정룡이가 연기가 어색해요' , '재미없어요' , 
+#         '너무 재미없다' ,'나는 참 재밋네요' , '상헌이 바보' , '반장 정말 잘생겼다', '욱이 또 잔다.'  ]
+
 docs = ['너무 재미있다.' , '참 최고에요.' , '참 잘만든 영화에요.' , '추천하고 싶은 영화입니다.' , '한 번 더 보고 싶어요' ,
         '글쎄' , '별로에요' , '생각보다 지루해요' , '연기가 어색해요' , '재미없어요' , 
         '너무 재미없다' ,'참 재밋네요' , '상헌이 바보' , '반장 잘생겼다', '욱이 또 잔다.'  ]
@@ -20,6 +24,7 @@ print(text)
 
 token = Tokenizer()
 token.fit_on_texts(text)
+token.fit_on_texts(x_predict)
 
 
 print(token.word_index)
@@ -110,7 +115,9 @@ model.fit(pad_x , labels, epochs=1000 , batch_size= 10  )
 
 #4 평가, 예측
 loss = model.evaluate(pad_x,labels)
-pre = model.predict(pad_x)
+
+x_predict = np.array(x_predict)
+pre = model.predict(x_predict)
 pre = np.round(pre)
 
 print('loss = ',loss)

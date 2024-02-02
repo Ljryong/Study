@@ -11,6 +11,7 @@ import datetime
 from imblearn.over_sampling import SMOTE
 import time
 
+
 #1
 path = 'c:/_data/dacon/dechul//'
 train_csv = pd.read_csv(path+ 'train.csv' , index_col= 0)
@@ -72,8 +73,8 @@ from sklearn.preprocessing import MinMaxScaler, MaxAbsScaler
 from sklearn.preprocessing import StandardScaler, RobustScaler
 
 ###################
-# scaler = MinMaxScaler()
-scaler = StandardScaler()
+scaler = MinMaxScaler()
+# scaler = StandardScaler()
 # scaler = MaxAbsScaler()
 # scaler = RobustScaler()
 
@@ -84,50 +85,52 @@ test_csv = scaler.transform(test_csv)        # test_csv도 같이 학습 시켜�
 
 
 #2
-'''
-model = Sequential()
-model.add(Dense(32 ,input_shape= (13,),activation='swish'))
-model.add(Dense(16,activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
-model.add(Dense(16, activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
-model.add(Dense(16,activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
-model.add(Dense(16, activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
-model.add(Dense(16,activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
-model.add(Dense(16, activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
-model.add(Dense(16,activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
-model.add(Dense(16,activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
-model.add(Dense(16,activation= 'swish'))
-model.add(Dense(7,activation='softmax'))
 
-'''
-model = Sequential()
-model.add(Dense(37, input_shape=(13,), activation='swish'))
-model.add(Dense(13, activation='swish'))
-model.add(Dense(31, activation='swish'))
-model.add(Dense(13, activation='swish'))
-model.add(Dense(41, activation='swish'))
-model.add(Dense(11, activation='swish'))
-model.add(Dense(37, activation='swish'))
-model.add(Dense(17, activation='swish'))
-model.add(Dense(37, activation='swish'))
-model.add(Dense(19, activation='swish'))
-model.add(Dense(39, activation='swish'))
-model.add(Dense(13, activation='swish'))
-model.add(Dense(41, activation='swish'))
-model.add(Dense(19, activation='swish'))
-model.add(Dense(37, activation='swish'))
-model.add(Dense(11, activation='swish'))
-model.add(Dense(47, activation='swish'))
-model.add(Dense(17, activation='swish'))
-model.add(Dense(7, activation='softmax'))
+from keras.optimizers import Adam
+def build_model(hp):
+    model = Sequential()
+        # Dense Layer에 unit수 선택
+    # 정수형 타입 32부터 512까지 32배수 범위 내에서 탐색
+        # activation 은 relu 사용
+    model.add(Dense(units=hp.Int('units',
+                                        min_value=32,
+                                        max_value=512,
+                                        step=32),
+                           activation='relu'))
+
+    model.add(Dense(10, activation='softmax'))
+    model.compile(
+        optimizer=Adam(
+        # 학습률은 자주 쓰이는 0.01, 0.001, 0.0001 3개의 값 중 탐색
+            hp.Choice('learning_rate',
+                      values=[1e-2, 1e-3, 1e-4])),
+        loss='sparse_categorical_crossentropy',
+        metrics=['accuracy'])
+    return model
+
+
+from keras_tuner.tuners import Hyperband
+tuner = Hyperband(
+        build_model, # HyperModel
+        objective ='val_accuracy', #  최적화할 하이퍼모델
+        max_epochs =20, # 각 모델별 학습 회수
+        factor = 3,    # 한 번에 훈련할 모델 수 결정 변수
+        directory ='my_dir', # 사용된 parameter 저장할 폴더
+        project_name ='helloworld',
+        ) # 사용된 parameter 저장할 폴더
+
+# 작성한 Hypermodel 출력
+tuner.search_space_summary()
+# tuner 학습
+tuner.search(x_train, y_train,
+             epochs=10,validation_split = 0.2)
+# 최고의 모델을 출력
+model = tuner.get_best_models(num_models=2)[0]
+# 혹은 결과 출력
+tuner.results_summary()
+
+
+
 
 #3
 from keras.callbacks import EarlyStopping ,ModelCheckpoint
@@ -135,7 +138,7 @@ mcp = ModelCheckpoint(monitor='val_loss', mode='min' , verbose=1, save_best_only
 
 
 model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['acc'])
-model.fit(x_train,y_train, epochs = 10000000 , batch_size= 700 , validation_split=0.2 , callbacks = [es,mcp] , verbose= 2 )
+model.fit(x_train,y_train, epochs = 10000000 , batch_size= 300 , validation_split=0.2 , callbacks = [es,mcp] , verbose= 2 )
 
 
 #4

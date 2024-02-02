@@ -25,7 +25,7 @@ print(len(x_train[0]))                      # 87
 print(len(x_train[1]))                      # 56            길이가 다 다르다.
 
 print('뉴스기사의 최대길이', max(len(i) for i in x_train))         # 2376          최대 길이를 뽑아내는 법
-print('뉴스기사의 평균길이', sum(map(len,x_train)) / len(x_train)) # 145.5398574927633          최대 길이를 뽑아내는 법
+print('뉴스기사의 평균길이', sum(map(len,x_train)) / len(x_train)) # 145.5398574927633          평균값의 길이를 뽑아내는 법
 
 
 #1 전처리
