@@ -1,5 +1,8 @@
 from keras.preprocessing.text import Tokenizer
 import numpy as np
+from keras.models import Sequential
+from keras.layers import Dense , LSTM , Conv1D , Flatten
+from sklearn.metrics import accuracy_score
 
 
 #1 데이터
@@ -49,6 +52,41 @@ print(pad_x)
 #  [ 0  0  0 26 27]
 #  [ 0  0 28 29 30]]
 print(pad_x.shape)              # (15, 5)
+
+pad_x = pad_x.reshape(-1,5,1)
+
+print(pad_x.shape)          # (15, 5, 1)
+
+#2 모델구성
+model = Sequential()
+model.add(Conv1D(50,2,input_shape = (5,1), activation='relu')) 
+model.add(Flatten())
+model.add(Dense(50,activation='relu'))
+model.add(Dense(10,activation='relu'))
+model.add(Dense(40,activation='relu'))
+model.add(Dense(9,activation='relu'))
+model.add(Dense(1,activation='sigmoid'))
+
+#3 컴파일, 훈련
+model.compile(loss='binary_crossentropy' , optimizer='adam' , metrics=['acc'] )
+model.fit(pad_x , labels , epochs= 1000 , batch_size= 100)
+
+#4 평가, 예측
+loss = model.evaluate(pad_x,labels)
+pre = model.predict(pad_x)
+
+pre = np.round(pre)
+
+print('loss = ',loss)
+print('ACC = ',accuracy_score(labels,pre))
+
+
+# Epoch 1000/1000
+# 1/1 [==============================] - 0s 2ms/step - loss: 0.0043 - acc: 1.0000
+# 1/1 [==============================] - 0s 77ms/step - loss: 0.0043 - acc: 1.0000
+# 1/1 [==============================] - 0s 48ms/step
+# loss =  [0.004321529995650053, 1.0]
+# ACC =  1.0
 
 
 

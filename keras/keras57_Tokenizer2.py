@@ -15,14 +15,10 @@ print(token.word_index)
 print(token.word_counts)
 # OrderedDict([('나는', 1), ('진짜', 2), ('매우', 2), ('맛있는', 1), ('밥을', 1), ('엄청', 1), ('마구', 5), ('먹었다', 1), ('상헌이가', 1), ('선생을', 1),
 #              ('괴롭힌다', 1), ('상헌이는', 2), ('못생겼다', 2)])
-x = token.texts_to_sequences([text1,text2])
+x = token.texts_to_sequences([text1+text2])
 print(x)        # [[6, 2, 2, 3, 3, 7, 8, 9, 1, 1, 1, 10], [11, 12, 13, 4, 5, 4, 1, 1, 5]]
                             # 0,4 ,5                      // 0, 2,3,6,7,8,9,10
-x0 = x[0]
-x00 = x[1]
 
-
-# [[6, 2, 2, 3, 3, 7, 8, 9, 1, 1, 1, 10]]
 
 
 from keras.utils import to_categorical
@@ -30,54 +26,26 @@ import numpy as np
 ##################################
 
 
-
-
-x1 = to_categorical(x0)      
-    
-x1 = np.array(x1)
-
-x1 = np.delete(x1,0,axis=1)         # np.delete(삭제할 데이터(배열), 삭제할 위치 , axis = (0행 ,1열 ))
-x1 = np.delete(x1,3,axis=1)  
-x1 = np.delete(x1,3,axis=1)  
-
-print(x1)
-x11 = to_categorical(x00)      
-    
-x11 = np.array(x11)
-
-x11 = np.delete(x11,(0,2,3,6,7,8,9,10),axis=1)                   # np.delete(삭제할 데이터(배열), 삭제할 위치 , axis = (0행 ,1열 ))
-
-print(x1,x11)               # (12, 10) (12, 9, 2)
+'''
+x1 = to_categorical(x)      
+print(x1.shape)
+# x = np.array(x)    
+x1 = np.delete(x1, 0, 2)            # 마지막에 2가 오는 이유는 3차원이라서 (0,1,2) 가 된다. 2를 1개 자를거라서 2를 잘라야된다.
+# print(x)  
+print(x1.shape)           # (1, 21, 13)
 #1. to_categorical에서 첫번째 0을 빼는 법
 #2 사이킷런의 OneHotEncoder를 사용
 #3 판다스의 getdummies 를 사용
 
-# [[0. 0. 0. 0. 1. 0. 0. 0.]
-#  [0. 1. 0. 0. 0. 0. 0. 0.]
-#  [0. 1. 0. 0. 0. 0. 0. 0.]
-#  [0. 0. 1. 0. 0. 0. 0. 0.]
-#  [0. 0. 1. 0. 0. 0. 0. 0.]
-#  [0. 0. 0. 0. 0. 0. 0. 0.]
-#  [0. 0. 0. 0. 0. 1. 0. 0.]
-#  [0. 0. 0. 0. 0. 0. 1. 0.]
-#  [1. 0. 0. 0. 0. 0. 0. 0.]
-#  [1. 0. 0. 0. 0. 0. 0. 0.]
-#  [1. 0. 0. 0. 0. 0. 0. 0.]
-#  [0. 0. 0. 0. 0. 0. 0. 1.]]
-#  [[0. 0. 0. 1. 0. 0.]
-#  [0. 0. 0. 0. 1. 0.]
-#  [0. 0. 0. 0. 0. 1.]
-#  [0. 1. 0. 0. 0. 0.]
-#  [0. 0. 1. 0. 0. 0.]
-#  [0. 1. 0. 0. 0. 0.]
-#  [1. 0. 0. 0. 0. 0.]
-#  [1. 0. 0. 0. 0. 0.]
-#  [0. 0. 1. 0. 0. 0.]]
+'''
+
+
 
 ##################################
 
+'''
 from sklearn.preprocessing import OneHotEncoder
-x2 =np.array(x0)                      # 중요 리스트를 array 형식으로 바꿔주는것
+x2 =np.array(x)                      # 중요 리스트를 array 형식으로 바꿔주는것
 print(x2.shape)
 x2 = x2.reshape(-1,1)                 # reshape를 먼저 하고 fit을 해야한다.
 encoder = OneHotEncoder()
@@ -85,15 +53,11 @@ encoder.fit(x2)
 
 x2 = encoder.transform(x2).toarray()
 
-x22 =np.array(x00)                      # 중요 리스트를 array 형식으로 바꿔주는것
-print(x22.shape)
-x22 = x22.reshape(-1,1)                 # reshape를 먼저 하고 fit을 해야한다.
-encoder = OneHotEncoder()
-encoder.fit(x22)
 
-x22 = encoder.transform(x22).toarray()
 
-print(x2,x22)                  
+
+print(x2.shape)                 # (21, 13)      
+'''
 # [[0. 0. 0. 1. 0. 0. 0. 0.]
 #  [0. 1. 0. 0. 0. 0. 0. 0.]
 #  [0. 1. 0. 0. 0. 0. 0. 0.]
@@ -119,20 +83,13 @@ print(x2,x22)
 ##################################
 
 import pandas as pd
-x3 = np.array(x0)
+x3 = np.array(x)
 x3 = x3.reshape(-1)               # 벡터의 형태로 만들어줘야 사용할 수 있음
 x3 = pd.get_dummies(x3).astype(int)               # .astype(int) 를 사용해주면 False, True 로 나오는게 아니라 숫자로 나온다(다른것들과 동일한 모양으로)
                                                 # 혹은 판다스의 버전이 낮아지면 0,1 로 나온다.
 
 
-
-import pandas as pd
-x33 = np.array(x00)
-x33 = x33.reshape(-1)               
-x33 = pd.get_dummies(x33).astype(int)
-
-
-print(x3,x33)
+print(x3.shape)             # (21, 13)
 
 #      1   2   3   6   7   8   9   10
 # 0    0   0   0   1   0   0   0   0
@@ -163,3 +120,5 @@ print(x3,x33)
 
 
 
+
+                   
