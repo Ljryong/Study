@@ -48,19 +48,18 @@ test_csv['대출목적'] = test_csv['대출목적'].replace({'부채 통합' : 0
 train_csv['대출기간'] = train_csv['대출기간'].replace({' 36 months' : 36 , ' 60 months' : 60 }).astype(int)
 test_csv['대출기간'] = test_csv['대출기간'].replace({' 36 months' : 36 , ' 60 months' : 60 }).astype(int)
 
-train_csv['근로기간'] = train_csv['근로기간'].replace({'10+ years' : 10 ,            # 10으로 둘지 그 이상으로 둘지 고민
-                                                      '2 years' : 2 , '< 1 year' : 0.7 , '3 years' : 3.5 , '1 year' : 1 ,
+train_csv['근로기간'] = train_csv['근로기간'].replace({'10+ years' : 11 ,            # 10으로 둘지 그 이상으로 둘지 고민
+                                                      '2 years' : 2 , '< 1 year' : 0.7 , '3 years' : 3 , '1 year' : 1 ,
                                                       'Unknown' : 0 , '5 years' : 5 , '4 years' : 4 , '8 years' : 8 ,
                                                       '6 years' : 6 , '7 years' : 7 , '9 years' : 9 , '10+years' : 11,
-                                                      '<1 year' : 0.5 , '3' : 3 , '1 years' : 1.5 })
+                                                      '<1 year' : 0.7 , '3' : 3 , '1 years' : 1 })
 
-test_csv['근로기간'] = test_csv['근로기간'].replace({'10+ years' : 10 ,            # 10으로 둘지 그 이상으로 둘지 고민
-                                                      '2 years' : 2 , '< 1 year' : 0.7 , '3 years' : 3.5 , '1 year' : 1 ,
+test_csv['근로기간'] = test_csv['근로기간'].replace({'10+ years' : 11 ,            # 10으로 둘지 그 이상으로 둘지 고민
+                                                      '2 years' : 2 , '< 1 year' : 0.7 , '3 years' : 3 , '1 year' : 1 ,
                                                       'Unknown' : 0 , '5 years' : 5 , '4 years' : 4 , '8 years' : 8 ,
                                                       '6 years' : 6 , '7 years' : 7 , '9 years' : 9 , '10+years' : 11,
-                                                      '<1 year' : 0.5 , '3' : 3 , '1 years' : 1.5 })
+                                                      '<1 year' : 0.7 , '3' : 3 , '1 years' : 1 })
 
-train_csv = train_csv[train_csv['총상환이자'] != 0.0 ] 
 train_csv = train_csv[train_csv['주택소유상태'] != 'ANY' ] 
 test_csv = test_csv[test_csv['대출목적'] != '결혼' ] 
 
@@ -83,8 +82,8 @@ y = y.values.reshape(-1)       # (96294, 1)
 
 
 
-x_train ,x_test , y_train , y_test = train_test_split(x,y,test_size = 0.3, random_state= 730501 , shuffle=True , stratify=y)    # 0 1502
-es = EarlyStopping(monitor='val_loss', mode='min' , patience= 1500 , restore_best_weights=True , verbose= 1 )
+x_train ,x_test , y_train , y_test = train_test_split(x,y,test_size = 0.25, random_state= 730501 , shuffle=True , stratify=y)    # 0 1502
+es = EarlyStopping(monitor='val_loss', mode='min' , patience= 3000 , restore_best_weights=True , verbose= 1 )
 
 
 
@@ -96,8 +95,8 @@ from sklearn.preprocessing import MinMaxScaler, MaxAbsScaler
 from sklearn.preprocessing import StandardScaler, RobustScaler
 
 ###################
-scaler = MinMaxScaler()
-# scaler = StandardScaler()
+# scaler = MinMaxScaler()
+scaler = StandardScaler()
 # scaler = MaxAbsScaler()
 # scaler = RobustScaler()
 
@@ -119,6 +118,11 @@ model.add(Dense(64,activation= 'swish'))
 model.add(Dense(10,activation= 'swish'))
 model.add(Dense(80, activation= 'swish'))
 model.add(Dense(9,activation= 'swish'))
+model.add(Dense(67,activation= 'swish'))
+model.add(Dense(13,activation= 'swish'))
+model.add(Dense(37,activation= 'swish'))
+model.add(Dense(78,activation= 'swish'))
+model.add(Dense(8,activation= 'swish'))
 model.add(Dense(78,activation= 'swish'))
 model.add(Dense(13, activation= 'swish'))
 model.add(Dense(64,activation= 'swish'))
@@ -167,7 +171,7 @@ mcp = ModelCheckpoint(monitor='val_loss', mode='min' , verbose=1, save_best_only
 
 
 model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['acc'])
-model.fit(x_train,y_train, epochs = 10000000 , batch_size= 7000 , validation_split=0.2 , callbacks = [es,mcp] , verbose= 2 )
+model.fit(x_train,y_train, epochs = 10000000 , batch_size= 700 , validation_split=0.15 , callbacks = [es,mcp] , verbose= 2 )
 
 #4
 loss = model.evaluate(x_test,y_test)

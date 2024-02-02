@@ -60,7 +60,6 @@ test_csv['근로기간'] = test_csv['근로기간'].replace({'10+ years' : 10 , 
                                                       '6 years' : 6 , '7 years' : 7 , '9 years' : 9 , '10+years' : 11,
                                                       '<1 year' : 0.5 , '3' : 3 , '1 years' : 1.5 })
 
-train_csv = train_csv[train_csv['총상환이자'] != 0.0 ] 
 train_csv = train_csv[train_csv['주택소유상태'] != 'ANY' ] 
 test_csv = test_csv[test_csv['대출목적'] != '결혼' ] 
 
