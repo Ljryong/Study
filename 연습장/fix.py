@@ -17,58 +17,21 @@ train_csv = pd.read_csv(path+ 'train.csv' , index_col= 0)
 test_csv = pd.read_csv(path+ 'test.csv' , index_col= 0)
 submission_csv = pd.read_csv(path+ 'sample_submission.csv')
 
-
-# print(train_csv)        # [96294 rows x 14 columns]
-# print(test_csv)         # [64197 rows x 13 columns]
-
-
-
 encoder = LabelEncoder()
 encoder.fit(train_csv['주택소유상태'])
 train_csv['주택소유상태'] = encoder.transform(train_csv['주택소유상태'])
-# encoder.fit(train_csv['대출목적'])
-# train_csv['대출목적'] = encoder.transform(train_csv['대출목적'])
-# encoder.fit(train_csv['대출기간'])
-# train_csv['대출기간'] = encoder.transform(train_csv['대출기간'])
-# encoder.fit(train_csv['근로기간'])
-# train_csv['근로기간'] = encoder.transform(train_csv['근로기간'])
-
-
 
 encoder.fit(test_csv['주택소유상태'])
 test_csv['주택소유상태'] = encoder.transform(test_csv['주택소유상태'])
-# encoder.fit(test_csv['대출목적'])
-# test_csv['대출목적'] = encoder.transform(test_csv['대출목적'])
-# encoder.fit(test_csv['대출기간'])
-# test_csv['대출기간'] = encoder.transform(test_csv['대출기간'])
-# encoder.fit(test_csv['근로기간'])
-# test_csv['근로기간'] = encoder.transform(test_csv['근로기간'])
 
 encoder.fit(train_csv['대출등급'])
 train_csv['대출등급'] = encoder.transform(train_csv['대출등급'])
-
-
 
 date = datetime.datetime.now()
 date = date.strftime('%m%d-%H%M')
 path = 'c:/_data/_save/MCP/'
 filename = '{epoch:04d}-{val_loss:.4f}.hdf5'
 filepath = ''.join([path , 'k28_11_', date , '_', filename ])
-
-
-# print(train_csv.dtypes)
-# print(test_csv.dtypes)
-
-# encoder.fit(test_csv['대출목적'])
-# encoder.fit(train_csv['대출목적'])
-# encoder.fit(train_csv['대출기간'])
-# encoder.fit(test_csv['대출기간'])
-# encoder.fit(train_csv['근로기간'])
-# encoder.fit(test_csv['근로기간'])
-
-
-
-
 
 train_csv['주택소유상태'] = train_csv['주택소유상태'].replace({'MORTGAGE' : 0 , 'OWN' : 1 , 'RENT': 2 , 'ANY' : 0}).astype(float)
 test_csv['주택소유상태'] = test_csv['주택소유상태'].replace({'MORTGAGE' : 0 , 'OWN' : 1 , 'RENT': 2}).astype(float)
@@ -105,15 +68,7 @@ print(pd.value_counts(test_csv['대출목적']))       # pd.value_counts() = 컬
 
 x = train_csv.drop(['대출등급'],axis = 1 )
 y = train_csv['대출등급']
-# print(train_csv.dtypes)
 
-# print(y.shape)      # (96294,)
-
-
-# scaler = MinMaxScaler()
-# x = scaler.fit_transform(x)
-
-# test_csv = scaler.transform(test_csv)       # test_csv도 같이 학습 시켜줘야 값이 나온다. 안해주면 소용이 없다.
 
 y = y.values.reshape(-1,1)       # (96294, 1)
 
@@ -145,7 +100,7 @@ scaler = RobustScaler()
 scaler.fit(x_train)
 x_train = scaler.transform(x_train)
 x_test = scaler.transform(x_test)
-test_csv = scaler.transform(test_csv)
+test_csv = scaler.transform(test_csv)        # test_csv도 같이 학습 시켜줘야 값이 나온다. 안해주면 소용이 없다.
 
 
 #2
@@ -163,9 +118,14 @@ model.add(Dense(16,activation= 'swish'))
 model.add(Dense(32,activation= 'swish'))
 model.add(Dense(16, activation= 'swish'))
 model.add(Dense(64,activation= 'swish'))
-model.add(Dense(16,activation= 'swish'))
-model.add(Dense(64,activation= 'swish'))
+model.add(Dense(32,activation= 'swish'))
+model.add(Dense(32,activation= 'swish'))
 model.add(Dense(16, activation= 'swish'))
+model.add(Dense(32,activation= 'swish'))
+model.add(Dense(16,activation= 'swish'))
+model.add(Dense(32,activation= 'swish'))
+model.add(Dense(16, activation= 'swish'))
+model.add(Dense(64,activation= 'swish'))
 model.add(Dense(32,activation= 'swish'))
 model.add(Dense(16,activation= 'swish'))
 model.add(Dense(32,activation= 'swish'))
@@ -187,8 +147,19 @@ model.add(Dense(16,activation= 'swish'))
 model.add(Dense(32,activation= 'swish'))
 model.add(Dense(16,activation= 'swish'))
 model.add(Dense(7,activation='softmax'))
-
 '''
+
+# model = Sequential()
+# model.add(Dense(102 ,input_shape= (13,),activation='swish'))
+# model.add(Dense(15,activation= 'swish'))
+# model.add(Dense(132,activation= 'swish'))
+# model.add(Dense(13, activation= 'swish'))
+# model.add(Dense(64,activation= 'swish'))
+# model.add(Dense(7,activation='softmax'))
+
+
+
+
 #3
 from keras.callbacks import EarlyStopping ,ModelCheckpoint
 mcp = ModelCheckpoint(monitor='val_loss', mode='min' , verbose=1, save_best_only=True , filepath=  filepath   )
