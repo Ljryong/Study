@@ -79,8 +79,8 @@ ohe.fit(y)
 y_ohe = ohe.transform(y) 
 
 
-x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 96 , shuffle=True , stratify=y)    # 0 1502
-es = EarlyStopping(monitor='val_loss', mode='min' , patience= 500 , restore_best_weights=True , verbose= 1 )
+x_train ,x_test , y_train , y_test = train_test_split(x,y_ohe,test_size = 0.3, random_state= 730501 , shuffle=True , stratify=y)    # 0 1502
+es = EarlyStopping(monitor='val_loss', mode='min' , patience= 5000 , restore_best_weights=True , verbose= 1 )
 
 
 
@@ -134,6 +134,8 @@ model.add(Dense(32,activation= 'swish'))
 model.add(Dense(16,activation= 'swish'))
 model.add(Dense(32,activation= 'swish'))
 model.add(Dense(7,activation='softmax'))
+
+model.summary()
 
 '''
 model = Sequential()
