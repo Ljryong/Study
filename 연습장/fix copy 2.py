@@ -140,8 +140,6 @@ model.add(Dense(16,activation= 'swish'))
 model.add(Dense(32,activation= 'swish'))
 model.add(Dense(16, activation= 'swish'))
 model.add(Dense(32,activation= 'swish'))
-model.add(Dense(16,activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
 model.add(Dense(32,activation= 'swish'))
 model.add(Dense(64,activation= 'swish'))
 model.add(Dense(16,activation= 'swish'))
@@ -166,7 +164,7 @@ mcp = ModelCheckpoint(monitor='val_loss', mode='min' , verbose=1, save_best_only
 
 
 model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['acc'])
-model.fit(x_train,y_train, epochs = 10000000 , batch_size= 1500 , validation_split=0.2 , callbacks = [es,mcp] , verbose= 2 )
+model.fit(x_train,y_train, epochs = 10000000 , batch_size= 1300 , validation_split=0.2 , callbacks = [es,mcp] , verbose= 2 )
 
 #4
 loss = model.evaluate(x_test,y_test)
@@ -316,3 +314,40 @@ print("f1 = ",f1)
 # loss =  [0.17260350286960602, 0.942123293876648]
 # f1 =  0.9306822316662637
 # = 0.927
+
+
+# Epoch 17521: early stopping
+# 753/753 [==============================] - 2s 3ms/step - loss: 0.1573 - acc: 0.9440
+# 2007/2007 [==============================] - 6s 3ms/step
+# 753/753 [==============================] - 2s 3ms/step
+# y_submit =  ['B' 'B' 'A' ... 'D' 'C' 'A']
+# loss =  [0.15734539926052094, 0.943964421749115]
+# f1 =  0.9298310802793601
+# Epoch 17521: val_loss did not improve from 0.16129model = Sequential()
+# model.add(Dense(64 ,input_shape= (13,),activation='swish'))
+# model.add(Dense(16,activation= 'swish'))
+# model.add(Dense(64,activation= 'swish'))
+# model.add(Dense(16, activation= 'swish'))
+# model.add(Dense(64,activation= 'swish'))
+# model.add(Dense(16,activation= 'swish'))
+# model.add(Dense(32,activation= 'swish'))
+# model.add(Dense(16, activation= 'swish'))
+# model.add(Dense(32,activation= 'swish'))
+# model.add(Dense(16,activation= 'swish'))
+# model.add(Dense(32,activation= 'swish'))
+# model.add(Dense(32,activation= 'swish'))
+# model.add(Dense(64,activation= 'swish'))
+# model.add(Dense(16,activation= 'swish'))
+# model.add(Dense(32,activation= 'swish'))
+# model.add(Dense(16,activation= 'swish'))
+# model.add(Dense(32,activation= 'swish'))
+# model.add(Dense(16, activation= 'swish'))
+# model.add(Dense(32,activation= 'swish'))
+# model.add(Dense(16,activation= 'swish'))
+# model.add(Dense(32,activation= 'swish'))
+# model.add(Dense(16, activation= 'swish'))
+# model.add(Dense(64,activation= 'swish'))
+# model.add(Dense(32,activation= 'swish'))
+# model.add(Dense(16,activation= 'swish'))
+# model.add(Dense(32,activation= 'swish'))
+# model.add(Dense(7,activation='softmax'))
