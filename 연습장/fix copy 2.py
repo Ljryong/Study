@@ -83,7 +83,7 @@ y = y.values.reshape(-1)       # (96294, 1)
 
 
 x_train ,x_test , y_train , y_test = train_test_split(x,y,test_size = 0.3 , random_state= 7998 , shuffle=True , stratify=y)    # 0 1502
-es = EarlyStopping(monitor='val_loss', mode='min' , patience= 10000 , restore_best_weights=True , verbose= 1 )
+es = EarlyStopping(monitor='val_loss', mode='min' , patience= 5000 , restore_best_weights=True , verbose= 1 )
 
 
 
@@ -143,7 +143,7 @@ model.add(Dense(32,activation= 'swish'))
 model.add(Dense(16,activation= 'swish'))
 model.add(Dense(32,activation= 'swish'))
 model.add(Dense(32,activation= 'swish'))
-model.add(Dense(8,activation= 'swish'))
+model.add(Dense(64,activation= 'swish'))
 model.add(Dense(16,activation= 'swish'))
 model.add(Dense(32,activation= 'swish'))
 model.add(Dense(16, activation= 'swish'))
@@ -280,4 +280,39 @@ print("f1 = ",f1)
 # = 0.92
 
 
-
+# model = Sequential()
+# model.add(Dense(64 ,input_shape= (13,),activation='swish'))
+# model.add(Dense(16,activation= 'swish'))
+# model.add(Dense(64,activation= 'swish'))
+# model.add(Dense(16, activation= 'swish'))
+# model.add(Dense(64,activation= 'swish'))
+# model.add(Dense(16,activation= 'swish'))
+# model.add(Dense(32,activation= 'swish'))
+# model.add(Dense(16, activation= 'swish'))
+# model.add(Dense(32,activation= 'swish'))
+# model.add(Dense(16,activation= 'swish'))
+# model.add(Dense(32,activation= 'swish'))
+# model.add(Dense(32,activation= 'swish'))
+# model.add(Dense(8, activation= 'swish'))
+# model.add(Dense(16,activation= 'swish'))
+# model.add(Dense(32,activation= 'swish'))
+# model.add(Dense(16, activation= 'swish'))
+# model.add(Dense(32,activation= 'swish'))
+# model.add(Dense(16,activation= 'swish'))
+# model.add(Dense(32,activation= 'swish'))
+# model.add(Dense(16, activation= 'swish'))
+# model.add(Dense(64,activation= 'swish'))
+# model.add(Dense(32,activation= 'swish'))
+# model.add(Dense(16,activation= 'swish'))
+# model.add(Dense(32,activation= 'swish'))
+# model.add(Dense(7,activation='softmax'))
+# Epoch 21617: val_loss did not improve from 0.16585
+# 36/36 - 0s - loss: 0.1235 - acc: 0.9503 - val_loss: 0.1858 - val_acc: 0.9387 - 322ms/epoch - 9ms/step
+# Epoch 21617: early stopping
+# 903/903 [==============================] - 3s 3ms/step - loss: 0.1726 - acc: 0.9421
+# 2007/2007 [==============================] - 6s 3ms/step
+# 903/903 [==============================] - 2s 3ms/step
+# y_submit =  ['B' 'B' 'A' ... 'D' 'C' 'A']
+# loss =  [0.17260350286960602, 0.942123293876648]
+# f1 =  0.9306822316662637
+# = 0.927
