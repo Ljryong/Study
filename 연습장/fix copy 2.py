@@ -82,8 +82,8 @@ y = y.values.reshape(-1)       # (96294, 1)
 
 
 
-x_train ,x_test , y_train , y_test = train_test_split(x,y,test_size = 0.25, random_state= 730501 , shuffle=True , stratify=y)    # 0 1502
-es = EarlyStopping(monitor='val_loss', mode='min' , patience= 3000 , restore_best_weights=True , verbose= 1 )
+x_train ,x_test , y_train , y_test = train_test_split(x,y,test_size = 0.3 , random_state= 7998 , shuffle=True , stratify=y)    # 0 1502
+es = EarlyStopping(monitor='val_loss', mode='min' , patience= 10000 , restore_best_weights=True , verbose= 1 )
 
 
 
@@ -96,9 +96,9 @@ from sklearn.preprocessing import StandardScaler, RobustScaler
 
 ###################
 # scaler = MinMaxScaler()
-scaler = StandardScaler()
+# scaler = StandardScaler()
 # scaler = MaxAbsScaler()
-# scaler = RobustScaler()
+scaler = RobustScaler()
 
 scaler.fit(x_train)
 x_train = scaler.transform(x_train)
@@ -108,6 +108,7 @@ test_csv = scaler.transform(test_csv)        # test_csv도 같이 학습 시켜�
 
 
 #2
+'''
 
 model = Sequential()
 model.add(Dense(102 ,input_shape= (13,),activation='swish'))
@@ -141,12 +142,8 @@ model.add(Dense(16, activation= 'swish'))
 model.add(Dense(32,activation= 'swish'))
 model.add(Dense(16,activation= 'swish'))
 model.add(Dense(32,activation= 'swish'))
-model.add(Dense(16, activation= 'swish'))
-model.add(Dense(64,activation= 'swish'))
 model.add(Dense(32,activation= 'swish'))
-model.add(Dense(16,activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
-model.add(Dense(8, activation= 'swish'))
+model.add(Dense(8,activation= 'swish'))
 model.add(Dense(16,activation= 'swish'))
 model.add(Dense(32,activation= 'swish'))
 model.add(Dense(16, activation= 'swish'))
@@ -159,8 +156,6 @@ model.add(Dense(32,activation= 'swish'))
 model.add(Dense(16,activation= 'swish'))
 model.add(Dense(32,activation= 'swish'))
 model.add(Dense(7,activation='softmax'))
-'''
-
 
 
 
@@ -171,7 +166,7 @@ mcp = ModelCheckpoint(monitor='val_loss', mode='min' , verbose=1, save_best_only
 
 
 model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['acc'])
-model.fit(x_train,y_train, epochs = 10000000 , batch_size= 700 , validation_split=0.15 , callbacks = [es,mcp] , verbose= 2 )
+model.fit(x_train,y_train, epochs = 10000000 , batch_size= 1500 , validation_split=0.2 , callbacks = [es,mcp] , verbose= 2 )
 
 #4
 loss = model.evaluate(x_test,y_test)
@@ -200,7 +195,7 @@ acc = acc(y_test,arg_pre)
 
 
 
-submission_csv.to_csv(path+'submission_0202.csv', index = False)
+submission_csv.to_csv(path+'submission_0203.csv', index = False)
 
 
 print('y_submit = ', y_submit)
