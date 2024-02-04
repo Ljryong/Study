@@ -33,7 +33,7 @@ path = 'c:/_data/_save/MCP/'
 filename = '{epoch:04d}-{val_loss:.4f}.hdf5'
 filepath = ''.join([path , 'k28_11_', date , '_', filename ])
 
-train_csv['주택소유상태'] = train_csv['주택소유상태'].replace({'MORTGAGE' : 0 , 'OWN' : 1 , 'RENT': 2 , 'ANY' : 3}).astype(float)
+train_csv['주택소유상태'] = train_csv['주택소유상태'].replace({'MORTGAGE' : 0 , 'OWN' : 1 , 'RENT': 2 , 'ANY' : 0}).astype(float)
 test_csv['주택소유상태'] = test_csv['주택소유상태'].replace({'MORTGAGE' : 0 , 'OWN' : 1 , 'RENT': 2}).astype(float)
 
 train_csv['대출목적'] = train_csv['대출목적'].replace({'부채 통합' : 0 , '주택 개선' : 2 , '주요 구매': 4 , '휴가' : 9  
@@ -42,7 +42,7 @@ train_csv['대출목적'] = train_csv['대출목적'].replace({'부채 통합' :
 test_csv['대출목적'] = test_csv['대출목적'].replace({'부채 통합' : 0 , '주택 개선' : 2 , '주요 구매': 4 , '휴가' : 9 ,
                                              '의료' : 5 , '자동차' : 6 , '신용 카드' : 1 , '기타' : 3 , '주택개선' : 8,
                                              '소규모 사업' : 7 , '이사' :  12 , '주택': 10 , '재생 에너지' : 11 , 
-                                             '결혼' : 12 })
+                                             '결혼' : 2 })
 
 # 결혼은 train에 없는 라벨이다. 그래서 12 로 두든 2로 두든 아니면 없애든 값이 좋은걸로 비교해보면 된다.
 train_csv['대출기간'] = train_csv['대출기간'].replace({' 36 months' : 36 , ' 60 months' : 60 }).astype(int)
@@ -83,7 +83,7 @@ y = y.values.reshape(-1)       # (96294, 1)
 
 
 x_train ,x_test , y_train , y_test = train_test_split(x,y,test_size = 0.3 , random_state= 7998 , shuffle=True , stratify=y)    # 0 1502
-es = EarlyStopping(monitor='val_loss', mode='min' , patience= 22222 , restore_best_weights=True , verbose= 1 )
+es = EarlyStopping(monitor='val_loss', mode='min' , patience= 5000 , restore_best_weights=True , verbose= 1 )
 
 
 
@@ -143,10 +143,10 @@ model.add(Dense(32,activation= 'swish'))
 model.add(Dense(16,activation= 'swish'))
 model.add(Dense(32,activation= 'swish'))
 model.add(Dense(32,activation= 'swish'))
-model.add(Dense(8, activation= 'swish'))
 model.add(Dense(16,activation= 'swish'))
 model.add(Dense(32,activation= 'swish'))
 model.add(Dense(16, activation= 'swish'))
+model.add(Dense(8, activation= 'swish'))
 model.add(Dense(32,activation= 'swish'))
 model.add(Dense(16,activation= 'swish'))
 model.add(Dense(32,activation= 'swish'))
@@ -195,7 +195,7 @@ acc = acc(y_test,arg_pre)
 
 
 
-submission_csv.to_csv(path+'submission_0204.csv', index = False)
+submission_csv.to_csv(path+'submission_0204_1.csv', index = False)
 
 
 print('y_submit = ', y_submit)
