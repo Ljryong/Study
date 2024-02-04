@@ -60,8 +60,8 @@ test_csv['근로기간'] = test_csv['근로기간'].replace({'10+ years' : 11 , 
                                                       '6 years' : 6 , '7 years' : 7 , '9 years' : 9 , '10+years' : 11,
                                                       '<1 year' : 0.7 , '3' : 3 , '1 years' : 1 })
 
-train_csv = train_csv[train_csv['주택소유상태'] != 'ANY' ] 
-test_csv = test_csv[test_csv['대출목적'] != '결혼' ] 
+# train_csv = train_csv[train_csv['주택소유상태'] != 'ANY' ] 
+# test_csv = test_csv[test_csv['대출목적'] != '결혼' ] 
 
 # print(train_csv['대출기간'])
 
@@ -83,7 +83,7 @@ y = y.values.reshape(-1)       # (96294, 1)
 
 
 x_train ,x_test , y_train , y_test = train_test_split(x,y,test_size = 0.3 , random_state= 7998 , shuffle=True , stratify=y)    # 0 1502
-es = EarlyStopping(monitor='val_loss', mode='min' , patience= 5000 , restore_best_weights=True , verbose= 1 )
+es = EarlyStopping(monitor='val_loss', mode='min' , patience= 22222 , restore_best_weights=True , verbose= 1 )
 
 
 
@@ -140,8 +140,10 @@ model.add(Dense(16,activation= 'swish'))
 model.add(Dense(32,activation= 'swish'))
 model.add(Dense(16, activation= 'swish'))
 model.add(Dense(32,activation= 'swish'))
+model.add(Dense(16,activation= 'swish'))
 model.add(Dense(32,activation= 'swish'))
-model.add(Dense(64,activation= 'swish'))
+model.add(Dense(32,activation= 'swish'))
+model.add(Dense(8, activation= 'swish'))
 model.add(Dense(16,activation= 'swish'))
 model.add(Dense(32,activation= 'swish'))
 model.add(Dense(16, activation= 'swish'))
@@ -193,7 +195,7 @@ acc = acc(y_test,arg_pre)
 
 
 
-submission_csv.to_csv(path+'submission_0203.csv', index = False)
+submission_csv.to_csv(path+'submission_0204.csv', index = False)
 
 
 print('y_submit = ', y_submit)
