@@ -77,7 +77,7 @@ model.summary()
 
 
 #3 컴파일 , 훈련
-model.compile(loss = 'mse' , optimizer='adam' )
+model.compile(loss = 'mse' , optimizer='adam' ,metrics=['mae'] )
 model.fit([x1_train,x2_train,x3_train],[y1_train,y2_train], epochs= 10000 , batch_size= 100 , validation_split= 0.2 ,callbacks=[es])
 
 #4 평가 , 예측
