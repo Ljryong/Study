@@ -12,8 +12,8 @@ from sklearn.preprocessing import LabelEncoder ,MaxAbsScaler , MinMaxScaler ,Rob
 #1 데이터
 path = 'c:/_data/sihum//'
 # csv 파일 가져오면서 , 제거
-train1 = pd.read_csv(path + '삼성240205.csv', index_col=0 , encoding='cp949', thousands=',' )
-train2 = pd.read_csv(path + '아모레240205.csv', index_col=0 ,encoding='cp949',thousands=',' )
+train1 = pd.read_csv(path + '삼성240205.csv', encoding='cp949', thousands=',' ,index_col=0 )
+train2 = pd.read_csv(path + '아모레240205.csv',encoding='cp949',thousands=',' ,index_col=0)
 
 # 데이터 수치화 
 train1['전일비'] = train1['전일비'].replace({'▼' : 0 , '▲' : 1 , ' ': 2})
@@ -36,7 +36,17 @@ train1 = train1.fillna(train1['금액(백만)'].mean())
 train2 = train2.fillna(train2['거래량'].mean())
 train2 = train2.fillna(train2['금액(백만)'].mean())
 
+train1 = train1.sort_values(['일자'],ascending=True)
+train2 = train2.sort_values(['일자'],ascending=True)
 
+train1_test = train1['시가'][-5:]
+train2_test = train2['종가'][-5:]
+
+print(train1_test)
+print(train2_test)
+
+train1 = train1[train1.index > '2018/05/04']
+train2 = train2[train2.index > '2018/05/04']
 
 # train1 = train1.dropna()
 # train2 = train2.dropna()
@@ -81,24 +91,23 @@ x1 , y1 , x2, y2 = split(train1,train2,timestep,'시가','종가',add)
 train1 = np.array(train1)       
 train2 = np.array(train2)
 
-end_row = 1418
-x1 = x1[:end_row,:].astype(np.float32)
-x2 = x2[:end_row,:].astype(np.float32)
-y1 = y1[:end_row].astype(np.float32)
-y2 = y2[:end_row].astype(np.float32)
+# end_row = 8879-8
+# end_row2 = 2933-8
+# x1 = x1[end_row:,:]
+# x2 = x2[end_row2:,:]
+# y1 = y1[end_row:]
+# y2 = y2[end_row2:]
 
 
 
 
-print(x1)       # (1418, 6, 16)
-print(x2)       # (1418, 6, 16)
-print(y1)       # (1418,)
-print(y2)       # (1418,)
+# print(x1.shape)       # (1418, 6, 16)
+# print(x2)       # (1418, 6, 16)
+# print(y1.shape)       # (1418,)
+# print(y2)       # (1418,)
 
-# x1 = train1[train1['시가'] <= 100000]
-# x1 = train1[train1['시가'] >= 40000]
 
-# x2 = train2[train2['시가'] <= 450000]
+
 
 
 
@@ -119,8 +128,8 @@ x2_test = x2_test.reshape(-1,96)
 
 
 # scaler 사용
-# scaler = MinMaxScaler()
-scaler = StandardScaler()
+scaler = MinMaxScaler()
+# scaler = StandardScaler()
 # scaler = MaxAbsScaler()
 # scaler = RobustScaler()
 
@@ -144,7 +153,7 @@ d2 = Dense(32,activation='swish')(d1)
 d3 = Dense(64,activation='swish')(d2)
 d4 = Dense(32,activation='swish')(d3)
 d5 = Dense(16,activation='swish')(d4)
-d6 = Dense(8,activation='swish')(d5)
+d6 = Dense(16,activation='swish')(d5)
 d7 = Dense(64,activation='swish')(d6)
 d8 = Dense(32,activation='swish')(d7)
 d9 = Dense(16,activation='swish')(d8)
@@ -179,9 +188,12 @@ mgd1 = Dense(64,activation='swish')(merge)
 mgd2 = Dense(32,activation='swish')(mgd1)
 mgd3 = Dense(64,activation='swish')(mgd2)
 mgd4 = Dense(16,activation='swish')(mgd3)
-last = Dense(1,activation='swish')(mgd4)
+mgd5 = Dense(32,activation='swish')(mgd4)
+mgd6 = Dense(64,activation='swish')(mgd5)
+mgd7 = Dense(16,activation='swish')(mgd6)
+last = Dense(1,activation='swish')(mgd7)
 
-last2 = Dense(1,activation='swish')(mgd4)
+last2 = Dense(1,activation='swish')(mgd7)
 
 
 model = Model(inputs = [in1,in12] , outputs = [last,last2])
@@ -204,16 +216,14 @@ r22 = r2_score(y2_test,pre[1])
 
 
 for i in range(5):
-    print('실제' , y1_test[i] , '예측', pre[0][i] )
+    print('실제' , train1_test[i] , '예측', pre[0][i] )
 
 for i in range(5):
-    print('실제' , y2_test[i] , '예측', pre[1][i] )
+    print('실제' , train2_test[i] , '예측', pre[1][i] )
 
 
 
 print('loss',loss)
-# print('시가',pre[0][0])
-# print('종가',pre[1][0])
 print('시가 r2',r21)
 print('종가 r2',r22)
 
@@ -239,18 +249,18 @@ print('종가 r2',r22)
 
 
 
-
-# 실제 73600.0 예측 [79894.35]
-# 실제 68900.0 예측 [75772.24]
-# 실제 61600.0 예측 [60049.816]
-# 실제 60300.0 예측 [59498.668]
-# 실제 59900.0 예측 [59213.562]
-# 실제 211500.0 예측 [204051.2]
-# 실제 167000.0 예측 [167838.95]
-# 실제 127500.0 예측 [128112.984]
-# 실제 161000.0 예측 [154899.67]
-# 실제 130800.0 예측 [127620.66]
-# loss [25847.0390625, 19570.0859375, 6276.95263671875]
-# 시가 r2 0.4567748031077147
-# 종가 r2 0.9761658356141811
+# 14/14 [==============================] - 0s 3ms/step
+# 실제 46850 예측 [103064.91]
+# 실제 79400 예측 [80981.555]
+# 실제 68600 예측 [42541.72]
+# 실제 43900 예측 [63258.31]
+# 실제 86600 예측 [74079.58]
+# 실제 320000.0 예측 [307157.8]
+# 실제 234000.0 예측 [241329.25]
+# 실제 122000.0 예측 [126748.15]
+# 실제 186500.0 예측 [188502.23]
+# 실제 210500.0 예측 [220751.06]
+# loss [21633.14453125, 16039.412109375, 5593.73095703125]
+# 시가 [103064.91]
+# 종가 [307157.8]
 

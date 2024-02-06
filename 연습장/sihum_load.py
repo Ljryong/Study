@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from keras.models import Sequential , Model ,load_model
+from keras.models import Sequential , Model , load_model
 from keras.layers import Dense , Input ,concatenate , Conv1D ,Flatten , LSTM
 from keras.callbacks import EarlyStopping , ModelCheckpoint
 from sklearn.model_selection import train_test_split
@@ -12,8 +12,8 @@ from sklearn.preprocessing import LabelEncoder ,MaxAbsScaler , MinMaxScaler ,Rob
 #1 데이터
 path = 'c:/_data/sihum//'
 # csv 파일 가져오면서 , 제거
-train1 = pd.read_csv(path + '삼성240205.csv', index_col=0 , encoding='cp949', thousands=',' )
-train2 = pd.read_csv(path + '아모레240205.csv', index_col=0 ,encoding='cp949',thousands=',' )
+train1 = pd.read_csv(path + '삼성240205.csv', encoding='cp949', thousands=',' ,index_col=0 )
+train2 = pd.read_csv(path + '아모레240205.csv',encoding='cp949',thousands=',' ,index_col=0)
 
 # 데이터 수치화 
 train1['전일비'] = train1['전일비'].replace({'▼' : 0 , '▲' : 1 , ' ': 2})
@@ -36,7 +36,17 @@ train1 = train1.fillna(train1['금액(백만)'].mean())
 train2 = train2.fillna(train2['거래량'].mean())
 train2 = train2.fillna(train2['금액(백만)'].mean())
 
+train1 = train1.sort_values(['일자'],ascending=True)
+train2 = train2.sort_values(['일자'],ascending=True)
 
+train1_test = train1['시가'][-5:]
+train2_test = train2['종가'][-5:]
+
+print(train1_test)
+print(train2_test)
+
+train1 = train1[train1.index > '2018/05/04']
+train2 = train2[train2.index > '2018/05/04']
 
 # train1 = train1.dropna()
 # train2 = train2.dropna()
@@ -81,24 +91,17 @@ x1 , y1 , x2, y2 = split(train1,train2,timestep,'시가','종가',add)
 train1 = np.array(train1)       
 train2 = np.array(train2)
 
-end_row = 1418
-x1 = x1[:end_row,:].astype(np.float32)
-x2 = x2[:end_row,:].astype(np.float32)
-y1 = y1[:end_row].astype(np.float32)
-y2 = y2[:end_row].astype(np.float32)
+# end_row = 8879-8
+# end_row2 = 2933-8
+# x1 = x1[end_row:,:]
+# x2 = x2[end_row2:,:]
+# y1 = y1[end_row:]
+# y2 = y2[end_row2:]
 
-
-
-
-print(x1)       # (1418, 6, 16)
-print(x2)       # (1418, 6, 16)
-print(y1)       # (1418,)
-print(y2)       # (1418,)
-
-# x1 = train1[train1['시가'] <= 100000]
-# x1 = train1[train1['시가'] >= 40000]
-
-# x2 = train2[train2['시가'] <= 450000]
+# print(x1.shape)       # (1418, 6, 16)
+# print(x2)       # (1418, 6, 16)
+# print(y1.shape)       # (1418,)
+# print(y2)       # (1418,)
 
 
 
@@ -119,8 +122,8 @@ x2_test = x2_test.reshape(-1,96)
 
 
 # scaler 사용
-# scaler = MinMaxScaler()
-scaler = StandardScaler()
+scaler = MinMaxScaler()
+# scaler = StandardScaler()
 # scaler = MaxAbsScaler()
 # scaler = RobustScaler()
 
@@ -148,10 +151,10 @@ r22 = r2_score(y2_test,pre[1])
 
 
 for i in range(5):
-    print('실제' , y1_test[i] , '예측', pre[0][i] )
+    print('실제' , train1_test[i] , '예측', pre[0][i] )
 
 for i in range(5):
-    print('실제' , y2_test[i] , '예측', pre[1][i] )
+    print('실제' , train2_test[i] , '예측', pre[1][i] )
 
 
 
