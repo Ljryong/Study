@@ -38,6 +38,7 @@ encoder.fit(test_csv['근로기간'])
 test_csv['근로기간'] = encoder.transform(test_csv['근로기간'])
 
 train_csv = train_csv[train_csv['주택소유상태'] != 'ANY']           # 주택소유상태에서 any가 들어간것만 삭제 // != : 부정 // 행을 삭제함
+test_csv = test_csv[test_csv['대출목적'] != '결혼' ] 
 
 
 encoder.fit(train_csv['대출등급'])
@@ -49,6 +50,32 @@ path = 'c:/_data/_save/MCP/'
 filename = '{epoch:04d}-{val_loss:.4f}.hdf5'
 filepath = ''.join([path , 'k28_11_', date , '_', filename ])
 
+#====================================================#
+
+# train_loan_interest = train_csv['총상환이자']
+
+
+# for i in range (len(train_loan_interest)):
+#     data = train_loan_interest.iloc[i]
+#     if data == 0.0:
+#         train_loan_interest.iloc[i] = np.NaN
+
+# train_csv['총상환이자'] = train_loan_interest
+
+# train_csv = train_csv.dropna(axis=0)
+
+# print(train_loan_interest.dropna(axis=0))      
+       
+# # train_csv['총상환이자'] = train_loan_interest       
+        
+# print(train_csv.isnull().sum()) #없음.      
+
+#######################################
+
+# 1줄 요약
+# train_csv = train_csv[train_csv['총상환이자'] != 0.0 ] 
+
+#######################################
 
 x = train_csv.drop(['대출등급'],axis = 1 )
 y = train_csv['대출등급']
@@ -59,8 +86,8 @@ y = y.values.reshape(-1,1)       # (96294, 1)
 
 
 
-x_train ,x_test , y_train , y_test = train_test_split(x,y,test_size = 0.3, random_state= 96 , shuffle=True , stratify=y)    # 0 1502 96 27
-es = EarlyStopping(monitor='val_loss', mode='min' , patience= 400 , restore_best_weights=True , verbose= 1 )
+x_train ,x_test , y_train , y_test = train_test_split(x,y,test_size = 0.3, random_state= 73050 , shuffle=True , stratify=y)    # 0 1502 96 27
+es = EarlyStopping(monitor='val_loss', mode='min' , patience= 9999 , restore_best_weights=True , verbose= 1 )
 
 
 
@@ -73,9 +100,9 @@ from sklearn.preprocessing import StandardScaler, RobustScaler
 
 ###################
 # scaler = MinMaxScaler()
-scaler = StandardScaler()
+# scaler = StandardScaler()
 # scaler = MaxAbsScaler()
-# scaler = RobustScaler()
+scaler = RobustScaler()
 
 scaler.fit(x_train)
 x_train = scaler.transform(x_train)
@@ -84,28 +111,25 @@ test_csv = scaler.transform(test_csv)        # test_csv도 같이 학습 시켜�
 
 
 #2
-'''
 model = Sequential()
-model.add(Dense(32 ,input_shape= (13,),activation='swish'))
-model.add(Dense(16,activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
-model.add(Dense(16, activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
-model.add(Dense(16,activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
-model.add(Dense(16, activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
-model.add(Dense(16,activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
-model.add(Dense(16, activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
-model.add(Dense(16,activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
-model.add(Dense(16,activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
-model.add(Dense(16,activation= 'swish'))
+model.add(Dense(102 ,input_shape= (13,),activation='swish'))
+model.add(Dense(15,activation= 'swish'))
+model.add(Dense(132,activation= 'swish'))
+model.add(Dense(13, activation= 'swish'))
+model.add(Dense(64,activation= 'swish'))
+model.add(Dense(10,activation= 'swish'))
+model.add(Dense(80, activation= 'swish'))
+model.add(Dense(9,activation= 'swish'))
+model.add(Dense(67,activation= 'swish'))
+model.add(Dense(13,activation= 'swish'))
+model.add(Dense(37,activation= 'swish'))
+model.add(Dense(78,activation= 'swish'))
+model.add(Dense(8,activation= 'swish'))
+model.add(Dense(78,activation= 'swish'))
+model.add(Dense(13, activation= 'swish'))
+model.add(Dense(64,activation= 'swish'))
 model.add(Dense(7,activation='softmax'))
+
 
 '''
 model = Sequential()
@@ -128,6 +152,8 @@ model.add(Dense(11, activation='swish'))
 model.add(Dense(47, activation='swish'))
 model.add(Dense(17, activation='swish'))
 model.add(Dense(7, activation='softmax'))
+'''
+
 
 #3
 from keras.callbacks import EarlyStopping ,ModelCheckpoint

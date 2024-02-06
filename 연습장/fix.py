@@ -83,8 +83,8 @@ y = y.values.reshape(-1)       # (96294, 1)
 
 
 
-x_train ,x_test , y_train , y_test = train_test_split(x,y,test_size = 0.3, random_state= 730501 , shuffle=True , stratify=y)    # 0 1502
-es = EarlyStopping(monitor='val_loss', mode='min' , patience= 1500 , restore_best_weights=True , verbose= 1 )
+x_train ,x_test , y_train , y_test = train_test_split(x,y,test_size = 0.3, random_state= 96 , shuffle=True , stratify=y)    # 0 1502
+es = EarlyStopping(monitor='val_loss', mode='min' , patience= 5000 , restore_best_weights=True , verbose= 1 )
 
 
 
@@ -155,10 +155,22 @@ model.add(Dense(32,activation= 'swish'))
 model.add(Dense(16,activation= 'swish'))
 model.add(Dense(32,activation= 'swish'))
 model.add(Dense(7,activation='softmax'))
+
 '''
-
-
-
+# model = Sequential()
+# model.add(Dense(64 ,input_shape= (13,),activation='swish'))
+# model.add(Dense(16,activation= 'swish'))
+# model.add(Dense(64,activation= 'swish'))
+# model.add(Dense(16,activation= 'swish'))
+# model.add(Dense(64,activation= 'swish'))
+# model.add(Dense(16,activation= 'swish'))
+# model.add(Dense(32,activation= 'swish'))
+# model.add(Dense(16,activation= 'swish'))
+# model.add(Dense(32,activation= 'swish'))
+# model.add(Dense(16,activation= 'swish'))
+# model.add(Dense(32,activation= 'swish'))
+# model.add(Dense(16,activation= 'swish'))
+# model.add(Dense(7,activation='softmax'))
 
 
 #3
@@ -167,7 +179,7 @@ mcp = ModelCheckpoint(monitor='val_loss', mode='min' , verbose=1, save_best_only
 
 
 model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['acc'])
-model.fit(x_train,y_train, epochs = 10000000 , batch_size= 7000 , validation_split=0.2 , callbacks = [es,mcp] , verbose= 2 )
+model.fit(x_train,y_train, epochs = 10000000 , batch_size= 1500 , validation_split=0.2 , callbacks = [es,mcp] , verbose= 2 )
 
 #4
 loss = model.evaluate(x_test,y_test)

@@ -16,10 +16,15 @@ test_csv = pd.read_csv(path + "test.csv", index_col=0 )
 
 submission_csv = pd.read_csv(path + "sample_submission.csv")
 
+
 train_csv = train_csv[train_csv['주택소유상태'] != 'ANY']
 test_csv.loc[test_csv['대출목적'] == '결혼' , '대출목적'] = '기타'
+
+
 from sklearn.preprocessing import OneHotEncoder, LabelEncoder
 le = LabelEncoder()
+
+
 
 train_csv['주택소유상태'] = le.fit_transform(train_csv['주택소유상태'])
 train_csv['대출목적'] = le.fit_transform(train_csv['대출목적'])
@@ -39,7 +44,7 @@ y = train_csv['대출등급']
 
 
 
-x_train, x_test, y_train, y_test = train_test_split(x,y,train_size=0.78,random_state=66101,stratify=y,shuffle=True,)
+x_train, x_test, y_train, y_test = train_test_split(x,y,train_size=0.7,random_state=66101,stratify=y,shuffle=True,)
 # smote=SMOTE(random_state=29,k_neighbors=4)
 # x_train,y_train=smote.fit_resample(x_train,y_train)
 
@@ -60,25 +65,12 @@ print(x_train.shape)
 
 
 model = Sequential()
-model.add(Dense(37,input_shape=(13,), activation='swish'))
-model.add(Dense(13, activation='swish'))
-model.add(Dense(31, activation='swish'))
-model.add(Dense(13, activation='swish'))
-model.add(Dense(41, activation='swish'))
-model.add(Dense(11, activation='swish'))
-model.add(Dense(37, activation='swish'))
-model.add(Dense(17, activation='swish'))
-model.add(Dense(37, activation='swish'))
-model.add(Dense(19, activation='swish'))
-model.add(Dense(39, activation='swish'))
-model.add(Dense(13, activation='swish'))
-model.add(Dense(41, activation='swish'))
-model.add(Dense(19, activation='swish'))
-model.add(Dense(37, activation='swish'))
-model.add(Dense(11, activation='swish'))
-model.add(Dense(47, activation='swish'))
-model.add(Dense(17, activation='swish'))
-model.add(Dense(7, activation='softmax'))
+model.add(Dense(102 ,input_shape= (13,),activation='swish'))
+model.add(Dense(15,activation= 'swish'))
+model.add(Dense(132,activation= 'swish'))
+model.add(Dense(13, activation= 'swish'))
+model.add(Dense(64,activation= 'swish'))
+model.add(Dense(7,activation='softmax'))
 
 
 import datetime
@@ -90,11 +82,11 @@ filepath = "".join([MCP_path, 'k23_', date, '_', filename])
 
 hist=model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['acc'])
 
-es = EarlyStopping(monitor='val_loss',mode='auto',patience= 500,verbose=1,restore_best_weights=True)
+es = EarlyStopping(monitor='val_loss',mode='auto',patience= 3000,verbose=1,restore_best_weights=True)
 
 mcp = ModelCheckpoint(monitor='val_loss',mode='auto',verbose=1,save_best_only=True,filepath=filepath,)
 
-model.fit(x_train, y_train, epochs=100000, batch_size = 1500,validation_split=0.15, callbacks=[es, mcp],verbose=1 )
+model.fit(x_train, y_train, epochs=1000000, batch_size = 1500,validation_split=0.15, callbacks=[es, mcp],verbose=1 )
 
 results = model.evaluate(x_test, y_test)
 y_predict = model.predict(x_test)

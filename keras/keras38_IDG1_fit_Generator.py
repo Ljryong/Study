@@ -46,13 +46,13 @@ xy_test = test_datagen.flow_from_directory(
                                              class_mode='binary',
                                              shuffle=False,          
                                              color_mode= 'grayscale'
-                                             )       
+                                             )
 
 
 # print(xy_train[0][0])      
 # print(xy_train[0][1])      
-print(xy_train[0][0].shape)     # (160, 100, 100, 1)
-print(xy_train[0][1].shape)     # (160,)
+print(xy_train[0][0][0].shape)     # (160, 100, 100, 1)
+print(xy_train[0][1][0].shape)     # (160,)
 
 
 
@@ -73,7 +73,7 @@ print(xy_train[0][1].shape)     # (160,)
 #     y_train.append(batch[1])
 # x_train = np.concatenate(x_train)
 # y_train = np.concatenate(y_train)
-
+'''
 
 # print(xy_train.next())
 es = EarlyStopping(monitor='val_loss' , mode = 'min' , patience= 15 , restore_best_weights=True , verbose= 1  )
@@ -189,3 +189,5 @@ y_predict = np.round(y_predict)
 
 
 
+
+'''
