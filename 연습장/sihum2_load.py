@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from keras.models import Sequential , Model , load_model
-from keras.layers import Dense , Input ,concatenate , Conv1D ,Flatten , LSTM
+from keras.layers import Dense , Input ,concatenate , Conv1D ,Flatten , LSTM , ConvLSTM1D ,MaxPooling1D
 from keras.callbacks import EarlyStopping , ModelCheckpoint
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score ,r2_score , f1_score
@@ -16,11 +16,14 @@ train1 = pd.read_csv(path + '삼성 240205.csv', encoding='cp949', thousands=','
 train2 = pd.read_csv(path + '아모레 240205.csv',encoding='cp949',thousands=',' ,index_col=0)
 
 # 데이터 수치화 
-train1['전일비'] = train1['전일비'].replace({'▼' : 0 , '▲' : 1 , ' ': 2})
-train2['전일비'] = train2['전일비'].replace({'▼' : 0 , '▲' : 1 , ' ': 2})
+# train1['전일비'] = train1['전일비'].replace({'▼' : 0 , '▲' : 1 , ' ': 2})
+# train2['전일비'] = train2['전일비'].replace({'▼' : 0 , '▲' : 1 , ' ': 2})
 
-train1 = train1.drop(['외인비'],axis=1).drop(['신용비'],axis=1)
-train2 = train2.drop(['외인비'],axis=1).drop(['신용비'],axis=1)
+train1 = train1.drop(['외인비'],axis=1).drop(['신용비'],axis=1).drop(['전일비'],axis=1).drop(['개인'],axis=1).drop(['기관'],axis=1).drop(['외인(수량)'],axis=1)
+train2 = train2.drop(['외인비'],axis=1).drop(['신용비'],axis=1).drop(['전일비'],axis=1).drop(['개인'],axis=1).drop(['기관'],axis=1).drop(['외인(수량)'],axis=1)
+
+# train1 = train1[train1['개인'] != 0 ]
+# train2 = train2[train2['개인'] != 0 ]
 
 # train1['전일비'] = le.fit_transform(train1['전일비'])
 # train2['전일비'] = le.fit_transform(train1['전일비'])
@@ -39,11 +42,11 @@ print(type(train2))         # <class 'pandas.core.frame.DataFrame'>
 # train2 = train2.fillna(train2['거래량'].mean())
 # train2 = train2.fillna(train2['금액(백만)'].mean())
 
-train1 = train1.dropna()
-train2 = train2.dropna()
+# train1 = train1.dropna()
+# train2 = train2.dropna()
 
-# train1 = train1.fillna(train1.ffill)          # 앞방향으로 똑같은거 채우기
-# train2 = train2.fillna(train2.ffill)  
+train1 = train1.fillna(train1.ffill)          # 앞방향으로 똑같은거 채우기
+train2 = train2.fillna(train2.ffill)  
 # train1 = train1.fillna(train1.bfill)          # 뒷방향으로 똑같은거 채우기
 # train2 = train2.fillna(train2.bfill) 
 
@@ -67,8 +70,8 @@ def split_xy(dataFrame, cutting_size, y_behind_size,  y_column):
     return (np.array(xs), np.array(ys))
 
 
-train1 = train1[train1.index > '2018/05/04']
-train2 = train2[train2.index > '2018/05/04']
+train1 = train1[train1.index > '2020/11/12']
+train2 = train2[train2.index > '2020/11/12']
 
 timestep = 5
 add = 2
@@ -131,94 +134,51 @@ train2 = np.array(train2)
 
 
 x1_train , x1_test , x2_train , x2_test , y1_train , y1_test ,y2_train,y2_test = train_test_split(x1,x2,y1,y2,
-                                                                                  test_size=0.3 , random_state= 730320 , shuffle=True )
+                                                                                  test_size=0.3 , random_state= 980 , shuffle=True )
 
 
-print(x1_train.shape)       # (992, 6, 16)
-print(x2_train.shape)       # (992, 6, 16)
-print(x1_test.shape)        # (426, 6, 16)
-print(x2_test.shape)        # (426, 6, 16)
+# print(x1_train.shape)       # (992, 6, 16)
+# print(x2_train.shape)       # (992, 6, 16)
+# print(x1_test.shape)        # (426, 6, 16)
+# print(x2_test.shape)        # (426, 6, 16)
 
-x1_train = x1_train.reshape(-1,70)
-x2_train = x2_train.reshape(-1,70)
-x1_test = x1_test.reshape(-1,70)
-x2_test = x2_test.reshape(-1,70)
+x1_train = x1_train.reshape(-1,50)
+x2_train = x2_train.reshape(-1,50)
+x1_test = x1_test.reshape(-1,50)
+x2_test = x2_test.reshape(-1,50)
 r_samsung_sample_x = samsung_sample_x.reshape(samsung_sample_x.shape[0], samsung_sample_x.shape[1] * samsung_sample_x.shape[2])
 r_amore_sample_x = amore_sample_x.reshape(amore_sample_x.shape[0], amore_sample_x.shape[1] * amore_sample_x.shape[2])
 
 
 # scaler 사용
-scaler = MinMaxScaler()
-# scaler = StandardScaler()
+# scaler = MinMaxScaler()
+scaler = StandardScaler()
 # scaler = MaxAbsScaler()
 # scaler = RobustScaler()
-
+scaler.fit(x1_train)
 x1_train = scaler.fit_transform(x1_train)
-x2_train = scaler.fit_transform(x2_train)
-x1_test = scaler.fit_transform(x1_test)
-x2_test = scaler.fit_transform(x2_test)
+x1_test = scaler.transform(x1_test)
 r_samsung_sample_x = scaler.transform(r_samsung_sample_x)
+scaler.fit(x2_train)
+x2_test = scaler.fit_transform(x2_test)
+x2_train = scaler.transform(x2_train)
 r_amore_sample_x = scaler.transform(r_amore_sample_x)
 
-x1_train = x1_train.reshape(-1,5,14)
-x2_train = x2_train.reshape(-1,5,14)
-x1_test = x1_test.reshape(-1,5,14)
-x2_test = x2_test.reshape(-1,5,14)
+x1_train = x1_train.reshape(-1,5,10)
+x2_train = x2_train.reshape(-1,5,10)
+x1_test = x1_test.reshape(-1,5,10)
+x2_test = x2_test.reshape(-1,5,10)
 
 # print()
 
 samsung_sample_x = r_samsung_sample_x.reshape(-1, samsung_sample_x.shape[1], samsung_sample_x.shape[2])
 amore_sample_x = r_amore_sample_x.reshape(-1, amore_sample_x.shape[1], amore_sample_x.shape[2])
 
-print(samsung_sample_x.shape)           # (10, 6, 16, 1)
-print(amore_sample_x.shape)             # (10, 6, 16, 1)
+# print(samsung_sample_x.shape)           # (10, 6, 16, 1)
+# print(amore_sample_x.shape)             # (10, 6, 16, 1)
 
+model = load_model('C:/_data/sihum/sihum_2.h5')
 
-#2 모델구성
-#2-1 모델1
-in1 = Input(shape=(5,14))
-d1 = LSTM(64,activation='swish')(in1)
-d2 = Dense(32,activation='swish')(d1)
-d3 = Dense(64,activation='swish')(d2)
-d4 = Dense(32,activation='swish')(d3)
-d12 = Dense(32,activation='swish')(d4)
-d13 = Dense(16,activation='swish')(d12)
-out1 = Dense(64,activation='swish')(d13)
-
-#2-2 모델2
-in12 = Input(shape=(5,14))
-d31 = LSTM(64,activation='swish')(in12)
-d32 = Dense(16,activation='swish')(d31)
-d33 = Dense(32,activation='swish')(d32)
-d34 = Dense(16,activation='swish')(d33)
-d35 = Dense(64,activation='swish')(d34)
-d36 = Dense(16,activation='swish')(d35)
-d37 = Dense(32,activation='swish')(d36)
-d43 = Dense(32,activation='swish')(d37)
-d44 = Dense(16,activation='swish')(d43)
-out2 = Dense(32,activation='swish')(d44)
-
-#2-3 모델결합
-merge = concatenate([out1,out2])
-mgd1 = Dense(64,activation='swish')(merge)
-mgd2 = Dense(32,activation='swish')(mgd1)
-mgd3 = Dense(64,activation='swish')(mgd2)
-mgd10 = Dense(32,activation='swish')(mgd3)
-mgd11 = Dense(8,activation='swish')(mgd10)
-last = Dense(1,activation='swish')(mgd11)
-last2 = Dense(1,activation='swish')(mgd11)
-
-
-model = Model(inputs = [in1,in12] , outputs = [last,last2])
-
-#3 컴파일,훈련
-model.compile(loss = 'mae' ,optimizer='adam' ) # , metrics=['mae'] 
-es = EarlyStopping(monitor='val_loss' , mode = 'min' , restore_best_weights=True , patience= 3000 , verbose=1 )
-# modelcheckpoint
-# filepath = 'c:/_data/_save/MCP//'
-# mcp = ModelCheckpoint(monitor='val_loss' , mode = 'min' , save_best_only=True , verbose= 1 , filepath=filepath  )
-model.fit([x1_train,x2_train],[y1_train,y2_train] ,epochs= 10000000 , batch_size= 300 , validation_split=0.2 , callbacks=[es], verbose=2 )
-model.save("c:/_data/sihum/sihum_1.h5")
 
 #4 평가, 예측
 print(x1_test.shape,x2_test.shape)  # (423, 6, 16) , (423, 6, 16)
@@ -255,41 +215,4 @@ print("="*100)
 print('loss',loss)
 print('시가 r2',r21)
 print('종가 r2',r22)
-
-
-
-
-# Epoch 602: early stopping
-# 14/14 [==============================] - 0s 6ms/step - loss: 19363.1465 - dense_27_loss: 12515.0947 - dense_28_loss: 6848.0503
-# 14/14 [==============================] - 0s 3ms/step
-# 실제 73600.0 예측 [81118.42]
-# 실제 68900.0 예측 [75797.89]
-# 실제 61600.0 예측 [59931.133]
-# 실제 60300.0 예측 [53672.457]
-# 실제 59900.0 예측 [59339.562]
-# 실제 211500.0 예측 [210681.02]
-# 실제 167000.0 예측 [169071.22]
-# 실제 127500.0 예측 [127170.04]
-# 실제 161000.0 예측 [158380.67]
-# 실제 130800.0 예측 [124379.23]
-# loss [19363.146484375, 12515.0947265625, 6848.05029296875]
-# 시가 r2 0.6152906483620448
-# 종가 r2 0.9141168757637294
-
-
-
-# 14/14 [==============================] - 0s 3ms/step
-# 실제 46850 예측 [103064.91]
-# 실제 79400 예측 [80981.555]
-# 실제 68600 예측 [42541.72]
-# 실제 43900 예측 [63258.31]
-# 실제 86600 예측 [74079.58]
-# 실제 320000.0 예측 [307157.8]
-# 실제 234000.0 예측 [241329.25]
-# 실제 122000.0 예측 [126748.15]
-# 실제 186500.0 예측 [188502.23]
-# 실제 210500.0 예측 [220751.06]
-# loss [21633.14453125, 16039.412109375, 5593.73095703125]
-# 시가 [103064.91]
-# 종가 [307157.8]
 
