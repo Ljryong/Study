@@ -2,7 +2,8 @@ from sklearn.datasets import load_iris
 from sklearn.utils import all_estimators
 from sklearn.model_selection import train_test_split
 import numpy as np
-
+import warnings
+warnings.filterwarnings('ignore')
 
 #1
 x,y = load_iris(return_X_y=True)        # sklearn에서 제공하는 데이터만 가능(사실상 실무 나가면 필요 x)
@@ -19,7 +20,22 @@ print(np.unique(y_test,return_counts=True))
 allAlgorisms = all_estimators(type_filter='classifier')             # 분류모델
 # allAlgorisms = all_estimators(type_filter='regressor')              # 회귀모델
 
-print('allAlgorisms',allAlgorisms)
+print('allAlgorisms',allAlgorisms)      # 튜플형태 // 소괄호안에 담겨져있음
+print('모델의 갯수',len(allAlgorisms))          # 41 == 분류모델의 갯수 // 55 == 회귀모델의 갯수
+
+for name, algorithm in allAlgorisms : 
+    # 에러가 떳을때 밑에 print로 넘어가고 다음이 실행됨
+    try:
+        #2 모델
+        model = algorithm()
+        #3 훈련
+        model.fit(x_train,y_train)
+        #4 평가,예측
+        acc = model.score(x_test,y_test)
+        print(name, '의 정답률' , acc )
+    except:
+        # print(name,  '은 바보 멍충이!!!')
+        continue            # 에러를 무시하고 쭉 진행됨 
 
 
 '''

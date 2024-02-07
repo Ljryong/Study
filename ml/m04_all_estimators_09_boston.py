@@ -48,46 +48,24 @@ x_train,x_test,y_train,y_test = train_test_split(x,y,test_size = 0.3, random_sta
 
 
 #2
-# model = Sequential()
-# model.add(Dense(20,input_dim = 13))
-# model.add(Dense(30))
-# model.add(Dense(50))
-# model.add(Dense(30))
-# model.add(Dense(14))
-# model.add(Dense(7))
-# model.add(Dense(1))
-# model = LinearSVR(C=100)
+from sklearn.utils import all_estimators
+import warnings
+warnings.filterwarnings('ignore')
 
-# #3
-# # model.compile(loss='mse', optimizer='adam')
-# # start_time = time.time()
-# # model.fit(x_train,y_train,epochs=500,batch_size=1)
-# # end_time = time.time()
-# model.fit(x_train,y_train)
+allAlgorism = all_estimators(type_filter='regressor')
 
-# #4
-# loss = model.score(x_test,y_test)
-# y_predict = model.predict(x_test)
-# r2 = r2_score(y_test,y_predict)
-# print(loss)
-# print('R2 : ' , r2)
-# print(end_time - start_time)            # python에서 기본으로 제공하는 시스템
-                                        # print는 함수
+for name, algofism in allAlgorism:
+    try:
+        #2 모델구성
+        model = allAlgorism()
+        #3 훈련
+        model.fit(x_train,y_train)
+        #4 평가, 예측
+        r2 = model.score(x_test,y_test)
+    except:
+        print(name, '에휴' )
 
-from sklearn.svm import LinearSVR
-from sklearn.linear_model import Perceptron , LogisticRegression , LinearRegression
-from sklearn.neighbors import KNeighborsClassifier , KNeighborsRegressor
-from sklearn.ensemble import RandomForestClassifier , RandomForestRegressor
-from sklearn.tree import DecisionTreeClassifier , DecisionTreeRegressor
-models = [LinearSVR(),LinearRegression(),RandomForestRegressor(),DecisionTreeRegressor(),KNeighborsRegressor()]
 
-############## 훈련 반복 for 문 ###################a
-for model in models :
-    model.fit(x_train,y_train)
-    result = model.score(x_test,y_test)
-    print(f'{type(model).__name__} score ',result)
-    y_predict = model.predict(x_test)
-    print(f'{type(model).__name__} predict ',r2_score(y_test,y_predict))
 
 # #5/5 [==============================] - 0s 0s/step - loss: 23.7223
 # 5/5 [==============================] - 0s 4ms/step
