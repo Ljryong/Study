@@ -110,14 +110,15 @@ warnings.filterwarnings('ignore')
 
 allAlgorism = all_estimators(type_filter='regressor')
 
-for name, algofism in allAlgorism:
+for name, algorism in allAlgorism:
     try:
         #2 모델구성
-        model = allAlgorism()
+        model = algorism()
         #3 훈련
         model.fit(x_train,y_train)
         #4 평가, 예측
         r2 = model.score(x_test,y_test)
+        print(name,' ACC' , r2)
     except:
         print(name, '에휴' )
 
@@ -180,3 +181,60 @@ for name, algofism in allAlgorism:
 # DecisionTreeRegressor predict  0.5414605596521274
 # KNeighborsRegressor score  0.4068639187657872
 # KNeighborsRegressor predict  0.4068639187657872
+
+
+# ARDRegression  ACC 0.606631484634577
+# AdaBoostRegressor  ACC 0.6484007221459966
+# BaggingRegressor  ACC 0.7678276816040838
+# BayesianRidge  ACC 0.6001985917667967
+# CCA 에휴
+# DecisionTreeRegressor  ACC 0.5416370898302911
+# DummyRegressor  ACC -0.0018446100594635695
+# ElasticNet  ACC 0.5876322296212533
+# ElasticNetCV  ACC 0.5570929405478964
+# ExtraTreeRegressor  ACC 0.6732604467412244
+# ExtraTreesRegressor  ACC 0.8153634518561179
+# GammaRegressor  ACC 0.46213071529666006
+# GaussianProcessRegressor  ACC -1.621719486027318
+# GradientBoostingRegressor  ACC 0.7758844481694053
+# HistGradientBoostingRegressor  ACC 0.7974671644880429
+# HuberRegressor  ACC 0.5674873627501553
+# IsotonicRegression 에휴
+# KNeighborsRegressor  ACC 0.4068639187657872
+# KernelRidge  ACC 0.6052955803976243
+# Lars  ACC 0.6072759286909356
+# LarsCV  ACC 0.6067406924235009
+# Lasso  ACC 0.5938572389297037
+# LassoCV  ACC 0.5808122225795715
+# LassoLars  ACC 0.31794844275504786
+# LassoLarsCV  ACC 0.6067406924235009
+# LassoLarsIC  ACC 0.6063677441250521
+# LinearRegression  ACC 0.6072759286909343
+# LinearSVR  ACC 0.3807753790272196
+# MLPRegressor  ACC 0.595837395081829
+# MultiOutputRegressor 에휴
+# MultiTaskElasticNet 에휴
+# MultiTaskElasticNetCV 에휴
+# MultiTaskLasso 에휴
+# MultiTaskLassoCV 에휴
+# NuSVR  ACC 0.0403554615346996
+# OrthogonalMatchingPursuit  ACC 0.3788018124015208
+# OrthogonalMatchingPursuitCV  ACC 0.5948164021945177
+# PLSCanonical 에휴
+# PLSRegression  ACC 0.6035002739757391
+# PassiveAggressiveRegressor  ACC -0.17484933105574552
+# PoissonRegressor  ACC -0.001878252843304562
+# QuantileRegressor  ACC 0.41055135947966415
+# RANSACRegressor  ACC 0.40213035622324134
+# RadiusNeighborsRegressor 에휴
+# RandomForestRegressor  ACC 0.7979013775845946
+# RegressorChain 에휴
+# Ridge  ACC 0.6040962587693928
+# RidgeCV  ACC 0.6064510685848754
+# SGDRegressor  ACC -5.198182582648889e+25
+# SVR  ACC 0.06889340641936148
+# StackingRegressor 에휴
+# TheilSenRegressor  ACC 0.5897679955039441
+# TransformedTargetRegressor  ACC 0.6072759286909343
+# TweedieRegressor  ACC 0.5725834898700326
+# VotingRegressor 에휴

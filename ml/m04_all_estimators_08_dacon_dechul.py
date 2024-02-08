@@ -244,3 +244,50 @@ for name, algorism in allAlgorism:
 # DecisionTreeClassifier predict  0.8299825537924732
 # KNeighborsClassifier score  0.4624491152280469
 # KNeighborsClassifier predict  0.4624491152280469
+
+
+
+# AdaBoostClassifier 의 Acc는 0.5061061726343773
+# BaggingClassifier 의 Acc는 0.8659549721691452
+# BernoulliNB 의 Acc는 0.37683808257871565
+# CalibratedClassifierCV 의 Acc는 0.4315444047520146
+# CategoricalNB 은 바보 멍청이!!!
+# ClassifierChain 은 바보 멍청이!!!
+# ComplementNB 은 바보 멍청이!!!
+# DecisionTreeClassifier 의 Acc는 0.8305640940433663
+# DummyClassifier 의 Acc는 0.299243997673839
+# ExtraTreeClassifier 의 Acc는 0.42660131261942347
+# ExtraTreesClassifier 의 Acc는 0.6796128603472626
+# GaussianNB 의 Acc는 0.2735731494558445
+# GaussianProcessClassifier 은 바보 멍청이!!!
+# GradientBoostingClassifier 의 Acc는 0.7505192323668688
+# HistGradientBoostingClassifier 의 Acc는 0.7897731993021517
+# KNeighborsClassifier 의 Acc는 0.4624491152280469
+# LabelPropagation 의 Acc는 0.452853701088311
+# LabelSpreading 의 Acc는 0.4545567832516408
+# LinearDiscriminantAnalysis 의 Acc는 0.4028827781008557
+# LinearSVC 의 Acc는 0.4257705408324333
+# LogisticRegression 의 Acc는 0.3818227133006563
+# LogisticRegressionCV 의 Acc는 0.4837584115643433
+# MLPClassifier 의 Acc는 0.82857024175459
+# MultiOutputClassifier 은 바보 멍청이!!!
+# MultinomialNB 은 바보 멍청이!!!
+# NearestCentroid 의 Acc는 0.17404668937442885
+# NuSVC 은 바보 멍청이!!!
+# OneVsOneClassifier 은 바보 멍청이!!!
+# OneVsRestClassifier 은 바보 멍청이!!!
+# OutputCodeClassifier 은 바보 멍청이!!!
+# PassiveAggressiveClassifier 의 Acc는 0.3514995430755172
+# Perceptron 의 Acc는 0.33903796627066546
+# QuadraticDiscriminantAnalysis 의 Acc는 0.30418708980643017
+# RadiusNeighborsClassifier 은 바보 멍청이!!!
+# RandomForestClassifier 의 Acc는 0.8075101769543906
+# RidgeClassifier 의 Acc는 0.3745534601644928
+# RidgeClassifierCV 의 Acc는 0.3744288443964443
+# SGDClassifier 의 Acc는 0.4270166985129185
+# SVC 의 Acc는 0.29961784497798455
+# StackingClassifier 은 바보 멍청이!!!
+# VotingClassifier 은 바보 멍청이!!!
+
+
+
