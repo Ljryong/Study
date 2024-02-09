@@ -108,15 +108,32 @@ model = cb.CatBoostClassifier()
 
 from sklearn.model_selection import StratifiedKFold
 
-kfold = StratifiedKFold(n_splits=3 , shuffle=True , random_state=123 )
+kfold = StratifiedKFold(n_splits= 5 , shuffle=True , random_state= 730320 )
+from sklearn.model_selection import cross_val_predict ,cross_val_score , GridSearchCV
 
-# RandomForestClassifier
-# cb
-# xgb
-# lgbm
+parameters =[
+    {'n_estimators' : [100,200] ,'max_depth':[6,10,12],'min_samples_leaf' : [3,10]},
+    {'max_depth': [6,8,10,12], 'min_samples_leaf' : [3,5,7,10]},
+    {'min_samples_leaf' : [3,5,7,10],'min_samples_split' : [2,3,5,10]},
+    {'min_samples_split' : [2,3,5,10] },
+    {'n_jobs' : [-1,2,4], 'min_samples_split' : [2,3,5,10]}
+]
+
+# model = GridSearchCV(RandomForestClassifier() ,  parameters , cv=kfold,
+#                      refit=True , verbose= 1 , n_jobs=-1 )
 
 #3 훈련
-from sklearn.model_selection import cross_val_predict ,cross_val_score
+model.fit(x_train,y_train)
+
+#4 평가, 예측
+# GridSearchCV 전용
+# y_predict = model.predict(x_test)
+# print('accuracy_score' , accuracy_score(y_test,y_predict))
+# print('='*100)
+# y_pred_best = model.best_estimator_.predict(x_test)
+# print('최적의 매겨번수:' , model.best_estimator_)
+# print('='*100)
+# print('최적의 튠 ACC:', accuracy_score(y_test,y_pred_best))
 
 score = cross_val_score(model,x_train , y_train , cv=kfold)
 y_predict = cross_val_predict(model,x_test,y_test,cv=kfold)
@@ -126,5 +143,14 @@ print('acc',score)
 acc= accuracy_score(y_test,y_predict)
 print('ACC',acc)
 
-submission_csv.to_csv(path+'submission_0208.csv', index = False)
+y_submit = model.predict(test_csv)
+y_submit = le.inverse_transform(y_submit) 
+submission_csv['NObeyesdad'] = y_submit
+
+submission_csv.to_csv(path+'submission_0209.csv', index = False)
+
+# RandomForestClassifier
+# 0.8938
+
+
 
