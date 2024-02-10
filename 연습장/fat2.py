@@ -107,7 +107,7 @@ es = EarlyStopping(monitor='val_loss', mode = 'min' , patience= 300 , restore_be
 
 #2 모델구성
 # model = RandomForestClassifier()
-# model = cb.CatBoostClassifier(eval_metric='acc', callback=[es]  )       # ,auto_class_weights=True 
+model = cb.CatBoostClassifier(eval_metric='acc', callback=[es] )       # ,auto_class_weights=True 
 # model = xgb.XGBClassifier()
 # model = lgbm.LGBMClassifier()
 
@@ -138,7 +138,7 @@ catboost_grid = {
 # model = GridSearchCV(RandomForestClassifier() ,  parameters , cv=kfold,
 #                      refit=True , verbose= 1 , n_jobs=-1 )
 
-from sklearn.model_selection import RandomizedSearchCV
+from sklearn.model_selection import RandomizedSearchCV 
 
 # model.randomized_search(catboost_grid,
 #                             x_train, y_train,
@@ -147,8 +147,7 @@ from sklearn.model_selection import RandomizedSearchCV
 # random_search = RandomizedSearchCV(model, param_distributions=catboost_grid, n_iter=100, cv=5, random_state=730320 )
 # random_search.fit(x_train,y_train)
 
-model = GridSearchCV(cb.CatBoostClassifier, catboost_grid, cv=kfold,
-                     n_jobs=10, refit=True , verbose=1 )
+
 
 
 # 최적의 하이퍼파라미터 출력
@@ -162,14 +161,15 @@ model.fit(x_train,y_train)
 
 #4 평가, 예측
 # GridSearchCV 전용
-# y_predict = model.predict(x_test)
-# print('accuracy_score' , accuracy_score(y_test,y_predict))
-# print('='*100)
-# y_pred_best = model.best_estimator_.predict(x_test)
-# print('최적의 매겨번수:' , model.best_estimator_)
-# print('='*100)
-# print('최적의 튠 ACC:', accuracy_score(y_test,y_pred_best))
+y_predict = model.predict(x_test)
+print('accuracy_score' , accuracy_score(y_test,y_predict))
+print('='*100)
+y_pred_best = model.best_estimator_.predict(x_test)
+print('최적의 매겨번수:' , model.best_estimator_)
+print('='*100)
+print('최적의 튠 ACC:', accuracy_score(y_test,y_pred_best))
 
+'''
 score = cross_val_score(model,x_train , y_train , cv=kfold)
 y_predict = cross_val_predict(model,x_test,y_test,cv=kfold)
 
@@ -177,70 +177,6 @@ print('acc',score)
 
 acc= accuracy_score(y_test,y_predict)
 print('ACC',acc)
-
-'''
-model = Sequential()
-model.add(Dense(64 ,input_shape= (16,),activation='swish'))
-model.add(Dense(16,activation= 'swish'))
-model.add(Dense(64,activation= 'swish'))
-model.add(Dense(16, activation= 'swish'))
-model.add(Dense(64,activation= 'swish'))
-model.add(Dense(16,activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
-model.add(Dense(16, activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
-model.add(Dense(16,activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
-model.add(Dense(16, activation= 'swish'))
-model.add(Dense(64,activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
-model.add(Dense(16,activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
-model.add(Dense(16,activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
-model.add(Dense(16, activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
-model.add(Dense(16,activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
-model.add(Dense(16, activation= 'swish'))
-model.add(Dense(64,activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
-model.add(Dense(16,activation= 'swish'))
-model.add(Dense(32,activation= 'swish'))
-model.add(Dense(7,activation='softmax'))
-
-
-
-
-#3
-from keras.callbacks import EarlyStopping ,ModelCheckpoint
-# mcp = ModelCheckpoint(monitor='val_loss', mode='min' , verbose=1, save_best_only=True , filepath=  filepath   )
-
-
-model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['acc'])
-model.fit(x_train,y_train, epochs = 10000000 , batch_size= 700 , validation_split=0.2 , callbacks = [es] , verbose= 2 )
-
-#4
-loss = model.evaluate(x_test,y_test)
-
-y_submit = model.predict(test_csv)
-y_predict = model.predict(x_test)
-y_submit = model.predict(test_csv)
-
-arg_pre = np.argmax(y_predict,axis=1)
-
-y_submit = model.predict(test_csv)
-
-y_submit = le.inverse_transform(y_submit) 
-submission_csv['NObeyesdad'] = y_submit
-
-y_submit =  np.argmax(y_submit,axis=1)
-
-submission_csv.to_csv(path+'submission_0209.csv', index = False)
-
-print('loss' , loss[0])
-print('ACC' , loss[1])
-
 
 '''
 y_submit = model.predict(test_csv)
