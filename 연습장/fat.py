@@ -9,6 +9,8 @@ import catboost as cb
 import xgboost as xgb
 import lightgbm as lgbm
 from sklearn.ensemble import RandomForestClassifier
+from keras.callbacks import EarlyStopping
+import random
 
 #1 데이터
 path = 'c:/_data/kaggle/fat//'
@@ -100,15 +102,17 @@ x_train = scaler.transform(x_train)
 x_test = scaler.transform(x_test)
 test_csv = scaler.transform(test_csv)
 
+es = EarlyStopping(monitor='loss', mode = 'min' , patience= 100 , restore_best_weights=True , verbose= 1 )
+
 #2 모델구성
 # model = RandomForestClassifier()
-model = cb.CatBoostClassifier()
+model = cb.CatBoostClassifier(eval_metric='acc', callback=[es]  )       # ,auto_class_weights=True 
 # model = xgb.XGBClassifier()
 # model = lgbm.LGBMClassifier()
 
 from sklearn.model_selection import StratifiedKFold
 
-kfold = StratifiedKFold(n_splits= 5 , shuffle=True , random_state= 730320 )
+kfold = StratifiedKFold(n_splits= 10 , shuffle=True , random_state= 730320 )
 from sklearn.model_selection import cross_val_predict ,cross_val_score , GridSearchCV
 
 parameters =[
@@ -119,8 +123,33 @@ parameters =[
     {'n_jobs' : [-1,2,4], 'min_samples_split' : [2,3,5,10]}
 ]
 
+from scipy.stats import loguniform
+
+catboost_grid = {
+    'n_estimators': random.randint(100, 300),       # 랜덤으로 범위내 수를 뽑음
+    'depth': random.randint(1, 5),                  # 랜덤으로 범위내 수를 뽑음
+    'learning_rate': loguniform(1e-3, 0.1),         # 랜덤으로 범위내 수를 뽑음
+    'min_child_samples': random.randint(10, 40),    # 랜덤으로 범위내 수를 뽑음
+    'grow_policy': ['SymmetricTree', 'Lossguide', 'Depthwise']
+}
+
+
 # model = GridSearchCV(RandomForestClassifier() ,  parameters , cv=kfold,
 #                      refit=True , verbose= 1 , n_jobs=-1 )
+
+from sklearn.model_selection import RandomizedSearchCV
+
+# model.randomized_search(catboost_grid,
+#                             x_train, y_train,
+#                             cv=kfold, n_iter=10 )
+
+random_search = RandomizedSearchCV(model, param_distributions=catboost_grid, n_iter=100, cv=5, random_state=730320 )
+# random_search.fit(x_train,y_train)
+# 최적의 하이퍼파라미터 출력
+print("Best hyperparameters:", random_search.best_params_)
+
+# 최적의 모델 성능 출력
+print("Best score:", random_search.best_score_)
 
 #3 훈련
 model.fit(x_train,y_train)
@@ -152,5 +181,13 @@ submission_csv.to_csv(path+'submission_0209.csv', index = False)
 # RandomForestClassifier
 # 0.8938
 
+# Catboost
+# 0.90679
+
+# XGB
+# 0.90462
+
+# LGBM
+# 0.90462
 
 
