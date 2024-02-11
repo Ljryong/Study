@@ -22,7 +22,7 @@ submission_csv = pd.read_csv(path + 'sample_submission.csv')
 print(train_csv.isna().sum())
 print(test_csv.isna().sum())
 
-# 결측치 0
+# 결측 x
 
 # LabelEncoder
 

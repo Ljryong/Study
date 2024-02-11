@@ -25,14 +25,13 @@ y = datasets.target
 print(x)
 print(x.shape)      #(506, 13)
 print(y)
-print(y.shape)      #(506,)
+print(y.shape)      
 
-
-############################
+########################
 # df = pd.DataFrame(x)
 # Nan_num = df.isna().sum()
 # print(Nan_num)
-############################
+#########################
 
 
 
