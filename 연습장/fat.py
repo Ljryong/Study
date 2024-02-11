@@ -96,7 +96,8 @@ from sklearn.preprocessing import MinMaxScaler , StandardScaler , MaxAbsScaler ,
 
 x_train , x_test , y_train , y_test = train_test_split(x,y, random_state=123 , test_size=0.3 , shuffle=True , stratify=y )
 
-scaler = StandardScaler()
+# scaler = StandardScaler()
+scaler = MinMaxScaler()
 scaler.fit(x_train)
 x_train = scaler.transform(x_train)
 x_test = scaler.transform(x_test)
@@ -116,6 +117,7 @@ from sklearn.model_selection import StratifiedKFold
 kfold = StratifiedKFold(n_splits= 10 , shuffle=True , random_state= 730320 )
 from sklearn.model_selection import cross_val_predict ,cross_val_score , GridSearchCV
 
+# randomforest
 parameters =[
     {'n_estimators' : [100,200] ,'max_depth':[6,10,12],'min_samples_leaf' : [3,10]},
     {'max_depth': [6,8,10,12], 'min_samples_leaf' : [3,5,7,10]},
