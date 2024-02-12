@@ -56,10 +56,10 @@ y = train_csv['NObeyesdad']
 from sklearn.preprocessing import MinMaxScaler , StandardScaler , MaxAbsScaler , RobustScaler
 
 
-x_train , x_test , y_train , y_test = train_test_split(x,y, random_state=12345 , test_size=0.3 , shuffle=True , stratify=y )
+x_train , x_test , y_train , y_test = train_test_split(x,y, random_state= 2220 , test_size=0.3 , shuffle=True , stratify=y )
 
-# scaler = StandardScaler()
-scaler = MinMaxScaler()
+scaler = StandardScaler()
+# scaler = MinMaxScaler()
 # 스케일러 상관 없음 점수가 똑같음
 scaler.fit(x_train)
 x_train = scaler.transform(x_train)
@@ -68,11 +68,13 @@ test_csv = scaler.transform(test_csv)
 
 es = EarlyStopping(monitor='val_loss', mode = 'min' , patience= 300 , restore_best_weights=True , verbose= 1 )
 
-kfold = StratifiedKFold(n_splits= 10 , shuffle=True , random_state= 12345 )
+kfold = StratifiedKFold(n_splits= 10 , shuffle=True , random_state= 2220 )
 
 #2 모델
 
-model = lgbm.LGBMClassifier()
+# model = lgbm.LGBMClassifier()
+model = xgb.XGBClassifier()
+# model = cb.CatBoostClassifier()
 
 #3 훈련
 from sklearn.model_selection import cross_val_predict
