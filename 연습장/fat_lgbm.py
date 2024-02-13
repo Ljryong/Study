@@ -65,13 +65,13 @@ model = lg.LGBMClassifier()
 
 kfold = StratifiedKFold(n_splits= 10 , shuffle=True , random_state= 1234 )
 
-lgbm_grid = {
+lgbm_grid = [{
     'n_estimators': np.random.randint(100, 300, 10),       # 랜덤으로 범위내 수를 뽑음
     'max_depth': np.random.randint(1, 5, 10),               # 랜덤으로 범위내 수를 뽑음
     'learning_rate': np.random.uniform(1e-3, 0.1, 10),      # 랜덤으로 범위내 수를 뽑음
     'min_child_samples': np.random.randint(10, 40, 10),    # 랜덤으로 범위내 수를 뽑음
     'boosting_type': ['gbdt', 'dart', 'goss', 'rf'],       # lgbm의 boosting_type은 'gbdt', 'dart', 'goss', 'rf' 중 하나
-}
+}]
 
 # RandomizedSearchCV를 사용하여 모델을 탐색
 random_search = RandomizedSearchCV(model, param_distributions= lgbm_grid, n_iter= 5 , cv=kfold, random_state= 1234 )
@@ -80,7 +80,7 @@ random_search.fit(x_train, y_train)
 # 최적의 하이퍼파라미터 출력
 print("Best parameters found: ", random_search.best_params_)
 
-model = lg.LGBMClassifier(**lgbm_grid)
+model = lg.LGBMClassifier(*lgbm_grid)
 
 #3 훈련
 model.fit(x_train,y_train)

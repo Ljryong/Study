@@ -58,8 +58,8 @@ from sklearn.preprocessing import MinMaxScaler , StandardScaler , MaxAbsScaler ,
 
 x_train , x_test , y_train , y_test = train_test_split(x,y, random_state= 2220 , test_size=0.3 , shuffle=True , stratify=y )
 
-scaler = StandardScaler()
-# scaler = MinMaxScaler()
+# scaler = StandardScaler()
+scaler = MinMaxScaler()
 # 스케일러 상관 없음 점수가 똑같음
 scaler.fit(x_train)
 x_train = scaler.transform(x_train)
@@ -89,6 +89,8 @@ y_submit = model.predict(test_csv)
 
 y_submit = le.inverse_transform(y_submit) 
 submission_csv['NObeyesdad'] = y_submit
+
+print(y_submit)
 
 submission_csv.to_csv(path+'submission_0210.csv', index = False)
 

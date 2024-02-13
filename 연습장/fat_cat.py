@@ -51,7 +51,7 @@ from sklearn.preprocessing import MinMaxScaler , StandardScaler , MaxAbsScaler ,
 
 
 
-x_train , x_test , y_train , y_test = train_test_split(x,y, random_state= 1234 , test_size=0.3 , shuffle=True , stratify=y )
+x_train , x_test , y_train , y_test = train_test_split(x,y, random_state= 12345 , test_size=0.3 , shuffle=True , stratify=y )
 
 # scaler = StandardScaler()
 scaler = MinMaxScaler()
@@ -63,26 +63,26 @@ test_csv = scaler.transform(test_csv)
 
 model = cb.CatBoostClassifier()
 
-kfold = StratifiedKFold(n_splits= 10 , shuffle=True , random_state= 1234 )
+kfold = StratifiedKFold(n_splits= 10 , shuffle=True , random_state= 12345 )
 
 from scipy.stats import loguniform
-catboost_grid = {
+catboost_grid = [{
     'n_estimators': np.random.randint(100, 300, 10),       # 랜덤으로 범위내 수를 뽑음
     'depth': np.random.randint(1, 5, 10),                  # 랜덤으로 범위내 수를 뽑음
     'learning_rate': np.random.uniform(1e-3, 0.1, 10),      # 랜덤으로 범위내 수를 뽑음
     'min_child_samples': np.random.randint(10, 40, 10),    # 랜덤으로 범위내 수를 뽑음
     'grow_policy': ['SymmetricTree', 'Lossguide', 'Depthwise']
-}
+}]
 
 # RandomizedSearchCV를 사용하여 모델을 탐색
-random_search = RandomizedSearchCV(model, param_distributions=catboost_grid, n_iter= 3 , cv=kfold, random_state= 1234 )
+random_search = RandomizedSearchCV(model, param_distributions=catboost_grid, n_iter= 3 , cv=kfold, random_state= 12345 )
 random_search.fit(x_train, y_train)
 
 # 최적의 하이퍼파라미터 출력
 
 print("Best parameters found: ", random_search.best_params_)
 
-model = cb.CatBoostClassifier(**catboost_grid)
+model = cb.CatBoostClassifier(*catboost_grid)
 
 #3 훈련
 model.fit(x_train,y_train)

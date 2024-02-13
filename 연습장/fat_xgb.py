@@ -67,17 +67,17 @@ model = xgb.XGBClassifier()
 
 kfold = StratifiedKFold(n_splits= 10 , shuffle=True , random_state= 1234 )
 
-xgb_grid = {
-    'n_estimators': [100],                                  # 오류로 인한 단일지정 , 숫자만 쓰면 에러 / 리스트로 배열을 만들어줘야됨
-    'max_depth': [2],                               
-    'learning_rate': np.random.uniform(1e-3, 0.1, 10),            
-    'min_child_weight': np.random.randint(1, 10, 10),                 
-    'gamma': np.random.uniform(0, 0.5, 10),                         
-    'subsample': [0.5, 0.7, 0.9],  # 적절한 subsample 값으로 지정         
-    'colsample_bytree': np.random.uniform(0.5, 1, 10),               
-    'reg_alpha': np.random.uniform(0, 1, 10),                          
-    'reg_lambda': np.random.uniform(0, 1, 10),                   
-}
+xgb_grid = [{
+    'n_estimators': np.array([100,200]),                                  # 리스트를 단일 값으로 변경
+    'max_depth': np.array([2,20]),
+    'learning_rate': np.random.uniform(1e-3, 0.1, 10),
+    'min_child_weight': np.array([1,5]),                                # 리스트를 단일 값으로 변경
+    'gamma': np.random.uniform(0, 0.5, 10),
+    'subsample': np.random.uniform(0.5, 1, 10),
+    'colsample_bytree': np.random.uniform(0.5, 1, 10),
+    'reg_alpha': np.random.uniform(0, 1, 10),
+    'reg_lambda': np.random.uniform(0, 1, 10),
+}]
 
 # RandomizedSearchCV를 사용하여 모델을 탐색
 random_search = RandomizedSearchCV(model, param_distributions=xgb_grid, n_iter= 3 , cv=kfold, random_state= 1234 )
@@ -86,7 +86,7 @@ random_search.fit(x_train, y_train)
 # 최적의 하이퍼파라미터 출력
 print("Best parameters found: ", random_search.best_params_)
 
-model = xgb.XGBClassifier(**xgb_grid)
+model = xgb.XGBClassifier(*xgb_grid)
 
 #3 훈련
 model.fit(x_train,y_train)
@@ -117,7 +117,7 @@ y_submit = model.predict(test_csv)
 y_submit = le.inverse_transform(y_submit) 
 submission_csv['NObeyesdad'] = y_submit
 
-submission_csv.to_csv(path+'submission_0210.csv', index = False)
+submission_csv.to_csv(path+'submission_0213.csv', index = False)
 
 
 
