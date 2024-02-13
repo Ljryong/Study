@@ -12,10 +12,11 @@ from sklearn.metrics import accuracy_score ,r2_score
 # cross_val_score 교차검증 스코어
 # StratifiedGroupKFold 분류모델의 stratify를 쓰는것
 import time
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.ensemble import RandomForestRegressor
 
 #1 데이터
-x, y =load_iris(return_X_y=True)
-x, y =load_digits(return_X_y=True)
 x, y =load_diabetes(return_X_y=True)
 
 kfold = KFold(n_splits=5 , shuffle= True ,random_state=10 )
@@ -50,27 +51,29 @@ parametes = [
 #                             )
 
 print('===========하빙그리드서치 시작============')
-model = HalvingGridSearchCV(SVR(),parametes,
-                            cv = kfold,
-                             verbose=1,
-                             refit=True,
-                             n_jobs= 1 ,
-                             random_state=66,
-                            #  n_iter= 20,                # 반복 횟수 = candidates // default = 10
-                            factor = 3,                 # Halving 에서 가장 중요함 / default = 3
-                            # min_resources=150           # 
-                            )
+# model = HalvingGridSearchCV(RandomForestRegressor(),parametes,
+#                             cv = kfold,
+#                              verbose=1,
+#                              refit=True,
+#                              n_jobs= 1 ,
+#                              random_state=66,
+#                             #  n_iter= 20,                # 반복 횟수 = candidates // default = 10
+#                             factor = 3,                 # Halving 에서 가장 중요함 / default = 3
+#                             # min_resources=150           # 
+#                             )
+
+model = make_pipeline(MinMaxScaler(),RandomForestRegressor())
 
 start_time = time.time()
 model.fit(x_train,y_train)
 end_time = time.time()
 
-print('최적의 매겨번수:' , model.best_estimator_)
+# print('최적의 매겨번수:' , model.best_estimator_)
 # 최적의 매겨번수: SVC(C=1, kernel='linear')
-print('최적의 파라미터:', model.best_params_)
+# print('최적의 파라미터:', model.best_params_)
 # 파라미터를 뽑을때를 1개만 있어도 뽑을 수 잇다.
 # 최적의 파라미터: {'C': 1, 'degree': 3, 'kernel': 'linear'}
-print('best_score' , model.best_score_)
+# print('best_score' , model.best_score_)
 # best_score 0.975
 print('model.score' ,  model.score(x_test,y_test))
 # model.score 0.9666666666666667
@@ -78,9 +81,9 @@ print('model.score' ,  model.score(x_test,y_test))
 y_predict = model.predict(x_test)
 print('r2_score' , r2_score(y_test,y_predict))
 # accuracy_score 0.9666666666666667
-y_pred_best = model.best_estimator_.predict(x_test)
+# y_pred_best = model.best_estimator_.predict(x_test)
             # SVC(C=1, kernel='linear').predict(x_test)
-print('최적의 튠 r2:', r2_score(y_test,y_pred_best))
+# print('최적의 튠 r2:', r2_score(y_test,y_pred_best))
 # 최적의 튠 ACC: 0.9666666666666667
 print('걸린시간:' , round(end_time - start_time,2) , '초')
 
@@ -117,3 +120,8 @@ print(pd.DataFrame(model.cv_results_).T)
 # n_candidates: 2
 # n_resources: 351
 # Fitting 5 folds for each of 2 candidates, totalling 10 fits
+
+
+# model.score 0.5261484812827029
+# r2_score 0.5261484812827029
+# 걸린시간: 0.35 초

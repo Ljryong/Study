@@ -14,8 +14,6 @@ from sklearn.metrics import accuracy_score ,r2_score
 import time
 
 #1 데이터
-x, y =load_iris(return_X_y=True)
-x, y =load_digits(return_X_y=True)
 x, y =load_diabetes(return_X_y=True)
 
 kfold = KFold(n_splits=5 , shuffle= True ,random_state=10 )

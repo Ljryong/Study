@@ -51,7 +51,7 @@ from sklearn.preprocessing import MinMaxScaler , StandardScaler , MaxAbsScaler ,
 
 
 
-x_train , x_test , y_train , y_test = train_test_split(x,y, random_state= 1234 , test_size=0.3 , shuffle=True , stratify=y )
+x_train , x_test , y_train , y_test = train_test_split(x,y, random_state= 123456 , test_size=0.3 , shuffle=True , stratify=y )
 
 # scaler = StandardScaler()
 scaler = MinMaxScaler()
@@ -65,7 +65,7 @@ x_test = np.array(x_test)
 
 model = xgb.XGBClassifier()
 
-kfold = StratifiedKFold(n_splits= 10 , shuffle=True , random_state= 1234 )
+kfold = StratifiedKFold(n_splits= 10 , shuffle=True , random_state= 1234321 )
 
 xgb_grid = [{
     'n_estimators': np.array([10,100,200]),                                  # 리스트를 단일 값으로 변경

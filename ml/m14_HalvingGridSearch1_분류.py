@@ -101,7 +101,7 @@ print(pd.DataFrame(model.cv_results_).T)
 #                                   조금 넘어가는 상관 없음 크게 넘어가는것만 되지 않는다. 적게 돌리는것보단 조금 더 크게 돌리는게 통상적으로 더 좋다
 # n_required_iterations: 4          4번 도는게 좋다     n_required_iterations , n_possible_iterations 가 같은게 좋다. 다르면 데이터 손실이 있다는 뜻 
 # n_possible_iterations: 2          설정 한 값으로 몇번 돌 수 있는지(가능한지) 보여준다
-# min_resources_: 18                CV(n_split) * 2 * 라벨의 갯수 = min_resources// 개수가 다를 수 있는데 다른 이유는 안에 담겨있는 알고리즘에 의한 것  
+# min_resources_: 18                CV(n_split) * 2 * 라벨의 갯수 + a(알파) = min_resources// 개수가 다를 수 있는데 다른 이유는 안에 담겨있는 알고리즘에 의한 것  
 # max_resources_: 120               train 의 최대 수량 (최대 훈련 개수) = x_train의 행의 갯수 
 # aggressive_elimination: False     
 # factor: 3                         분할한 수
