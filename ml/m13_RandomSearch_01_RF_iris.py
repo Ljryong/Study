@@ -43,6 +43,11 @@ model = GridSearchCV(RandomForestClassifier(), parameters, cv=kfold ,
                     random_state=66, 
                     n_iter= 10       )
 
+# model = RandomizedSearchCV(RandomForestClassifier(), parameters, cv = kfold ,
+#                                 verbose=1,
+#                                 refit=True,
+#                                 n_jobs= -1 )
+
 #3 훈련
 start = time.time()
 model.fit(x_train, y_train)
@@ -64,3 +69,7 @@ print('시간 : ' , round(end - start,2))
 # 0.9666666666666667
 # 시간 :  2.38
 
+# RandomizedSearchCV
+# accuracy_score 0.9666666666666667
+# 0.9666666666666667
+# 시간 :  1.65

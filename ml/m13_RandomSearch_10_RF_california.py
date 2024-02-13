@@ -1,20 +1,15 @@
-from sklearn.datasets import load_boston
+from sklearn.datasets import fetch_california_housing
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import r2_score
 import numpy as np
 from keras.models import Sequential
 from keras.layers import Dense
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import r2_score
-import time
-import pandas as pd
-# warning 뜨는것을 없애는 방법, 하지만 아직 왜 뜨는지 모르니 보는것을 추천
-import warnings
-warnings.filterwarnings('ignore') 
+import time                                 # 시간에 대한 정보를 가져온다
 from sklearn.svm import LinearSVR
 
-datasets = load_boston()
-
-
-
+#1
+datasets = fetch_california_housing()
+print(datasets.items())
 x = datasets.data
 y = datasets.target
 
@@ -36,10 +31,17 @@ parameters =[
 ]
 
 #2 모델
-model = GridSearchCV(RandomForestRegressor(), parameters, cv=kfold ,
-                    verbose=1,
-                    refit=True,
-                    n_jobs= -1 )
+# model = GridSearchCV(RandomForestRegressor(), parameters, cv=kfold ,
+#                     verbose=1,
+#                     refit=True,
+#                     n_jobs= -1 )
+
+model = RandomizedSearchCV(RandomForestRegressor(), parameters, cv = kfold ,
+                                verbose=1,
+                                refit=True,
+                                n_jobs= -1 ,
+                                random_state=66,
+                                n_iter=10)
 
 
 #3 훈련
@@ -55,7 +57,3 @@ print('accuracy_score' , r2_score(y_test,y_predict))
 print(r2_score(y_test,y_predict))
 
 print('시간 : ' , round(end - start,2))
-
-
-
-

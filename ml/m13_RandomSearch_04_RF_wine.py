@@ -41,10 +41,17 @@ parameters =[
 ]
 
 #2 모델
-model = GridSearchCV(RandomForestClassifier(), parameters, cv=kfold ,
-                    verbose=1,
-                    refit=True,
-                    n_jobs= -1 )
+# model = GridSearchCV(RandomForestClassifier(), parameters, cv=kfold ,
+#                     verbose=1,
+#                     refit=True,
+#                     n_jobs= -1 )
+
+model = RandomizedSearchCV(RandomForestClassifier(), parameters, cv = kfold ,
+                                verbose=1,
+                                refit=True,
+                                n_jobs= -1 ,
+                                random_state=66,
+                                n_iter=10)
 
 
 #3 훈련

@@ -1,8 +1,9 @@
 import xgboost as xgb
 from sklearn.preprocessing import LabelEncoder
 import pandas as pd
-from sklearn.model_selection import train_test_split , StratifiedKFold , RandomizedSearchCV
+from sklearn.model_selection import train_test_split , StratifiedKFold , RandomizedSearchCV , GridSearchCV
 import numpy as np
+import dask
 
 #1 데이터
 path = 'c:/_data/kaggle/fat//'
@@ -63,30 +64,26 @@ test_csv = scaler.transform(test_csv)
 x_train = np.array(x_train)
 x_test = np.array(x_test)
 
-model = xgb.XGBClassifier()
-
 kfold = StratifiedKFold(n_splits= 10 , shuffle=True , random_state= 1234 )
 
+import random
 xgb_grid = [{
-    'n_estimators': np.array([10,100,200]),                                  # 리스트를 단일 값으로 변경
-    'max_depth': np.array([1,5,20]),
-    'learning_rate': np.array([0.01, 0.05, 0.1]),
-    'min_child_weight': np.array([1,5,10]),                                # 리스트를 단일 값으로 변경
-    'gamma': np.array([0, 0.1, 0.2]) ,
-    'subsample': np.array([0.6, 0.7, 0.8]),
-    'colsample_bytree': np.array([0.6, 0.7, 0.8]),
+    'n_estimators': [10,100,200],                  
+    'max_depth': [1,5,20],
+    'learning_rate': [0.01, 0.05, 0.1],
+    'min_child_weight': [1,5,10],                  
+    'gamma': [0, 0.1, 0.2] ,
+    'subsample': [0.6, 0.7, 0.8],
+    'colsample_bytree': [0.6, 0.7, 0.8],
     'reg_alpha': np.random.uniform(0, 1, 10),
     'reg_lambda': np.random.uniform(0, 1, 10),
 }]
 
-# RandomizedSearchCV를 사용하여 모델을 탐색
-random_search = RandomizedSearchCV(model, param_distributions=xgb_grid, n_iter= 15 , cv=kfold, random_state= 1234 )
-random_search.fit(x_train, y_train)
 
-# 최적의 하이퍼파라미터 출력
-print("Best parameters found: ", random_search.best_params_)
-
-model = xgb.XGBClassifier(*xgb_grid)
+model = GridSearchCV(xgb.XGBClassifier(), xgb_grid,  cv=kfold, )
+                    #  random_state= 1234 , 
+                    #  refit=True ,
+                    #  verbose= 1)
 
 #3 훈련
 model.fit(x_train,y_train)
@@ -95,23 +92,9 @@ model.fit(x_train,y_train)
 # GridSearchCV 전용
 from sklearn.metrics import accuracy_score
 y_predict = model.predict(x_test)
-# print('accuracy_score' , accuracy_score(y_test,y_predict))
 print('='*100)
-# y_pred_best = model.best_estimator_.predict(x_test)
-# print('최적의 매겨번수:' , model.best_estimator_)
-# print('='*100)
-# print('최적의 튠 ACC:', accuracy_score(y_test,y_pred_best))
-
-# from sklearn.model_selection import cross_val_predict , cross_val_score
-# score = cross_val_score(model,x_train , y_train , cv=kfold)
-# y_predict = cross_val_predict(model,x_test,y_test,cv=kfold)
-
-# print('acc',score)
-
 acc= accuracy_score(y_test,y_predict)
 print('ACC',acc)
-print("Best parameters found: ", random_search.best_params_)
-
 y_submit = model.predict(test_csv)
 
 y_submit = le.inverse_transform(y_submit) 

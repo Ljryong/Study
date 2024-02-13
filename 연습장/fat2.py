@@ -138,7 +138,6 @@ catboost_grid = {
 # model = GridSearchCV(RandomForestClassifier() ,  parameters , cv=kfold,
 #                      refit=True , verbose= 1 , n_jobs=-1 )
 
-from sklearn.model_selection import RandomizedSearchCV 
 
 # model.randomized_search(catboost_grid,
 #                             x_train, y_train,

@@ -1,23 +1,26 @@
-from sklearn.datasets import fetch_covtype
-import numpy as np
-import pandas as pd
 from keras.models import Sequential
 from keras.layers import Dense
-from keras.callbacks import EarlyStopping
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import r2_score , accuracy_score
+from keras.callbacks import EarlyStopping
+import numpy as np
+import pandas as pd
 from sklearn.svm import LinearSVC
-from sklearn.utils import all_estimators
-import warnings
-warnings.filterwarnings('ignore')
+
 
 #1
-datasets = fetch_covtype()
-x = datasets.data
-y = datasets.target
+path = "c:/_data/dacon/iris//"
 
-print(x.shape,y.shape)      # (581012, 54) (581012,)
-print(pd.value_counts(y))   # 2    283301 , 1    211840 , 3     35754 , 7     20510 , 6     17367 , 5      9493 , 4      2747   (n,7)
+train_csv = pd.read_csv(path + 'train.csv' , index_col = 0)
+test_csv = pd.read_csv(path + 'test.csv' , index_col = 0)
+submission_csv = pd.read_csv(path + 'sample_submission.csv')
+
+print(train_csv.shape)          # (120, 5)
+print(test_csv.shape)           # (30, 4)
+
+
+x = train_csv.drop(['species'],axis=1)
+y = train_csv['species']
 
 
 x_train , x_test, y_train, y_test = train_test_split(x,y,test_size= 0.3 , stratify= y  ,random_state= 1234 , shuffle=True)
@@ -36,10 +39,17 @@ parameters =[
 ]
 
 #2 모델
-model = GridSearchCV(RandomForestClassifier(), parameters, cv=kfold ,
-                    verbose=1,
-                    refit=True,
-                    n_jobs= -1 )
+# model = GridSearchCV(RandomForestClassifier(), parameters, cv=kfold ,
+#                     verbose=1,
+#                     refit=True,
+#                     n_jobs= -1 )
+
+model = RandomizedSearchCV(RandomForestClassifier(), parameters, cv = kfold ,
+                                verbose=1,
+                                refit=True,
+                                n_jobs= -1 ,
+                                random_state=66,
+                                n_iter=10)
 
 
 #3 훈련
@@ -56,12 +66,14 @@ print(accuracy_score(y_test,y_predict))
 print('시간 : ' , round(end - start,2))
 
 
-GridSearchCV
-
+# GridSearchCV
+# Fitting 3 folds for each of 60 candidates, totalling 180 fits
+# accuracy_score 0.9444444444444444
+# 0.9444444444444444
+# 시간 :  2.75
 
 # RandomizedSearchCV
 # Fitting 3 folds for each of 10 candidates, totalling 30 fits
-# accuracy_score 0.9526287405911511
-# 0.9526287405911511
-# 시간 :  264.38
-
+# accuracy_score 0.9444444444444444
+# 0.9444444444444444
+# 시간 :  2.07

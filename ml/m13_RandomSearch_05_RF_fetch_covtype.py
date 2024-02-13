@@ -41,6 +41,13 @@ model = GridSearchCV(RandomForestClassifier(), parameters, cv=kfold ,
                     refit=True,
                     n_jobs= -1 )
 
+# model = RandomizedSearchCV(RandomForestClassifier(), parameters, cv = kfold ,
+#                                 verbose=1,
+#                                 refit=True,
+#                                 n_jobs= -1 ,
+#                                 random_state=66,
+#                                 n_iter=10)
+
 
 #3 훈련
 start = time.time()
@@ -56,8 +63,11 @@ print(accuracy_score(y_test,y_predict))
 print('시간 : ' , round(end - start,2))
 
 
-GridSearchCV
-
+# GridSearchCV
+# Fitting 3 folds for each of 60 candidates, totalling 180 fits
+# accuracy_score 0.9528123278869102
+# 0.9528123278869102
+# 시간 :  1258.29
 
 # RandomizedSearchCV
 # Fitting 3 folds for each of 10 candidates, totalling 30 fits

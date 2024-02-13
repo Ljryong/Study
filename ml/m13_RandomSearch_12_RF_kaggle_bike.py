@@ -38,29 +38,35 @@ parameters =[
     {'n_jobs' : [-1,2,4], 'min_samples_split' : [2,3,5,10]}
 ]
 
-#2 모델구성
-from sklearn.model_selection import StratifiedKFold , GridSearchCV , RandomizedSearchCV
-from sklearn.ensemble import RandomForestRegressor
-import time
-kfold = StratifiedKFold(n_splits= 3 , shuffle=True , random_state= 1234 )
-
-
 #2 모델
-model = RandomForestRegressor()
-                     
+# model = GridSearchCV(RandomForestRegressor(), parameters, cv=kfold ,
+#                     verbose=1,
+#                     refit=True,
+#                     n_jobs= -1 )
 
-from sklearn.model_selection import StratifiedKFold , cross_val_predict , cross_val_score
-kfold = StratifiedKFold(n_splits=5 , shuffle=True , random_state=0)
+model = RandomizedSearchCV(RandomForestRegressor(), parameters, cv = kfold ,
+                                verbose=1,
+                                refit=True,
+                                n_jobs= -1 ,
+                                random_state=66,
+                                n_iter=10)
 
-score = cross_val_score(model , x_train, y_train, cv=kfold  )
 
-print('Acc :',score ,'\n 평균 acc :' , round(score[1],4) )
+#3 훈련
+start = time.time()
+model.fit(x_train, y_train)
+end = time.time()
 
-pred = cross_val_predict(model,x_test,y_test,cv=kfold  )
+#4 평가
+y_predict = model.predict(x_test)
+from sklearn.metrics import r2_score
+print('accuracy_score' , r2_score(y_test,y_predict))
 
-acc = r2_score(y_test,pred)
+print(r2_score(y_test,y_predict))
 
-print(acc)
+print('시간 : ' , round(end - start,2))
+
+
 
 
 

@@ -1,29 +1,29 @@
-from sklearn.datasets import fetch_covtype
+from sklearn.datasets import load_boston
 import numpy as np
-import pandas as pd
 from keras.models import Sequential
 from keras.layers import Dense
-from keras.callbacks import EarlyStopping
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
-from sklearn.svm import LinearSVC
-from sklearn.utils import all_estimators
+from sklearn.metrics import r2_score
+import time
+import pandas as pd
+# warning 뜨는것을 없애는 방법, 하지만 아직 왜 뜨는지 모르니 보는것을 추천
 import warnings
-warnings.filterwarnings('ignore')
+warnings.filterwarnings('ignore') 
+from sklearn.svm import LinearSVR
 
-#1
-datasets = fetch_covtype()
+datasets = load_boston()
+
+
+
 x = datasets.data
 y = datasets.target
 
-print(x.shape,y.shape)      # (581012, 54) (581012,)
-print(pd.value_counts(y))   # 2    283301 , 1    211840 , 3     35754 , 7     20510 , 6     17367 , 5      9493 , 4      2747   (n,7)
 
 
 x_train , x_test, y_train, y_test = train_test_split(x,y,test_size= 0.3 , stratify= y  ,random_state= 1234 , shuffle=True)
 #2 모델구성
 from sklearn.model_selection import StratifiedKFold , GridSearchCV , RandomizedSearchCV
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestRegressor
 import time
 kfold = StratifiedKFold(n_splits= 3 , shuffle=True , random_state= 1234 )
 
@@ -36,10 +36,17 @@ parameters =[
 ]
 
 #2 모델
-model = GridSearchCV(RandomForestClassifier(), parameters, cv=kfold ,
-                    verbose=1,
-                    refit=True,
-                    n_jobs= -1 )
+# model = GridSearchCV(RandomForestRegressor(), parameters, cv=kfold ,
+#                     verbose=1,
+#                     refit=True,
+#                     n_jobs= -1 )
+
+model = RandomizedSearchCV(RandomForestRegressor(), parameters, cv = kfold ,
+                                verbose=1,
+                                refit=True,
+                                n_jobs= -1 ,
+                                random_state=66,
+                                n_iter=10)
 
 
 #3 훈련
@@ -49,19 +56,13 @@ end = time.time()
 
 #4 평가
 y_predict = model.predict(x_test)
-print('accuracy_score' , accuracy_score(y_test,y_predict))
+from sklearn.metrics import r2_score
+print('accuracy_score' , r2_score(y_test,y_predict))
 
-print(accuracy_score(y_test,y_predict))
+print(r2_score(y_test,y_predict))
 
 print('시간 : ' , round(end - start,2))
 
 
-GridSearchCV
 
-
-# RandomizedSearchCV
-# Fitting 3 folds for each of 10 candidates, totalling 30 fits
-# accuracy_score 0.9526287405911511
-# 0.9526287405911511
-# 시간 :  264.38
 
