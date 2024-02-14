@@ -68,13 +68,13 @@ model = xgb.XGBClassifier()
 kfold = StratifiedKFold(n_splits= 10 , shuffle=True , random_state= 1234321 )
 
 xgb_grid = [{
-    'n_estimators': np.array([10,100,200]),                                  # 리스트를 단일 값으로 변경
-    'max_depth': np.array([1,5,20]),
-    'learning_rate': np.array([0.01, 0.05, 0.1]),
-    'min_child_weight': np.array([1,5,10]),                                # 리스트를 단일 값으로 변경
-    'gamma': np.array([0, 0.1, 0.2]) ,
-    'subsample': np.array([0.6, 0.7, 0.8]),
-    'colsample_bytree': np.array([0.6, 0.7, 0.8]),
+    'n_estimators': np.random.randint(10,100,20),                                  # 리스트를 단일 값으로 변경
+    'max_depth': np.random.randint(1,20,5),
+    'learning_rate': np.random.randint(1, 5, 3),
+    'min_child_weight': np.random.randint(1,50,10),                                # 리스트를 단일 값으로 변경
+    'gamma': np.random.randint(0, 10, 5 ) ,
+    'subsample': np.random.randint(6, 70, 10),
+    'colsample_bytree': np.random.randint(6, 30, 10),
     'reg_alpha': np.random.uniform(0, 1, 10),                               # 
     'reg_lambda': np.random.uniform(0, 1, 10),
 }]

@@ -51,10 +51,10 @@ from sklearn.preprocessing import MinMaxScaler , StandardScaler , MaxAbsScaler ,
 
 
 
-x_train , x_test , y_train , y_test = train_test_split(x,y, random_state= 1234 , test_size=0.3 , shuffle=True , stratify=y )
+x_train , x_test , y_train , y_test = train_test_split(x,y, random_state= 12345 , test_size=0.3 , shuffle=True , stratify=y )
 
-# scaler = StandardScaler()
-scaler = MinMaxScaler()
+scaler = StandardScaler()
+# scaler = MinMaxScaler()
 scaler.fit(x_train)
 x_train = scaler.transform(x_train)
 x_test = scaler.transform(x_test)
@@ -63,20 +63,18 @@ test_csv = scaler.transform(test_csv)
 
 model = lg.LGBMClassifier()
 
-kfold = StratifiedKFold(n_splits= 10 , shuffle=True , random_state= 1234 )
+kfold = StratifiedKFold(n_splits= 10 , shuffle=True , random_state= 12345 )
 
 lgbm_grid = [{
     'n_estimators': np.random.randint(100, 300, 10),       # 랜덤으로 범위내 수를 뽑음
-    'max_depth': np.random.randint(1, 5, 10),               # 랜덤으로 범위내 수를 뽑음
+    'max_depth': np.random.randint(1, 50, 10),               # 랜덤으로 범위내 수를 뽑음
     'learning_rate': np.random.uniform(1e-3, 0.1, 10),      # 랜덤으로 범위내 수를 뽑음
     'min_child_samples': np.random.randint(10, 40, 10),    # 랜덤으로 범위내 수를 뽑음
     'boosting_type': ['gbdt', 'dart', 'goss', 'rf'],       # lgbm의 boosting_type은 'gbdt', 'dart', 'goss', 'rf' 중 하나
 }]
 
 # RandomizedSearchCV를 사용하여 모델을 탐색
-model = RandomizedSearchCV(model, lgbm_grid, n_iter= 5 , cv=kfold, random_state= 1234 )
-
-# model = lg.LGBMClassifier(*lgbm_grid)
+model = RandomizedSearchCV(model, lgbm_grid, n_iter= 7 , cv=kfold, random_state= 12345 )
 
 #3 훈련
 model.fit(x_train,y_train)
