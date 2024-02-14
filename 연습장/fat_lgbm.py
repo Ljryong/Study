@@ -74,13 +74,9 @@ lgbm_grid = [{
 }]
 
 # RandomizedSearchCV를 사용하여 모델을 탐색
-random_search = RandomizedSearchCV(model, param_distributions= lgbm_grid, n_iter= 5 , cv=kfold, random_state= 1234 )
-random_search.fit(x_train, y_train)
+model = RandomizedSearchCV(model, lgbm_grid, n_iter= 5 , cv=kfold, random_state= 1234 )
 
-# 최적의 하이퍼파라미터 출력
-print("Best parameters found: ", random_search.best_params_)
-
-model = lg.LGBMClassifier(*lgbm_grid)
+# model = lg.LGBMClassifier(*lgbm_grid)
 
 #3 훈련
 model.fit(x_train,y_train)
@@ -89,31 +85,18 @@ model.fit(x_train,y_train)
 # GridSearchCV 전용
 from sklearn.metrics import accuracy_score
 y_predict = model.predict(x_test)
-# print('accuracy_score' , accuracy_score(y_test,y_predict))
 print('='*100)
-# y_pred_best = model.best_estimator_.predict(x_test)
-# print('최적의 매겨번수:' , model.best_estimator_)
-# print('='*100)
-# print('최적의 튠 ACC:', accuracy_score(y_test,y_pred_best))
-
-# from sklearn.model_selection import cross_val_predict , cross_val_score
-# score = cross_val_score(model,x_train , y_train , cv=kfold)
-# y_predict = cross_val_predict(model,x_test,y_test,cv=kfold)
-
-# print('acc',score)
-
 acc= accuracy_score(y_test,y_predict)
 print('ACC',acc)
-print("Best parameters found: ", random_search.best_params_)
-
 y_submit = model.predict(test_csv)
 
 y_submit = le.inverse_transform(y_submit) 
 submission_csv['NObeyesdad'] = y_submit
 
-submission_csv.to_csv(path+'submission_0210.csv', index = False)
+submission_csv.to_csv(path+'submission_lgbm.csv', index = False)
 
 
 
 
-
+# lgbm
+# 1234 1234 1234

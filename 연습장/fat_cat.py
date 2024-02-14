@@ -113,7 +113,7 @@ y_submit = model.predict(test_csv)
 y_submit = le.inverse_transform(y_submit) 
 submission_csv['NObeyesdad'] = y_submit
 
-submission_csv.to_csv(path+'submission_0210.csv', index = False)
+submission_csv.to_csv(path+'submission_catboost.csv', index = False)
 
 
 # Best parameters found:  {'n_estimators': 230, 'min_child_samples': 28, 'learning_rate': 0.07828018185257263, 'grow_policy': 'SymmetricTree', 'depth': 3}

@@ -1,7 +1,7 @@
 import xgboost as xgb
 from sklearn.preprocessing import LabelEncoder
 import pandas as pd
-from sklearn.model_selection import train_test_split , StratifiedKFold , RandomizedSearchCV
+from sklearn.model_selection import train_test_split , StratifiedKFold , RandomizedSearchCV 
 import numpy as np
 
 #1 데이터
@@ -53,8 +53,8 @@ from sklearn.preprocessing import MinMaxScaler , StandardScaler , MaxAbsScaler ,
 
 x_train , x_test , y_train , y_test = train_test_split(x,y, random_state= 123456 , test_size=0.3 , shuffle=True , stratify=y )
 
-# scaler = StandardScaler()
-scaler = MinMaxScaler()
+scaler = StandardScaler()
+# scaler = MinMaxScaler()
 scaler.fit(x_train)
 x_train = scaler.transform(x_train)
 x_test = scaler.transform(x_test)
@@ -75,7 +75,7 @@ xgb_grid = [{
     'gamma': np.array([0, 0.1, 0.2]) ,
     'subsample': np.array([0.6, 0.7, 0.8]),
     'colsample_bytree': np.array([0.6, 0.7, 0.8]),
-    'reg_alpha': np.random.uniform(0, 1, 10),
+    'reg_alpha': np.random.uniform(0, 1, 10),                               # 
     'reg_lambda': np.random.uniform(0, 1, 10),
 }]
 
@@ -95,19 +95,7 @@ model.fit(x_train,y_train)
 # GridSearchCV 전용
 from sklearn.metrics import accuracy_score
 y_predict = model.predict(x_test)
-# print('accuracy_score' , accuracy_score(y_test,y_predict))
 print('='*100)
-# y_pred_best = model.best_estimator_.predict(x_test)
-# print('최적의 매겨번수:' , model.best_estimator_)
-# print('='*100)
-# print('최적의 튠 ACC:', accuracy_score(y_test,y_pred_best))
-
-# from sklearn.model_selection import cross_val_predict , cross_val_score
-# score = cross_val_score(model,x_train , y_train , cv=kfold)
-# y_predict = cross_val_predict(model,x_test,y_test,cv=kfold)
-
-# print('acc',score)
-
 acc= accuracy_score(y_test,y_predict)
 print('ACC',acc)
 print("Best parameters found: ", random_search.best_params_)
@@ -117,7 +105,7 @@ y_submit = model.predict(test_csv)
 y_submit = le.inverse_transform(y_submit) 
 submission_csv['NObeyesdad'] = y_submit
 
-submission_csv.to_csv(path+'submission_0213.csv', index = False)
+submission_csv.to_csv(path+'submission_xgb.csv', index = False)
 
 
 
