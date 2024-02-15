@@ -84,7 +84,7 @@ kfold = StratifiedKFold(n_splits= 3 , shuffle=True , random_state= 730501 )
 
 import random
 xgb_grid = [{
-    'n_estimators': np.random.randint(10,100,2),                 
+    'n_estimators': np.random.randint(100,300,2),                   # epochs      
     'max_depth': np.random.randint(1,20,2),
     'learning_rate': [0.01, 0.05],
     'min_child_weight': [1,5],                  
@@ -101,6 +101,11 @@ model = HalvingGridSearchCV(xgb.XGBClassifier(random_state= 220118 ,tree_method=
                      verbose= 1 , 
                      factor=3 ,
                      min_resources=20)
+
+# xgb gpu 사용방법
+# tree_method = 'gpu_hist'
+# predictor = 'gpu_predictor'
+# gpu_id = 0
 
 #3 훈련
 model.fit(x_train,y_train)

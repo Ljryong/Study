@@ -82,7 +82,7 @@ catboost_grid = {
 }
 
 # RandomizedSearchCV를 사용하여 모델을 탐색
-model = RandomizedSearchCV(cb.CatBoostClassifier(), param_distributions=catboost_grid, n_iter= 3 , cv=kfold, random_state= 12345 )
+model = RandomizedSearchCV(cb.CatBoostClassifier(task_type='GPU'), param_distributions=catboost_grid, n_iter= 3 , cv=kfold, random_state= 12345 )
 
 #3 훈련
 model.fit(x_train,y_train)
