@@ -44,14 +44,25 @@ test_csv['CALC'] = test_csv['CALC'].replace({'Always' : 2 , 'Frequently' : 1 , '
 train_csv['MTRANS'] = train_csv['MTRANS'].replace({'Automobile': 0 , 'Bike' : 1, 'Motorbike' : 2, 'Public_Transportation' : 3,'Walking' : 4})
 test_csv['MTRANS'] = test_csv['MTRANS'].replace({'Automobile': 0 , 'Bike' : 1, 'Motorbike' : 2, 'Public_Transportation' : 3,'Walking' : 4})
 
+# train_csv = train_csv.drop(['SMOKE'],axis=1)
+# test_csv = test_csv.drop(['SMOKE'],axis=1)
+
 x = train_csv.drop(['NObeyesdad'], axis= 1)
 y = train_csv['NObeyesdad']
 
 from sklearn.preprocessing import MinMaxScaler , StandardScaler , MaxAbsScaler , RobustScaler
 
 
+df = pd.DataFrame(x , columns = x.columns)
+print(df)
+df['target(Y)'] = y
+print(df)
 
-x_train , x_test , y_train , y_test = train_test_split(x,y, random_state= 12345 , test_size=0.3 , shuffle=True , stratify=y )
+print('=================== 상관계수 히트맵 =====================')
+print(df.corr())
+
+
+x_train , x_test , y_train , y_test = train_test_split(x,y, random_state= 1234 , test_size=0.3 , shuffle=True , stratify=y )
 
 scaler = StandardScaler()
 # scaler = MinMaxScaler()
@@ -60,21 +71,18 @@ x_train = scaler.transform(x_train)
 x_test = scaler.transform(x_test)
 test_csv = scaler.transform(test_csv)
 
-
-model = lg.LGBMClassifier()
-
-kfold = StratifiedKFold(n_splits= 10 , shuffle=True , random_state= 12345 )
+kfold = StratifiedKFold(n_splits= 7 , shuffle=True , random_state= 1234 )
 
 lgbm_grid = [{
-    'n_estimators': np.random.randint(100, 300, 10),       # 랜덤으로 범위내 수를 뽑음
-    'max_depth': np.random.randint(1, 50, 10),               # 랜덤으로 범위내 수를 뽑음
-    'learning_rate': np.random.uniform(1e-3, 0.1, 10),      # 랜덤으로 범위내 수를 뽑음
-    'min_child_samples': np.random.randint(10, 40, 10),    # 랜덤으로 범위내 수를 뽑음
+    'n_estimators': np.random.randint(100, 300, 3),       # 랜덤으로 범위내 수를 뽑음
+    'max_depth': np.random.randint(1, 50, 2),               # 랜덤으로 범위내 수를 뽑음
+    'learning_rate': np.random.uniform(1e-3, 0.1, 3),      # 랜덤으로 범위내 수를 뽑음
+    'min_child_samples': np.random.randint(10, 40, 3),    # 랜덤으로 범위내 수를 뽑음
     'boosting_type': ['gbdt', 'dart', 'goss', 'rf'],       # lgbm의 boosting_type은 'gbdt', 'dart', 'goss', 'rf' 중 하나
 }]
 
 # RandomizedSearchCV를 사용하여 모델을 탐색
-model = RandomizedSearchCV(model, lgbm_grid, n_iter= 7 , cv=kfold, random_state= 12345 )
+model = RandomizedSearchCV(lg.LGBMClassifier(), lgbm_grid, n_iter= 20 , cv=kfold, random_state= 1234 )
 
 #3 훈련
 model.fit(x_train,y_train)
@@ -98,3 +106,18 @@ submission_csv.to_csv(path+'submission_lgbm.csv', index = False)
 
 # lgbm
 # 1234 1234 1234
+
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+import matplotlib
+print(sns.__version__)
+print(matplotlib.__version__)      
+sns.set(font_scale=1.2)
+sns.heatmap(data=df.corr(), 
+            square=True,    
+            annot=True,            
+            cbar=True)             
+plt.show()
+
+

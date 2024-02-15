@@ -50,39 +50,39 @@ y = train_csv['NObeyesdad']
 from sklearn.preprocessing import MinMaxScaler , StandardScaler , MaxAbsScaler , RobustScaler
 
 
+df = pd.DataFrame(x , columns = x.columns)
+print(df)
+df['target(Y)'] = y
+print(df)
+
+print('=================== 상관계수 히트맵 =====================')
+print(df.corr())
+
 
 x_train , x_test , y_train , y_test = train_test_split(x,y, random_state= 12345 , test_size=0.3 , shuffle=True , stratify=y )
 
 # scaler = StandardScaler()
-scaler = MinMaxScaler()
+# scaler = MinMaxScaler()
+scaler = RobustScaler()
 scaler.fit(x_train)
 x_train = scaler.transform(x_train)
 x_test = scaler.transform(x_test)
 test_csv = scaler.transform(test_csv)
 
 
-model = cb.CatBoostClassifier()
 
-kfold = StratifiedKFold(n_splits= 10 , shuffle=True , random_state= 12345 )
+kfold = StratifiedKFold(n_splits= 5 , shuffle=True , random_state= 12345 )
 
-from scipy.stats import loguniform
-catboost_grid = [{
+catboost_grid = {
     'n_estimators': np.random.randint(100, 300, 10),       # 랜덤으로 범위내 수를 뽑음
     'depth': np.random.randint(1, 5, 10),                  # 랜덤으로 범위내 수를 뽑음
-    'learning_rate': np.random.uniform(1e-3, 0.1, 10),      # 랜덤으로 범위내 수를 뽑음
-    'min_child_samples': np.random.randint(10, 40, 10),    # 랜덤으로 범위내 수를 뽑음
+    'learning_rate': np.random.randint(1, 7, 5),          # 랜덤으로 범위내 수를 뽑음
+    'min_child_samples': np.random.randint(10, 40, 5),    # 랜덤으로 범위내 수를 뽑음
     'grow_policy': ['SymmetricTree', 'Lossguide', 'Depthwise']
-}]
+}
 
 # RandomizedSearchCV를 사용하여 모델을 탐색
-random_search = RandomizedSearchCV(model, param_distributions=catboost_grid, n_iter= 3 , cv=kfold, random_state= 12345 )
-random_search.fit(x_train, y_train)
-
-# 최적의 하이퍼파라미터 출력
-
-print("Best parameters found: ", random_search.best_params_)
-
-model = cb.CatBoostClassifier(*catboost_grid)
+model = RandomizedSearchCV(cb.CatBoostClassifier(), param_distributions=catboost_grid, n_iter= 3 , cv=kfold, random_state= 12345 )
 
 #3 훈련
 model.fit(x_train,y_train)
@@ -106,7 +106,6 @@ print('='*100)
 
 acc= accuracy_score(y_test,y_predict)
 print('ACC',acc)
-print("Best parameters found: ", random_search.best_params_)
 
 y_submit = model.predict(test_csv)
 
@@ -120,3 +119,18 @@ submission_csv.to_csv(path+'submission_catboost.csv', index = False)
 # 0.90859
 
 # Best parameters found:  {'n_estimators': 242, 'min_child_samples': 36, 'learning_rate': 0.09670033363823602, 'grow_policy': 'SymmetricTree', 'depth': 3}
+
+
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+import matplotlib
+print(sns.__version__)
+print(matplotlib.__version__)      
+sns.set(font_scale=1.2)
+sns.heatmap(data=df.corr(), 
+            square=True,    
+            annot=True,            
+            cbar=True)             
+plt.show()
+

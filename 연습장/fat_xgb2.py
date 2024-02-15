@@ -8,6 +8,7 @@ from sklearn.experimental import enable_halving_search_cv
 from sklearn.model_selection import HalvingGridSearchCV
 import warnings
 warnings.filterwarnings('ignore')
+import time
 
 #1 데이터
 path = 'c:/_data/kaggle/fat//'
@@ -66,11 +67,11 @@ print(df)
 print('=================== 상관계수 히트맵 =====================')
 print(df.corr())
 
-x_train , x_test , y_train , y_test = train_test_split(x,y, random_state= 220118 , test_size=0.3 , shuffle=True , stratify=y )
+x_train , x_test , y_train , y_test = train_test_split(x,y, random_state= 980909 , test_size=0.3 , shuffle=True , stratify=y )
 
-scaler = StandardScaler()
+# scaler = StandardScaler()
 # scaler = MinMaxScaler()
-# scaler = RobustScaler()
+scaler = RobustScaler()
 scaler.fit(x_train)
 x_train = scaler.transform(x_train)
 x_test = scaler.transform(x_test)
@@ -79,7 +80,7 @@ test_csv = scaler.transform(test_csv)
 x_train = np.array(x_train)
 x_test = np.array(x_test)
 
-kfold = StratifiedKFold(n_splits= 3 , shuffle=True , random_state= 220118 )
+kfold = StratifiedKFold(n_splits= 3 , shuffle=True , random_state= 730501 )
 
 import random
 xgb_grid = [{
@@ -98,7 +99,7 @@ xgb_grid = [{
 model = HalvingGridSearchCV(xgb.XGBClassifier(random_state= 220118 ,tree_method='gpu_hist'), xgb_grid,  cv=kfold, 
                      refit=True ,
                      verbose= 1 , 
-                     factor=4,
+                     factor=3 ,
                      min_resources=20)
 
 #3 훈련
