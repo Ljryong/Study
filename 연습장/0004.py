@@ -57,3 +57,5 @@ print("결과는 : ", result)
 # 과적합으로 나타는 로스값의 차이는 매우 크다
 
 #  31일
+
+# git commit --amend --no-edit --date "Mon 20 Aug 2018 20:19:19 KST"
