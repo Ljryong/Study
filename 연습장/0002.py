@@ -20,3 +20,5 @@ loss = model.evaluate(x,y)
 print(loss)
 result = model.predict([10])
 print(result)
+
+# 1월 25일 도전
