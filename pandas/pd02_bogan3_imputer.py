@@ -5,7 +5,7 @@ data = pd.DataFrame([[2,np.nan,6,8,10],
                      [2,4,np.nan,8,np.nan],
                      [2,4,6,8,10],
                      [np.nan,4,np.nan,8,np.nan],
-                     ])
+                     ]).astype('float64')
 # print(data)
 data = data.transpose()
 data.columns = ['x1','x2','x3','x4']
@@ -58,11 +58,20 @@ imputer = IterativeImputer()                # Intterpolate랑 비슷한 놈이�
 data8 = imputer.fit_transform(data)         
 # print(data8)
 
-# Iterative랑 mice 둘 다 선형 회귀이지만 mice 다중 선형 회귀 방식이다.
+# Iterative랑 mice 둘 다 선형 회귀이지만 
+# mice : predict 형식
+# Iterative : iterator 형식
 
-print(np.__version__)               # 1.26.3
+print(np.__version__)               # 1.26.3은 mice 버전 error가 뜸
 
-from impyute.imputation.cs import mice
-mc = mice(data)
+from impyute.imputation.cs import mice          
+
+print(np.__version__)               # 1.22.4로 바꿔야 mice error가 뜨지 않음
+
+# 사용하기 위해서는 python(float) 를 쓰거나 pd(float)를 써야한다
+# 아니면 극단적으로 numpy 버전을 낮추면 된다.
+mc = mice(data.values,
+          n=10,
+          seed=777)            # data의 값을 넣어줘야 됨 data를 넣어주면 error
 print(mc)
 

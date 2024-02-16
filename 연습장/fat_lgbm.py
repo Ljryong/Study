@@ -71,9 +71,9 @@ best_seed = None
 
 for seed in range( 100 ) : 
     np.random.seed(seed)
-    a = np.random.randint(0, 999999, 100)
     
-    x_train , x_test , y_train , y_test = train_test_split(x,y, random_state= i + a , test_size=0.3 , shuffle=True , stratify=y )
+    
+    x_train , x_test , y_train , y_test = train_test_split(x,y, random_state= seed , test_size=0.3 , shuffle=True , stratify=y )
 
     scaler = StandardScaler()
     # scaler = MinMaxScaler()
@@ -83,9 +83,8 @@ for seed in range( 100 ) :
     x_test = scaler.transform(x_test)
     test_csv = scaler.transform(test_csv)
     
-    b = np.random.randint(0, 999999, 100)
 
-    kfold = StratifiedKFold(n_splits= 10 , shuffle=True , random_state= i+b )
+    kfold = StratifiedKFold(n_splits= 10 , shuffle=True , random_state= seed )
 
     # lgbm_grid = [{
     #     'n_estimators': np.random.randint(100, 300, 3),       # 랜덤으로 범위내 수를 뽑음
@@ -102,13 +101,12 @@ for seed in range( 100 ) :
         {'colsample_bylevel':[0.6,0.7,0.9] , 'colsample_bytree' : [0.6,0.9,1]}
     ]
 
-    c = np.random.randint(0, 999999, 100)
     # RandomizedSearchCV를 사용하여 모델을 탐색
     model = RandomizedSearchCV(lg.LGBMClassifier(), parameters  ,  cv=kfold, 
                                 n_iter= 10 , 
                                 #   factor=3,
                                 #   min_resources=  ,
-                                random_state= i+c
+                                random_state= seed
                                 )
 
     #3 훈련
@@ -123,13 +121,13 @@ for seed in range( 100 ) :
     print('ACC',acc)
     y_submit = model.predict(test_csv)
 
-    y_submit = le.inverse_transform(y_submit) 
+    y_submit = le.inverse_transform(y_submit)
     submission_csv['NObeyesdad'] = y_submit
 
     submission_csv.to_csv(path+'submission_lgbm.csv', index = False)
     
-    if best_result is None or result > best_result:
-            best_result = result
+    if best_result is None or acc > best_result:
+            best_acc = acc
             best_seed = seed
 
 # lgbm
