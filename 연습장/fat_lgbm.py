@@ -155,3 +155,9 @@ print('randomstate = ',random)
 # ACC 0.9113680154142582
 # [LightGBM] [Warning] Unknown parameter: colsample_bylevel
 # [9828287]
+
+
+# ACC 0.9097680154142582
+# [1336160]
+
+
