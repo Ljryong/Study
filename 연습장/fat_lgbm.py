@@ -73,6 +73,7 @@ best_seed = None
 #     np.random.seed(seed)
     
 random = np.random.randint(0,10000000,1) 
+random = [1336160]
 
 x_train , x_test , y_train , y_test = train_test_split(x,y, random_state= random[0] , test_size=0.3 , shuffle=True , stratify=y )
 

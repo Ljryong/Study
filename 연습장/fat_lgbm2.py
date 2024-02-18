@@ -6,6 +6,7 @@ from sklearn.model_selection import train_test_split , StratifiedKFold , Randomi
 import numpy as np
 import warnings
 warnings.filterwarnings('ignore')
+import time
 
 #1 데이터
 path = 'c:/_data/kaggle/fat//'
@@ -64,21 +65,25 @@ print(df)
 print('=================== 상관계수 히트맵 =====================')
 print(df.corr())
 
-max_score = 0
+max_acc = 0
 best_random_state = None
+
+start = time.time()
+
+lg_range = 10
 
 # for seed in range( 100 ) : 
 #     np.random.seed(seed)
-for _ in range( 10 ):  
+for _ in range( lg_range ):  
     random = np.random.randint(0,10000000,1) 
     
 
     
     x_train , x_test , y_train , y_test = train_test_split(x,y, random_state= random[0] , test_size=0.3 , shuffle=True , stratify=y )
 
-    scaler = StandardScaler()
+    # scaler = StandardScaler()
     # scaler = MinMaxScaler()
-    # scaler = RobustScaler()
+    scaler = RobustScaler()
     scaler.fit(x_train)
     x_train = scaler.transform(x_train)
     x_test = scaler.transform(x_test)
@@ -122,18 +127,25 @@ for _ in range( 10 ):
     print('ACC',acc)
     y_submit = model.predict(test_csv)
 
-    y_submit = le.inverse_transform(y_submit)
-    submission_csv['NObeyesdad'] = y_submit
 
-    submission_csv.to_csv(path+'submission_lgbm.csv', index = False)
-    print('randomstate = ',random)
+    print('randomstate = ',random)  
     
     if acc > max_acc:
         max_acc = acc
         best_random_state = random
 
-print("최고 점수:", max_score)
+
+y_submit = le.inverse_transform(y_submit)
+submission_csv['NObeyesdad'] = y_submit
+
+submission_csv.to_csv(path+'submission_lgbm.csv', index = False)
+print('randomstate = ',random)
+
+end = time.time()
+
+print("최고 점수:", max_acc)
 print("최고 점수를 얻는 랜덤 스테이트:", best_random_state)
+print(lg_range,'도는데 걸린 시간 :',end - start )
 # if best_result is None or acc > best_result:
 #         best_acc = acc
 #         best_seed = seed
@@ -161,3 +173,7 @@ print("최고 점수를 얻는 랜덤 스테이트:", best_random_state)
 # ACC 0.9113680154142582
 # [LightGBM] [Warning] Unknown parameter: colsample_bylevel
 # [9828287]
+
+
+# 최고 점수: 0.9108863198458574
+# 최고 점수를 얻는 랜덤 스테이트: [9729478]

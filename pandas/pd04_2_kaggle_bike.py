@@ -38,12 +38,24 @@ def outliers(data_out):
 outliers_loc = outliers(train_csv)
 print('이상치의 위치 :' , outliers_loc)
 
+train_csv = train_csv[train_csv['humidity']>=40]
+train_csv = train_csv[train_csv['windspeed']<=31]
+train_csv = train_csv[train_csv['casual']<=50]
+train_csv = train_csv[train_csv['registered']<=250]
+train_csv = train_csv[train_csv['count']<=300]
+
+#  6   humidity    10886 non-null  int64
+#  7   windspeed   10886 non-null  float64
+#  8   casual      10886 non-null  int64
+#  9   registered  10886 non-null  int64
+#  10  count       10886 non-null  int64
+
 import matplotlib.pyplot as plt
-plt.boxplot(train_csv)
-plt.show()
+# plt.boxplot(train_csv)
+# plt.show()
+# print(train_csv.info())
 
-
-x = train_csv.drop(['casual' , 'registered', 'count'], axis= 1 )        # [6493 rows x 8 columns] // drop을 줄 때 '를 따로 따로 줘야된다.
+x = train_csv.drop(['count'], axis= 1 )        # [6493 rows x 8 columns] // drop을 줄 때 '를 따로 따로 줘야된다.
 y = train_csv['count']
 
 
@@ -86,8 +98,8 @@ x_test = pca.transform(x_test)
 #2
 from sklearn.ensemble import RandomForestClassifier , RandomForestRegressor
 
-# model = RandomForestRegressor()
-model = RandomForestClassifier()
+model = RandomForestRegressor()
+# model = RandomForestClassifier()
 
 #3 훈련
 model.fit(x_train,y_train)
@@ -102,3 +114,14 @@ evr = pca.explained_variance_ratio_
 evr_cumsum = np.cumsum(evr)   
 print(evr_cumsum)
 
+
+# 사용전
+# 이상치의 위치 : (array([   13,    14,    15, ..., 10883, 10884, 10884], dtype=int64), array([10, 10, 10, ..., 10,  9, 10], dtype=int64))
+# model.score 0.9735808629648908
+
+
+# 사용후
+# 이상치 이상들을 잘라냈을경우 성능이 떨어짐
+# model.score 0.9476030748307218
+# (6484, 10)
+# [0.25607201 0.43508654 0.56378697 0.67848541 0.77652489 0.85820847]
