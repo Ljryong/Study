@@ -14,6 +14,11 @@ train_csv = pd.read_csv(path + 'train.csv',index_col=0)
 test_csv = pd.read_csv(path + 'test.csv',index_col=0)
 submission_csv = pd.read_csv(path + 'sample_submission.csv')
 
+train_csv['BMI'] = train_csv['Weight'] / (train_csv['Height'] ** 2)
+test_csv['BMI'] = test_csv['Weight'] / (test_csv['Height'] ** 2)
+# train_csv['WIR'] = train_csv['Weight'] / train_csv['CH2O']
+# train_csv['bmioncp'] = train_csv['BMI'] / train_csv['NCP']
+
 le = LabelEncoder()
 le.fit(train_csv['Gender'])
 train_csv['Gender'] = le.transform(train_csv['Gender'])
@@ -65,7 +70,7 @@ print('=================== 상관계수 히트맵 =====================')
 print(df.corr())
 
 random = np.random.randint(0,10000000,1) 
-random = [1336160]
+random = [46]
 
 x_train , x_test , y_train , y_test = train_test_split(x,y, random_state= random[0] , test_size=0.3 , shuffle=True , stratify=y )
 
@@ -118,7 +123,15 @@ y_submit = model.predict(test_csv)
 y_submit = le.inverse_transform(y_submit)
 submission_csv['NObeyesdad'] = y_submit
 
-submission_csv.to_csv(path+'submission_lgbm.csv', index = False)
+import datetime
+import time
+dt = datetime.datetime.now()
+submission_csv.to_csv(path+f"submit_{dt.day}day{dt.hour:2}{dt.minute:2}_acc_{acc:4}.csv",index=False)
+
+import pickle
+# pickle.dump(model, open(path + 'fat_pickle_save.dat' , 'wb' ))
+pickle.dump(model, open(path + f'submit_{dt.day}day{dt.hour:2}{dt.minute:2}_acc_{acc:4}.dat', 'wb'))
+
 
 # lgbm
 # 1234 1234 1234
