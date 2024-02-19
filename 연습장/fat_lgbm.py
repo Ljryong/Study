@@ -73,7 +73,7 @@ best_seed = None
 #     np.random.seed(seed)
     
 random = np.random.randint(0,10000000,1) 
-random = [32833]
+random = [1336160]
 
 x_train , x_test , y_train , y_test = train_test_split(x,y, random_state= random[0] , test_size=0.3 , shuffle=True , stratify=y )
 
@@ -86,7 +86,7 @@ x_test = scaler.transform(x_test)
 test_csv = scaler.transform(test_csv)
 
 
-kfold = StratifiedKFold(n_splits= 7 , shuffle=True , random_state= random[0] )
+kfold = StratifiedKFold(n_splits= 10 , shuffle=True , random_state= random[0] )
 
 # lgbm_grid = [{
 #     'n_estimators': np.random.randint(100, 300, 3),       # 랜덤으로 범위내 수를 뽑음
@@ -126,11 +126,11 @@ y_submit = model.predict(test_csv)
 y_submit = le.inverse_transform(y_submit)
 submission_csv['NObeyesdad'] = y_submit
 
-submission_csv.to_csv(path+'submission_lgbm.csv', index = False)
-print('randomstate = ',random)
-# if best_result is None or acc > best_result:
-#         best_acc = acc
-#         best_seed = seed
+    submission_csv.to_csv(path+'submission_lgbm.csv', index = False)
+    
+    if best_result is None or acc > best_result:
+            best_acc = acc
+            best_seed = seed
 
 # lgbm
 # 1234 1234 1234
