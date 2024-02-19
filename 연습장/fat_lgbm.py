@@ -47,8 +47,8 @@ test_csv['CALC'] = test_csv['CALC'].replace({'Always' : 2 , 'Frequently' : 1 , '
 train_csv['MTRANS'] = train_csv['MTRANS'].replace({'Automobile': 0 , 'Bike' : 1, 'Motorbike' : 2, 'Public_Transportation' : 3,'Walking' : 4})
 test_csv['MTRANS'] = test_csv['MTRANS'].replace({'Automobile': 0 , 'Bike' : 1, 'Motorbike' : 2, 'Public_Transportation' : 3,'Walking' : 4})
 
-# train_csv = train_csv.drop(['SMOKE'],axis=1)
-# test_csv = test_csv.drop(['SMOKE'],axis=1)
+train_csv = train_csv.drop(['SMOKE'],axis=1)
+test_csv = test_csv.drop(['SMOKE'],axis=1)
 
 x = train_csv.drop(['NObeyesdad'], axis= 1)
 y = train_csv['NObeyesdad']
@@ -64,14 +64,6 @@ print(df)
 print('=================== 상관계수 히트맵 =====================')
 print(df.corr())
 
-
-best_result = None
-best_seed = None
-
-
-# for seed in range( 100 ) : 
-#     np.random.seed(seed)
-    
 random = np.random.randint(0,10000000,1) 
 random = [1336160]
 
@@ -126,11 +118,7 @@ y_submit = model.predict(test_csv)
 y_submit = le.inverse_transform(y_submit)
 submission_csv['NObeyesdad'] = y_submit
 
-    submission_csv.to_csv(path+'submission_lgbm.csv', index = False)
-    
-    if best_result is None or acc > best_result:
-            best_acc = acc
-            best_seed = seed
+submission_csv.to_csv(path+'submission_lgbm.csv', index = False)
 
 # lgbm
 # 1234 1234 1234
@@ -164,7 +152,7 @@ submission_csv['NObeyesdad'] = y_submit
 # ACC 0.9140976236351959
 # [LightGBM] [Warning] Unknown parameter: colsample_bylevel
 # randomstate =  [46]
-
+# 제거
 
 # 최고 점수: 0.9113680154142582
 # 최고 점수를 얻는 랜덤 스테이트: [14]

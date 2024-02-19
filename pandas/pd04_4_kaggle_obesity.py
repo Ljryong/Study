@@ -188,11 +188,15 @@ print('randomstate = ',random)
 # 4
 
 # 사용전
-# ACC 0.9113680154142582
-# [LightGBM] [Warning] Unknown parameter: colsample_bylevel
-# [9828287]
+# ACC 0.905587668593449
+# [LightGBM] [Warning] min_data_in_leaf is set with min_child_samples=20, will be overridden by min_samples_leaf=3. Current value: min_data_in_leaf=3
+# [LightGBM] [Warning] Accuracy may be bad since you didn't explicitly set num_leaves OR 2^max_depth > num_leaves. (num_leaves=31).
+# randomstate =  [1336160]
 
 # 사용 후
 # 이상치가 너무 많은 2컬럼 제거
 # 이상치가 있는 6컬럼 이상치들 제거
-
+# ACC 0.7913669064748201
+# [LightGBM] [Warning] min_data_in_leaf is set with min_child_samples=20, will be overridden by min_samples_leaf=10. Current value: min_data_in_leaf=10
+# [LightGBM] [Warning] Accuracy may be bad since you didn't explicitly set num_leaves OR 2^max_depth > num_leaves. (num_leaves=31).
+# randomstate =  [1336160]
