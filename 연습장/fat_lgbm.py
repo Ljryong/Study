@@ -69,66 +69,69 @@ best_result = None
 best_seed = None
 
 
-for seed in range( 100 ) : 
-    np.random.seed(seed)
+# for seed in range( 100 ) : 
+#     np.random.seed(seed)
     
-    
-    x_train , x_test , y_train , y_test = train_test_split(x,y, random_state= seed , test_size=0.3 , shuffle=True , stratify=y )
+random = np.random.randint(0,100000,1)
 
-    scaler = StandardScaler()
-    # scaler = MinMaxScaler()
-    # scaler = RobustScaler()
-    scaler.fit(x_train)
-    x_train = scaler.transform(x_train)
-    x_test = scaler.transform(x_test)
-    test_csv = scaler.transform(test_csv)
-    
+print(random[0])
 
-    kfold = StratifiedKFold(n_splits= 10 , shuffle=True , random_state= seed )
+x_train , x_test , y_train , y_test = train_test_split(x,y, random_state= random[0] , test_size=0.3 , shuffle=True , stratify=y )
 
-    # lgbm_grid = [{
-    #     'n_estimators': np.random.randint(100, 300, 3),       # 랜덤으로 범위내 수를 뽑음
-    #     'max_depth': np.random.randint(1, 50, 2),               # 랜덤으로 범위내 수를 뽑음
-    #     'learning_rate': np.random.uniform(1e-3, 0.1, 3),      # 랜덤으로 범위내 수를 뽑음
-    #     'min_child_samples': np.random.randint(10, 40, 3),    # 랜덤으로 범위내 수를 뽑음
-    #     'boosting_type': ['gbdt', 'dart', 'goss', 'rf'],       # lgbm의 boosting_type은 'gbdt', 'dart', 'goss', 'rf' 중 하나
-    # }]
+scaler = StandardScaler()
+# scaler = MinMaxScaler()
+# scaler = RobustScaler()
+scaler.fit(x_train)
+x_train = scaler.transform(x_train)
+x_test = scaler.transform(x_test)
+test_csv = scaler.transform(test_csv)
 
-    parameters = [{'n_estimators' : [100,200] ,'max_depth':[6,10,12],'min_samples_leaf' : [3,10],'learning_rate':[0.1,0.3,0.001,0.01]},
-        {'max_depth': [6,8,10,12], 'min_samples_leaf' : [3,5,7,10]},
-        {'min_samples_leaf' : [3,5,7,10],'min_samples_split' : [2,3,5,10]},
-        {'min_samples_split' : [2,3,5,10], 'learning_rate':[0.1,0.3,0.001,0.01] },
-        {'colsample_bylevel':[0.6,0.7,0.9] , 'colsample_bytree' : [0.6,0.9,1]}
-    ]
 
-    # RandomizedSearchCV를 사용하여 모델을 탐색
-    model = RandomizedSearchCV(lg.LGBMClassifier(), parameters  ,  cv=kfold, 
-                                n_iter= 10 , 
-                                #   factor=3,
-                                #   min_resources=  ,
-                                random_state= seed
-                                )
+kfold = StratifiedKFold(n_splits= 4 , shuffle=True , random_state= random[0] )
 
-    #3 훈련
-    model.fit(x_train,y_train)
+# lgbm_grid = [{
+#     'n_estimators': np.random.randint(100, 300, 3),       # 랜덤으로 범위내 수를 뽑음
+#     'max_depth': np.random.randint(1, 50, 2),               # 랜덤으로 범위내 수를 뽑음
+#     'learning_rate': np.random.uniform(1e-3, 0.1, 3),      # 랜덤으로 범위내 수를 뽑음
+#     'min_child_samples': np.random.randint(10, 40, 3),    # 랜덤으로 범위내 수를 뽑음
+#     'boosting_type': ['gbdt', 'dart', 'goss', 'rf'],       # lgbm의 boosting_type은 'gbdt', 'dart', 'goss', 'rf' 중 하나
+# }]
 
-    #4 평가, 예측
-    # GridSearchCV 전용
-    from sklearn.metrics import accuracy_score
-    y_predict = model.predict(x_test)
-    print('='*100)
-    acc= accuracy_score(y_test,y_predict)
-    print('ACC',acc)
-    y_submit = model.predict(test_csv)
+parameters = [{'n_estimators' : [100,200] ,'max_depth':[6,10,12],'min_samples_leaf' : [3,10],'learning_rate':[0.1,0.3,0.001,0.01]},
+    {'max_depth': [6,8,10,12], 'min_samples_leaf' : [3,5,7,10]},
+    {'min_samples_leaf' : [3,5,7,10],'min_samples_split' : [2,3,5,10]},
+    {'min_samples_split' : [2,3,5,10], 'learning_rate':[0.1,0.3,0.001,0.01] },
+    {'colsample_bylevel':[0.6,0.7,0.9] , 'colsample_bytree' : [0.6,0.9,1]}
+]
 
-    y_submit = le.inverse_transform(y_submit)
-    submission_csv['NObeyesdad'] = y_submit
+# RandomizedSearchCV를 사용하여 모델을 탐색
+model = RandomizedSearchCV(lg.LGBMClassifier(), parameters  ,  cv=kfold, 
+                            n_iter= 10 , 
+                            #   factor=3,
+                            #   min_resources=  ,
+                            random_state= random[0]
+                            )
 
-    submission_csv.to_csv(path+'submission_lgbm.csv', index = False)
-    
-    if best_result is None or acc > best_result:
-            best_acc = acc
-            best_seed = seed
+#3 훈련
+model.fit(x_train,y_train)
+
+#4 평가, 예측
+# GridSearchCV 전용
+from sklearn.metrics import accuracy_score
+y_predict = model.predict(x_test)
+print('='*100)
+acc= accuracy_score(y_test,y_predict)
+print('ACC',acc)
+y_submit = model.predict(test_csv)
+
+y_submit = le.inverse_transform(y_submit)
+submission_csv['NObeyesdad'] = y_submit
+
+submission_csv.to_csv(path+'submission_lgbm.csv', index = False)
+
+if best_result is None or acc > best_result:
+        best_acc = acc
+        best_seed = 77
 
 # lgbm
 # 1234 1234 1234

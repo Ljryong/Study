@@ -3,6 +3,8 @@
 import numpy as np
 aaa = np.array([-10,2,3,4,5,6,7,8,9,10,11,12,50])
 
+print(aaa.shape)        # (13,)
+
 def outliers(data_out):
     quartile_1 , q2 , quartile_3 = np.percentile(data_out,[25,50,75])       # 25,50,75 퍼센트로 나눔
     print('1사 분위 :' , quartile_1 )
