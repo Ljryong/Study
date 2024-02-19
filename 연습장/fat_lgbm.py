@@ -47,8 +47,8 @@ test_csv['CALC'] = test_csv['CALC'].replace({'Always' : 2 , 'Frequently' : 1 , '
 train_csv['MTRANS'] = train_csv['MTRANS'].replace({'Automobile': 0 , 'Bike' : 1, 'Motorbike' : 2, 'Public_Transportation' : 3,'Walking' : 4})
 test_csv['MTRANS'] = test_csv['MTRANS'].replace({'Automobile': 0 , 'Bike' : 1, 'Motorbike' : 2, 'Public_Transportation' : 3,'Walking' : 4})
 
-train_csv = train_csv.drop(['SMOKE'],axis=1)
-test_csv = test_csv.drop(['SMOKE'],axis=1)
+# train_csv = train_csv.drop(['SMOKE'],axis=1)
+# test_csv = test_csv.drop(['SMOKE'],axis=1)
 
 x = train_csv.drop(['NObeyesdad'], axis= 1)
 y = train_csv['NObeyesdad']
@@ -73,7 +73,7 @@ best_seed = None
 #     np.random.seed(seed)
     
 random = np.random.randint(0,10000000,1) 
-random = [1336160]
+random = [32833]
 
 x_train , x_test , y_train , y_test = train_test_split(x,y, random_state= random[0] , test_size=0.3 , shuffle=True , stratify=y )
 
@@ -86,7 +86,7 @@ x_test = scaler.transform(x_test)
 test_csv = scaler.transform(test_csv)
 
 
-kfold = StratifiedKFold(n_splits= 10 , shuffle=True , random_state= random[0] )
+kfold = StratifiedKFold(n_splits= 7 , shuffle=True , random_state= random[0] )
 
 # lgbm_grid = [{
 #     'n_estimators': np.random.randint(100, 300, 3),       # 랜덤으로 범위내 수를 뽑음
@@ -161,3 +161,18 @@ print('randomstate = ',random)
 # [1336160]
 
 
+# ACC 0.9140976236351959
+# [LightGBM] [Warning] Unknown parameter: colsample_bylevel
+# randomstate =  [46]
+
+
+# 최고 점수: 0.9113680154142582
+# 최고 점수를 얻는 랜덤 스테이트: [14]
+
+# ACC 0.9137764932562621
+# [LightGBM] [Warning] Unknown parameter: colsample_bylevel
+# randomstate =  [46]
+
+
+# 최고 점수: 0.9132947976878613
+# 최고 점수를 얻는 랜덤 스테이트: [32833]

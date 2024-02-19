@@ -70,7 +70,7 @@ best_random_state = None
 
 start = time.time()
 
-lg_range = 10
+lg_range = 1000
 
 # for seed in range( 100 ) : 
 #     np.random.seed(seed)
@@ -90,7 +90,7 @@ for _ in range( lg_range ):
     test_csv = scaler.transform(test_csv)
 
 
-    kfold = StratifiedKFold(n_splits= 10 , shuffle=True , random_state= random[0] )
+    kfold = StratifiedKFold(n_splits= 7 , shuffle=True , random_state= random[0] )
 
     # lgbm_grid = [{
     #     'n_estimators': np.random.randint(100, 300, 3),       # 랜덤으로 범위내 수를 뽑음
@@ -177,3 +177,6 @@ print(lg_range,'도는데 걸린 시간 :',end - start )
 
 # 최고 점수: 0.9108863198458574
 # 최고 점수를 얻는 랜덤 스테이트: [9729478]
+
+# 최고 점수: 0.9136159280667951
+# 최고 점수를 얻는 랜덤 스테이트: [46]
