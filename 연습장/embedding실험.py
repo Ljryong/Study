@@ -12,4 +12,4 @@ model.add(Embedding(10,10))
 model.add(Dense(5))
 model.add(Dense(1))
 
-model.summary()
+model.summary() 
