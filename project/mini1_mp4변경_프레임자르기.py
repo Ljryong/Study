@@ -1,17 +1,6 @@
 import cv2
 import os
 
-# 영상 파일이 있는 디렉토리
-video_directory = 'D:/mini//'
-
-# 변경할 확장자
-new_extension = '.avi'
-
-# 디렉토리 내 파일 목록 가져오기
-file_list = os.listdir(video_directory)
-
-import os
-
 def change_extension(directory, old_ext, new_ext):
     # 디렉토리 내 파일 목록 가져오기
     file_list = os.listdir(directory)
@@ -26,22 +15,26 @@ def change_extension(directory, old_ext, new_ext):
             os.rename(os.path.join(directory, file_name), os.path.join(directory, new_file_name))
 
 
-video_directory = 'D:/mini/'
+video_directory = 'D:/minipro//'
 old_extension = ['.MOV','.avi','.MTS']
 new_extension = '.MP4'
 for old_extension in old_extension :
     change_extension(video_directory, old_extension, new_extension)
+    print('===')
 
 
 
-print('모든 확장자 avi로 변경')
+print('모든 확장자 mp4로 변경')
+
+video_directory = 'D:/mini//'
+
 
 # 이미지를 저장할 디렉토리 설정
 output_directory = 'D:/_minipro_image//'
 os.makedirs(output_directory, exist_ok=True)
 
 # 영상 파일 리스트 가져오기
-video_files = [f for f in os.listdir(video_directory) if f.endswith('.avi')]
+video_files = [f for f in os.listdir(video_directory) if f.endswith('.mp4')]
 
 for video_file in video_files:
     # VideoCapture 객체 생성
