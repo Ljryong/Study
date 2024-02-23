@@ -25,6 +25,12 @@ test = np.load(np_path + 'keras39_catdog_test.npy')
 
 x_train , x_test , y_train , y_test = train_test_split(x,y,random_state= 51 , stratify= y  , shuffle=True , test_size=0.3 )
 
+print(x_train)
+print(x_test)
+
+print(y_train)
+print(y_test)
+
 es = EarlyStopping(monitor='val_loss' , mode = 'min' , patience= 10 , restore_best_weights=True , verbose= 1  )
 
 

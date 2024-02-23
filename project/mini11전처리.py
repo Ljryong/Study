@@ -144,4 +144,3 @@ class EarlyStopping:
             self.val_loss_min = val_loss
 
 
-s
