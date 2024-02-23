@@ -5,6 +5,7 @@ from torchvision import transforms
 from PIL import Image
 import os
 from torchvision.datasets import  VisionDataset
+import cv2
 
 # 영상 파일이 있는 디렉토리
 video_directory = 'D:/minipro//'
@@ -22,13 +23,35 @@ class CustomDataset(VisionDataset):
         self.data = csv_file
         self.transform = transform
 
+
     def __len__(self):
         return len(self.data)
 
     def __getitem__(self, idx):
         image_name = self.data.iloc[idx,0]  # CSV 파일에서 이미지 파일 이름 가져오기
         image_path = os.path.join(self.image_dir, image_name)
-        image = Image.open(image_path).convert('RGB')  # 이미지 불러오기
+        # 비디오 파일 열기
+        cap = cv2.VideoCapture('D:/minipro/KETI_SL_0000004169.MP4')
+
+        # 비디오 파일에서 프레임 읽기
+        while(cap.isOpened()):
+            ret, frame = cap.read()
+            if ret == True:
+                frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                # 이미지로 변환
+                image = Image.fromarray(frame_rgb)
+                # 이미지 전처리
+                if self.transform:
+                    image = self.transform(image)
+                # 레이블 가져오기
+                label = self.data.iloc[idx, 1]
+                # 이미지와 레이블 반환
+                return image, label
+            else: 
+                break
+
+        # 비디오 파일 닫기
+        cap.release()
 
         if self.transform:
             image = self.transform(image)
@@ -63,6 +86,3 @@ for images, labels in custom_loader:
     # images와 labels는 모델의 입력과 정답에 해당합니다.
     # 이 데이터를 모델에 전달하여 학습 또는 추론을 수행합니다.
     pass
-
-
-
