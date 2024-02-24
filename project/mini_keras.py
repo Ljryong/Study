@@ -86,11 +86,11 @@ tokenizer.fit_on_texts(y)
 sequences = tokenizer.texts_to_sequences(y)
 
 # x_train과 x_test로 분할
-x_train, x_test, y_train, y_test = train_test_split(padded_frames, sequences, train_size=0.8, random_state=42 , shuffle=True )
+x_train, x_test = train_test_split(padded_frames, train_size=0.8, random_state=42 , shuffle=True )
+
+y_train, y_test = train_test_split(sequences, train_size=0.8, random_state=42 , shuffle=True )
 
 es = EarlyStopping(monitor='val_loss' , mode='min' , patience=10 , restore_best_weights=True , verbose= 1  )
-
-
 
 print(x_train.shape)
 print(np.unique(y_train))
