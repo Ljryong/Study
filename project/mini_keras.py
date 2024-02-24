@@ -9,6 +9,7 @@ from keras.callbacks import EarlyStopping
 from keras_preprocessing.sequence import pad_sequences
 from keras.preprocessing.text import Tokenizer
 from sklearn.metrics import accuracy_score
+import time
 
 #1 데이터
 video_path = 'D:/minipro//'
@@ -34,6 +35,8 @@ for video_path, label in video_data:
     print(f"영상 파일: {video_path}, 레이블: {label}")
 
 print('매핑 끝')
+
+start = time.time()
 
 # 프레임을 저장할 리스트 생성
 frames = []
@@ -61,8 +64,11 @@ for file_name in file_list:
     video_lengths.append(num_frames)
     
     cap.release()
+    
+end = time.time()
 
 print('비디오 읽기 끝')
+print('비디오 읽기 시간' , end - start)
 
 # 패딩 적용
 max_length = max(video_lengths)  # 가장 긴 영상의 프레임 수를 찾음
@@ -110,5 +116,5 @@ predict = model.predict(x_test)
 
 print('loss =' , loss)
 print('acc',accuracy_score(y_test,predict))
-
+print('비디오 읽기 시간' , end - start)
 
