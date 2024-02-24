@@ -1,5 +1,6 @@
 from keras.models import Sequential , Model
-from keras.layers import Dense , Conv3D , Flatten , Input , GlobalMaxPooling3D, GlobalAveragePooling3D , Attention 
+from keras.layers import Dense , Conv2D , Flatten , Input , GlobalMaxPooling3D, GlobalAveragePooling3D , Attention 
+from keras.layers import MaxPooling2D , Reshape , Multiply , Permute
 from sklearn.model_selection import train_test_split
 import numpy as np
 import pandas as pd
@@ -96,21 +97,38 @@ print(x_train.shape)
 print(np.unique(y_train))
 
 #2 모델
-# model = Sequential()
-# model.add(Conv3D(64, kernel_size=(3, 3, 3), activation='relu', input_shape=(x_train[1], x_train[2], x_train[3], x_train[4])))
-# model.add(Conv3D(32, kernel_size=(3, 3, 3), activation='relu'))
-# model.add(Conv3D(64, kernel_size=(3, 3, 3), activation='relu'))
-# model.add(Flatten())
-# model.add(Dense(128, activation='relu'))
-# model.add(Dense(y_train[0], activation='softmax'))
+# 입력 레이어
+input_layer = Input(shape=input_shape)
 
-#2 시험 모델
-model = Sequential()
-model.add(Conv3D( 10 , kernel_size=(3, 3, 3), activation='relu', input_shape=(x_train[1], x_train[2], x_train[3], x_train[4])))
-model.add(GlobalAveragePooling3D())
-model.add(Attention())
-model.add(Dense(y_train[0], activation='softmax'))
+# 공간적 특징 추출
+conv1 = Conv2D(64, (3, 3), activation='relu', padding='same')(input_layer)
+pool1 = MaxPooling2D(pool_size=(2, 2))(conv1)
+conv2 = Conv2D(128, (3, 3), activation='relu', padding='same')(pool1)
+pool2 = MaxPooling2D(pool_size=(2, 2))(conv2)
 
+# 시간적 특징 추출
+reshape = Reshape((-1, pool2.shape[1], pool2.shape[2], pool2.shape[3]))(pool2)
+permute = Permute((2, 1, 3, 4))(reshape)
+time_conv = Conv2D(32, (3, 3), activation='relu', padding='same')(permute)
+time_pool = MaxPooling2D(pool_size=(2, 2))(time_conv)
+flatten = Flatten()(time_pool)
+
+# Temporal Attention
+attention_probs = Dense(time_pool.shape[1], activation='softmax')(flatten)
+attention_mul = Multiply()([flatten, attention_probs])
+
+# Fully Connected 레이어
+fc1 = Dense(256, activation='relu')(attention_mul)
+fc2 = Dense(num_classes, activation='softmax')(fc1)
+
+# 모델 정의
+model = Model(inputs=input_layer, outputs=fc2)
+
+# 모델 컴파일
+model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+
+# 모델 요약
+model.summary()
 
 #3 컴파일, 훈련
 model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
