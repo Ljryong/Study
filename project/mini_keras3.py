@@ -20,6 +20,10 @@ csv_path = 'C:/Study//'
 file_list = os.listdir(video_path)
 test_csv = pd.read_csv(csv_path + 'new_csv_file.csv')
 
+for file_name in file_list:
+    file_path = os.path.join(video_path, file_name)  # 파일 경로 설정
+    cap = cv2.VideoCapture(file_path)
+
 # 영상 파일 이름을 기준으로 CSV 파일과 매핑
 video_data = []
 for file_name in file_list:
@@ -98,7 +102,7 @@ print(np.unique(y_train))
 
 #2 모델
 # 입력 레이어
-input_layer = Input(shape=input_shape)
+input_layer = Input(shape=(x_train[1],x_train[2],x_train[3],x_train[4]))
 
 # 공간적 특징 추출
 conv1 = Conv2D(64, (3, 3), activation='relu', padding='same')(input_layer)
@@ -119,7 +123,9 @@ attention_mul = Multiply()([flatten, attention_probs])
 
 # Fully Connected 레이어
 fc1 = Dense(256, activation='relu')(attention_mul)
-fc2 = Dense(num_classes, activation='softmax')(fc1)
+fc2 = Dense(y_train[0], activation='softmax')(fc1)
+
+
 
 # 모델 정의
 model = Model(inputs=input_layer, outputs=fc2)
