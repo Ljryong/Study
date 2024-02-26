@@ -68,7 +68,7 @@ for file_name in file_list:
 end = time.time()
 
 print('비디오 읽기 끝')
-print('비디오 읽기 시간' , end - start)
+print('비디오 읽기 시간' , end - start)                 # 대략 100분 
 
 # 패딩 적용
 max_length = max(video_lengths)  # 가장 긴 영상의 프레임 수를 찾음
@@ -85,6 +85,9 @@ tokenizer.fit_on_texts(y)
 # 텍스트 데이터를 시퀀스로 변환
 sequences = tokenizer.texts_to_sequences(y)
 
+print(padded_frames.shape)
+print(np.unique(sequences))
+
 # x_train과 x_test로 분할
 x_train, x_test = train_test_split(padded_frames, train_size=0.8, random_state=42 , shuffle=True )
 
@@ -94,15 +97,6 @@ es = EarlyStopping(monitor='val_loss' , mode='min' , patience=10 , restore_best_
 
 print(x_train.shape)
 print(np.unique(y_train))
-
-#2 모델
-# model = Sequential()
-# model.add(Conv3D(64, kernel_size=(3, 3, 3), activation='relu', input_shape=(x_train[1], x_train[2], x_train[3], x_train[4])))
-# model.add(Conv3D(32, kernel_size=(3, 3, 3), activation='relu'))
-# model.add(Conv3D(64, kernel_size=(3, 3, 3), activation='relu'))
-# model.add(Flatten())
-# model.add(Dense(128, activation='relu'))
-# model.add(Dense(y_train[0], activation='softmax'))
 
 #2 시험 모델
 model = Sequential()
