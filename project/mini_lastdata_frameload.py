@@ -13,12 +13,15 @@ file_list = os.listdir(video_path)
 test_csv = pd.read_csv(csv_path + 'new_csv_file.csv')
 
 start = time.time()
+
+# 프레임 조정
+new_width = 10
+new_height = 10
+
 # 프레임을 저장할 리스트 생성
 frames = []
-
 # 각 영상의 프레임 수를 저장할 리스트 생성
 video_lengths = []
-
 # 비디오 파일을 프레임 단위로 읽어들임
 for file_name in file_list:
     file_path = os.path.join(video_path, file_name)
@@ -30,7 +33,9 @@ for file_name in file_list:
     while cap.isOpened():
         ret, frame = cap.read()
         if ret:
-            frames.append(frame)
+            # 이미지 크기를 조정
+            resized_frame = cv2.resize(frame, (new_width, new_height))
+            frames.append(resized_frame)
             num_frames += 1
         else:
             break
