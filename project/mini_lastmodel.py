@@ -20,7 +20,11 @@ labels_path = tf.keras.utils.get_file(
     fname='labels.txt',
     origin='https://raw.githubusercontent.com/tensorflow/models/f8af2291cced43fc9f1d9b41ddbf772ae7b0d7d2/official/projects/movinet/files/kinetics_600_labels.txt'
 )
+
+print(labels_path)
+
 labels_path = pathlib.Path(labels_path)
+
 
 lines = labels_path.read_text().splitlines()
 KINETICS_600_LABELS = np.array([line.strip() for line in lines])
@@ -79,7 +83,7 @@ sig(image = jumpingjack[tf.newaxis, :1])
 logits = sig(image = jumpingjack[tf.newaxis, ...])
 logits = logits['classifier_head'][0]
 
-print(logits.shape)             
+print(logits.shape)         
 print()
 
 #@title

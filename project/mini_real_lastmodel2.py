@@ -8,65 +8,74 @@ import PIL
 import tensorflow as tf
 import tqdm
 import time
+import os
+import cv2
+import pandas as pd
 
 st_t = time.time()
 
+# 그래프를 보여줄 때의 폰트를 10으로 지정
 mpl.rcParams.update({
     'font.size': 10,
 })
 
-# 점핑잭 영상을 가져오는 것 x값을 바꾸려면 여길 만져야 됨
-jumpingjack_url = 'https://github.com/tensorflow/models/raw/f8af2291cced43fc9f1d9b41ddbf772ae7b0d7d2/official/projects/movinet/files/jumpingjack.gif'
-jumpingjack_path = tf.keras.utils.get_file(
-    fname='jumpingjack.gif',
-    origin=jumpingjack_url,
-    cache_dir='.', cache_subdir='.',
-)
+# 수화 영상을 가져오는 것 x값을 바꾸려면 여길 만져야 됨
+start = time.time()
+
+video_path = 'D:/minipro//'
+
+# 디렉토리 내 파일 목록 가져오기
+file_list = os.listdir(video_path)
+
+# 프레임 조정
+new_width = 100
+new_height = 100
+
+# 프레임을 저장할 리스트 생성
+frames = []
+# 각 영상의 프레임 수를 저장할 리스트 생성
+video_lengths = []
+# 비디오 파일을 프레임 단위로 읽어들임
+for file_name in file_list:
+    file_path = os.path.join(video_path, file_name)
+    cap = cv2.VideoCapture(file_path)
+    
+    # 프레임 수 초기화
+    num_frames = 0
+    
+    while cap.isOpened():
+        ret, frame = cap.read()
+        if ret:
+            # 이미지 크기를 조정
+            resized_frame = cv2.resize(frame, (new_width, new_height))
+            frames.append(resized_frame)
+            num_frames += 1
+        else:
+            break
+    
+    # 현재 비디오의 프레임 수를 저장
+    video_lengths.append(num_frames)
+    
+    cap.release()
+    
+end = time.time()
+
+print('비디오 읽기 끝')
+print('비디오 읽기 시간' , end - start)
+
+# 패딩 적용하지 않고 x 값을 생성
+x_values = np.array(frames, dtype='float32')
+
+print(x_values.shape)
 
 # 점핑잭 영상의 라벨을 가져오는 것 y값을 바꾸려면 여길 만져야 됨
-labels_path = tf.keras.utils.get_file(
-    fname='labels.txt',
-    origin='https://raw.githubusercontent.com/tensorflow/models/f8af2291cced43fc9f1d9b41ddbf772ae7b0d7d2/official/projects/movinet/files/kinetics_600_labels.txt'
-)
-labels_path = pathlib.Path(labels_path)
+csv_path = 'C:/Study//'
+y = pd.read_csv(csv_path + 'new_csv_file.csv')
+y_labels = y['한국어']
 
-lines = labels_path.read_text().splitlines()
-KINETICS_600_LABELS = np.array([line.strip() for line in lines])
-KINETICS_600_LABELS[:20]
+print(y_labels.shape)
 
-# @title
-# MP4 파일 처리
-def load_video(file_path, image_size=(224, 224)):
-    """Loads an MP4 video file into a TF tensor.
-
-    Use frames resized to match what's expected by your model.
-    The model pages say the "A2" models expect 224 x 224 images at 5 fps
-
-    Args:
-        file_path: path to the location of an MP4 video file.
-        image_size: a tuple of target size.
-
-    Returns:
-        a video tensor of the MP4 file
-    """
-    # Load an MP4 file, convert it to a TF tensor
-    video = tf.io.read_file(file_path)
-    video = tf.image.decode_video(video)
-    # Resize the video
-    video = tf.image.resize(video, image_size)
-    # Change dtype to float32
-    # Hub models always want images normalized to [0,1]
-    # Ref: https://www.tensorflow.org/hub/common_signatures/images#input
-    video = tf.cast(video, tf.float32) / 255.
-    return video
-
-# 비디오 가져오기
-jumpingjack=load_video(jumpingjack_path)
-
-# 비디오 가져온거 shape 확인
-print(jumpingjack.shape)
-
-# hud 에 관한 것 
+# hub 에 관한 것 
 id = 'a2'                       # 모델의 이름
 mode = 'base'                   # 모델의 모드
 version = '3'                   # 모델의 버전
@@ -78,16 +87,16 @@ sig = model.signatures['serving_default']
 print(sig.pretty_printed_signature())
 
 #warmup
-sig(image = jumpingjack[tf.newaxis, :1])              # 서명에 입력 이미지를 전달한다, 이미지에 차원을 추가하여 형식에 맞게 변환 시켜줌 
+sig(image = x_values[tf.newaxis, :1])              # 서명에 입력 이미지를 전달한다, 이미지에 차원을 추가하여 형식에 맞게 변환 시켜줌 // 1차원을 2차원으로 만들어줌
 
-logits = sig(image = jumpingjack[tf.newaxis, ...])    # 서명에 전체 입력 이미지를 전달한다, 이미지에 차원을 추가하여 형식에 맞게 변환 시켜줌 
+logits = sig(image = x_values[tf.newaxis, ...])    # 서명에 전체 입력 이미지를 전달한다, 이미지에 차원을 추가하여 형식에 맞게 변환 시켜줌 
 logits = logits['classifier_head'][0]                 # 첫번째 예측 값만 가져온다 
 
 print(logits.shape)
 
 #@title
 # Get top_k labels and probabilities
-def get_top_k(probs, k=5, label_map=KINETICS_600_LABELS):
+def get_top_k(probs, k=5, label_map=y_labels):
   """Outputs the top k model labels and probabilities on the given video.
 
   Args:
@@ -146,7 +155,7 @@ lines.append('      ...') # 출력이 10줄을 넘어갔을 경우 정보가 더
 print('.\n'.join(lines))  # 줄 단위로 분할된 정보들을 다시 하나의 문자열로 결합하여 출력 , 줄이 바뀌는 것은 . 으로 표시된다
 
 
-initial_state = model.init_states(jumpingjack[tf.newaxis, ...].shape)
+initial_state = model.init_states(x_values[tf.newaxis, ...].shape)
 # 모델의 초기 상태를 초기화합니다. 이 초기 상태는 입력 데이터의 형태(shape)에 따라 생성됩니다.
 # shape 는 jumpingjack 비디오 데이터의 형태에 새로운 차원을 추가하여 형태(shape)를 얻습니다.
 # 이 형태 정보를 사용하여 모델의 초기 상태를 초기화
@@ -163,7 +172,7 @@ inputs = initial_state.copy()
 
 
 # Add the batch axis, take the first frme, but keep the frame-axis.
-inputs['image'] = jumpingjack[tf.newaxis, 0:1, ...] 
+inputs['image'] = x_values[tf.newaxis, 0:1, ...] 
 #첫번째 프레임만 입력,          ^차원을 추가해 모델이 원하는 입력형태로 만들어줌.
      
 
@@ -185,9 +194,9 @@ for label, p in get_top_k(probs):  # 확률이 가장 높은 상위 k개 라벨&
 state = initial_state.copy()              #동영상의 각 프레임에 위의 과정 반복.
 all_logits = []                           #프레임별로 모델의 예측결과 얻기 가능.
 
-for n in range(len(jumpingjack)):
+for n in range(len(x_values)):
   inputs = state
-  inputs['image'] = jumpingjack[tf.newaxis, n:n+1, ...]
+  inputs['image'] = x_values[tf.newaxis, n:n+1, ...]
   result, state = model(inputs)
   all_logits.append(logits)
 
@@ -202,7 +211,7 @@ for label, p in get_top_k(probabilities[-1]):
 id = tf.argmax(probabilities[-1])
 plt.plot(probabilities[:, id]) #동작의 확률이 어떻게 변하는지 시각화하여줌
 plt.xlabel('Frame #')
-plt.ylabel(f"p('{KINETICS_600_LABELS[id]}')")
+plt.ylabel(f"p('{y_labels[id]}')")
 
 
 
@@ -217,7 +226,7 @@ for label, p in get_top_k(tf.reduce_mean(probabilities, axis=0)):
 #상위 k개의 라벨을 반환해주는 클래스 만들기
 # probs- 각 프레임에 대한 클래스의 확률을 나타내는 텐서(num_frame(비디오프레임수), num_classes(분류할 클래스수))형태
 # label_map = 문자열 매핍에 사용되는 라벨 리스트
-def get_top_k_streaming_labels(probs, k=5, label_map=KINETICS_600_LABELS):
+def get_top_k_streaming_labels(probs, k=5, label_map=y_labels):
   
   
   """Returns the top-k labels over an entire video sequence.
@@ -433,15 +442,11 @@ def plot_streaming_top_preds(
 
   return np.array(images)
 
-init_states = model.init_states(jumpingjack[tf.newaxis].shape)
-     
-    
-    
-     
-     
+init_states = model.init_states(x_values[tf.newaxis].shape)
+
 
 # predict할 비디오 넣기
-video = jumpingjack
+video = x_values
 images = tf.split(video[tf.newaxis], video.shape[0], axis=1)
 
 all_logits = []
