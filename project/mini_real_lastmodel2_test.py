@@ -41,9 +41,6 @@ for video_path in video_paths:
         print("Error: Failed to open video file:", video_path)
         continue
 
-    # 영상의 프레임 수 가져오기
-    frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-
     # 영상의 너비와 높이 가져오기
     width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
@@ -52,28 +49,36 @@ for video_path in video_paths:
     fps = cap.get(cv2.CAP_PROP_FPS)
 
     # 프레임을 읽어올지 여부 설정
-    success, frame = cap.read()
-
-    # 영상 데이터 가져오기
-    video_data = []
-    while success:
-        # 프레임을 리스트에 추가
-        video_data.append(frame)
-        # 다음 프레임 읽기
+    while cap.isOpened():
+        # 프레임 읽기
         success, frame = cap.read()
+        if not success:
+            break
 
-    # 영상 파일 닫기
+        # 여기서 프레임에 대한 처리를 수행합니다.
+        # 예: 프레임을 화면에 표시하거나, 저장하거나, 다른 처리를 수행합니다.
+
+        # 프레임 화면에 표시하기
+        cv2.imshow('Frame', frame)
+
+        # 'q' 키를 누르면 종료
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+    # 비디오 파일 닫기
     cap.release()
 
-    # 가져온 영상 데이터의 크기 확인
+    # OpenCV 윈도우 닫기
+    cv2.destroyAllWindows()
+
+    # 처리가 끝난 후에 추가적인 작업을 수행할 수 있습니다.
+    # 예: 결과를 저장하거나 출력합니다.
+
+    # 처리가 완료된 비디오에 대한 정보 출력
     print("비디오 파일:", video_path)
-    print("프레임 수:", len(video_data))
     print("너비:", width, "높이:", height)
     print("프레임 속도 (fps):", fps)
     print()
-
-    # 각 비디오 파일의 영상 데이터 출력
-    print("영상 데이터 예시:", video_data[:5])  # 처음 5개의 프레임 출력
 
 end = time.time()
 
