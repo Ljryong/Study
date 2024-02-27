@@ -138,7 +138,8 @@ for _ in range( lg_range ):
 y_submit = le.inverse_transform(y_submit)
 submission_csv['NObeyesdad'] = y_submit
 
-import datetime as dt
+import datetime
+dt = datetime.datetime.now()
 submission_csv.to_csv(path+f"submit_{dt.day}day{dt.hour:2}{dt.minute:2}_acc_{acc:4}.csv",index=False)
 submission_csv.to_csv(path+'submission_lgbm.csv', index = False)
 print('randomstate = ',random)
