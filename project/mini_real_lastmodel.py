@@ -67,7 +67,7 @@ jumpingjack=load_video(jumpingjack_path)
 print(jumpingjack.shape)
 
 # hud 에 관한 것 
-id = 'a2'                       # 모델의 이름
+id = 'a2'                       # 모델의 종류
 mode = 'base'                   # 모델의 모드
 version = '3'                   # 모델의 버전
 hub_url = f'https://tfhub.dev/tensorflow/movinet/{id}/{mode}/kinetics-600/classification/{version}'     # 주소를 가져옴   
