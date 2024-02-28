@@ -20,15 +20,8 @@ version = '3'                   # 모델의 버전
 hub_url = f'https://tfhub.dev/tensorflow/movinet/{id}/{mode}/kinetics-600/classification/{version}'     # 주소를 가져옴   
 model = hub.load(hub_url) 
 
-# 모델 로드할 때 시그니처 지정
-hub_url = 'https://tfhub.dev/google/imagenet/mobilenet_v2_130_224/classification/4'
-model = hub.load(hub_url, signature="image_classification")
 
-# 모델 입력 및 출력 확인
-print("Input keys:", model.input_keys)
-print("Output keys:", model.output_keys)
-
-# tf.keras.backend.clear_session()
+tf.keras.backend.clear_session()
 
 # backbone = movinet.Movinet(model_id=model_id)
 # backbone.trainable = False

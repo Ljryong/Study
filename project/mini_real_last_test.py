@@ -3,9 +3,9 @@ import tensorflow_hub as hub
 from keras.layers import Dense , Flatten
 from keras.models import Sequential
 
-hub_url = "https://www.kaggle.com/models/google/movinet/frameworks/TensorFlow2/variations/a3-stream-kinetics-600-classification/versions/2"
+hub_url = "https://www.kaggle.com/models/google/movinet/frameworks/TensorFlow2/variations/a5-stream-kinetics-600-classification/versions/2"
 
-encoder = hub.KerasLayer(hub_url, trainable= False , input_shape = () )
+encoder = hub.KerasLayer(hub_url, trainable= False )
 
 # Define the image (video) input
 image_input = tf.keras.layers.Input(
@@ -52,7 +52,7 @@ init_states = init_states_fn(tf.shape(example_input))
 states = init_states
 predictions = []
 for frame in frames:
-  output, states = model({**states, 'image': frame})
+  output, states = ({**states, 'image': frame})
   predictions.append(output)
 
 # The video classification will simply be the last output of the model.
@@ -61,7 +61,7 @@ final_prediction = tf.argmax(predictions[-1], -1)
 # Alternatively, we can run the network on the entire input video.
 # The output should be effectively the same
 # (but it may differ a small amount due to floating point errors).
-non_streaming_output, _ = model({**init_states, 'image': example_input})
+non_streaming_output, _ = ({**init_states, 'image': example_input})
 non_streaming_prediction = tf.argmax(non_streaming_output, -1)
 
 print('이게 되네..?')

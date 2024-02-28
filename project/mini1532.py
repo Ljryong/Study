@@ -5,7 +5,7 @@ from keras.models import Sequential
 
 hub_url = "https://www.kaggle.com/models/google/movinet/frameworks/TensorFlow2/variations/a5-stream-kinetics-600-classification/versions/2"
 
-encoder = hub.KerasLayer(hub_url, trainable= False , input_shape = (None,320,320,3) )
+encoder = hub.KerasLayer(hub_url, trainable= False , input_shape = (120,320,320,3) )
 
 model = Sequential()
 model.add(encoder)
