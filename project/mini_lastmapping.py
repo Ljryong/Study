@@ -34,6 +34,10 @@ for file_name in file_list:
 for video_path, label in video_data:
     print(f"영상 파일: {video_path}, 레이블: {label}")
 
+print(video_data)
 print('매핑 끝')
 
-print(video_data)
+
+test_csv = test_csv['한국어']
+
+print(test_csv)
