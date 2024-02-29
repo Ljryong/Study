@@ -18,9 +18,9 @@ from lightgbm import LGBMClassifier
 from xgboost import XGBClassifier
 from catboost import CatBoostClassifier, Pool
 
-SEED1 = 42
-SEED2 = 42
-SEED3 = 42
+SEED1 = 46
+SEED2 = 45
+SEED3 = 46
 
 tf.random.set_seed(SEED1)  
 np.random.seed(SEED2)
@@ -246,7 +246,7 @@ parameters = [
 
 
 
-model = RandomizedSearchCV(XGBClassifier(), 
+model = RandomizedSearchCV(LGBMClassifier(), 
                      parameters, 
                      cv=kfold, 
                      verbose=1, 

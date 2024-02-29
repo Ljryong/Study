@@ -31,7 +31,8 @@ start_time = time.time()
 
 #1. 데이터
 
-path = 'C:\\_data\\kaggle\\Obesity_Risk\\'
+path = 'c:/_data/kaggle/fat//'
+
 
 train_csv = pd.read_csv(path + 'train.csv', index_col= 0)
 test_csv = pd.read_csv(path + 'test.csv', index_col= 0)
