@@ -251,13 +251,16 @@ class FrameGenerator:
       label = self.class_ids_for_name[name] # Encode labels
       yield video_frames, label
 
-URL = 'https://storage.googleapis.com/thumos14_files/UCF101_videos.zip'
-download_dir = pathlib.Path('./UCF101_subset/')
-subset_paths = download_ufc_101_subset(URL, 
-                        num_classes = 10,
-                        splits = {"train": 30, "test": 20},
-                        download_dir = download_dir)
+############################################################################
+# URL = 'https://storage.googleapis.com/thumos14_files/UCF101_videos.zip'
+# download_dir = pathlib.Path('./UCF101_subset/')
+# subset_paths = download_ufc_101_subset(URL, 
+#                         num_classes = 10,
+#                         splits = {"train": 30, "test": 20},
+#                         download_dir = download_dir)
+############################################################################
 
+subset_paths = 'C:/UCF101_subset/'
 
 batch_size = 8
 num_frames = 8
@@ -311,7 +314,7 @@ model.build([None, None, None, None, 3])
 # !wget https://storage.googleapis.com/tf_model_garden/vision/movinet/movinet_a0_base.tar.gz -O movinet_a0_base.tar.gz -q
 # !tar -xvf movinet_a0_base.tar.gz
 
-checkpoint_dir = f'movinet_{model_id}_base'
+checkpoint_dir = 'C:\babo'
 checkpoint_path = tf.train.latest_checkpoint(checkpoint_dir)
 checkpoint = tf.train.Checkpoint(model=model)
 status = checkpoint.restore(checkpoint_path)
@@ -385,8 +388,8 @@ print('finish!')
 fg = FrameGenerator(subset_paths['train'], num_frames, training = True)
 label_names = list(fg.class_ids_for_name.keys())
 
-# actual, predicted = get_actual_predicted_labels(test_ds)
-# plot_confusion_matrix(actual, predicted, label_names, 'test')
+actual, predicted = get_actual_predicted_labels(test_ds)
+plot_confusion_matrix(actual, predicted, label_names, 'test')
 
-import tensorflow_models as tfm
-tfm.vision.mov
+# import tensorflow_models as tfm
+# tfm.vision.mov
