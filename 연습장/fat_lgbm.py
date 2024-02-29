@@ -72,7 +72,7 @@ print(df.corr())
 random = np.random.randint(0,10000000,1) 
 random = [46]
 
-x_train , x_test , y_train , y_test = train_test_split(x,y, random_state= random[0] , test_size=0.2 , shuffle=True , stratify=y )
+x_train , x_test , y_train , y_test = train_test_split(x,y, random_state= random[0] , test_size=0.3, shuffle=True , stratify=y )
 
 # scaler = StandardScaler()
 # scaler = MinMaxScaler()
@@ -84,7 +84,7 @@ x_test = scaler.transform(x_test)
 test_csv = scaler.transform(test_csv)
 
 
-kfold = StratifiedKFold(n_splits= 15 , shuffle=True , random_state= random[0] )
+kfold = StratifiedKFold(n_splits= 10 , shuffle=True , random_state= random[0] )
 
 # lgbm_grid = [{
 #     'n_estimators': np.random.randint(100, 300, 3),       # 랜덤으로 범위내 수를 뽑음
@@ -103,7 +103,7 @@ parameters = [{'n_estimators' : [100,200] ,'max_depth':[6,10,12],'min_samples_le
 
 # RandomizedSearchCV를 사용하여 모델을 탐색
 model = RandomizedSearchCV(lg.LGBMClassifier(), parameters  ,  cv=kfold, 
-                            n_iter= 15 , 
+                            n_iter= 10 , 
                             #   factor=3,
                             #   min_resources=  ,
                             random_state= random[0]
