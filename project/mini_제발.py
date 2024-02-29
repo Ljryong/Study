@@ -244,12 +244,29 @@ subset_paths = download_ufc_101_subset_from_local(local_video_dir, num_classes, 
 batch_size = 5
 num_frames = 8
 
-CLASSES = sorted(os.listdir('./UCF101_subset/train'))
+CLASSES = sorted(os.listdir('D:/minipro/train'))
 
 output_signature = (tf.TensorSpec(shape=(None, None, None, 3), dtype=tf.float32),
                     tf.TensorSpec(shape=(), dtype=tf.int32))
 
 # 데이터 경로 설정
+# train_dir = 'D:/minipro/train'
+# val_dir = 'D:/minipro/val'
+# test_dir = 'D:/minipro/test'
+
+# train_ds = tf.data.Dataset.from_generator(FrameGenerator(pathlib.Path('train'), num_frames, training = True),
+#                                           output_signature = output_signature)
+# train_ds = train_ds.batch(batch_size)
+
+# val_ds = tf.data.Dataset.from_generator(FrameGenerator(pathlib.Path('val'), num_frames),
+#                                           output_signature = output_signature)
+# val_ds = val_ds.batch(batch_size)
+
+# test_ds = tf.data.Dataset.from_generator(FrameGenerator(pathlib.Path('test'), num_frames),
+#                                          output_signature = output_signature)
+# test_ds = test_ds.batch(batch_size)
+
+# gpt
 train_dir = 'D:/minipro/train'
 val_dir = 'D:/minipro/val'
 test_dir = 'D:/minipro/test'
@@ -265,6 +282,7 @@ val_ds = val_ds.batch(batch_size)
 test_ds = tf.data.Dataset.from_generator(FrameGenerator(train_dir, val_dir, test_dir, num_frames),
                                          output_signature=output_signature)
 test_ds = test_ds.batch(batch_size)
+
 
 for frames, labels in train_ds.take(1):
     print(f"Shape: {frames.shape}")
