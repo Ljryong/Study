@@ -31,21 +31,6 @@ from official.projects.movinet.modeling import movinet_model
 from official.projects.movinet.tools import export_saved_model
 
 # @title Helper functions for loading data and visualizing
-def list_files_per_class(zip_url):
-  """
-    List the files in each class of the dataset given the zip URL.
-
-    Args:
-      zip_url: URL from which the files can be unzipped.
-
-    Return:
-      files: List of files in each of the classes.
-  """
-#   files = []
-#   with rz.RemoteZip(URL) as zip:
-#     for zip_info in zip.infolist():
-#       files.append(zip_info.filename)
-#   return files
 
 def get_class(fname):
   """
@@ -103,24 +88,7 @@ def split_class_lists(files_for_class, count):
     remainder[cls] = files_for_class[cls][count:]
   return split_files, remainder
 
-def download_ufc_101_subset(zip_url, num_classes, splits, download_dir):
-  files = list_files_per_class(download_dir)
-  for f in files:
-    tokens = f.split('/')
-    if len(tokens) <= 2:
-      files.remove(f) # Remove that item from the list if it does not have a filename
 
-
-
-  dirs = {}
-  for split_name, split_count in splits.items():
-    print(split_name, ":")
-    split_dir = download_dir / split_name
-    split_files, files_for_class = split_class_lists(files_for_class, split_count)
-    download_from_zip(zip_url, split_dir, split_files)
-    dirs[split_name] = split_dir
-
-  return dirs
 
 def format_frames(frame, output_size):
 
@@ -197,6 +165,7 @@ class FrameGenerator:
             label = self.class_ids_for_name[class_name]  # 클래스 이름에 해당하는 레이블 ID 추출
             yield video_frames, label
 
+
 def download_hand_sign_local(local_video_dir, num_classes, splits, download_dir):
     # Ensure the download directory exists
     download_dir = pathlib.Path(download_dir)
@@ -232,20 +201,20 @@ def download_hand_sign_local(local_video_dir, num_classes, splits, download_dir)
                 target_path = class_split_dir / file_path.name
                 shutil.copy2(file_path, target_path)
 
-            dirs[split_name] = split_dir
+        dirs[split_name] = split_dir  # 이 부분을 반복문 내부로 이동
 
     return dirs
 
 
-local_video_dir = "C:\classified_video_320"
+local_video_dir = "C:/classified_video_320"
 num_classes = 600  # 사용 가능한 클래스 수가 이보다 적을 수 있음
 splits = {"train": 60, "val": 20, "test": 20}  # 비율을 백분율로 지정
 download_dir = "C:/prodownload"
 
 subset_paths = download_hand_sign_local(local_video_dir, num_classes, splits, download_dir)
 
+print(subset_paths)
 
-     
 batch_size = 600
 num_frames = 8
 
@@ -340,9 +309,14 @@ inputs = tf.ones([419, 8, 172, 172, 3])
 # [Optional] Build the model and load a pretrained checkpoint.
 model.build(inputs.shape)
 
+hub_url = "https://tfhub.dev/google/imagenet/mobilenet_v2_130_224/classification/5"
+feature_extractor = hub.KerasLayer(hub_url, input_shape=(224, 224, 3))
+model = tf.keras.Sequential([
+    feature_extractor,
+    tf.keras.layers.Dense(num_classes, activation='softmax')
+])
 
-
-checkpoint_dir = 'C:\study\movinet_a0_stream'
+checkpoint_dir = 'D:\\movinet_a0_stream'
 checkpoint_path = tf.train.latest_checkpoint(checkpoint_dir)
 checkpoint = tf.train.Checkpoint(model=model)
 status = checkpoint.restore(checkpoint_path)
@@ -390,7 +364,7 @@ def build_classifier(batch_size, num_frames, resolution, backbone, num_classes):
 with distribution_strategy.scope():
   model = build_classifier(batch_size, num_frames, resolution, backbone, 419)
   loss_obj = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
-  optimizer = tf.keras.optimizers.Adam(learning_rate = 0.001)
+  optimizer = tf.keras.optimizers.Adam(learning_rate = 0.01)
   model.compile(loss= loss_obj, optimizer=optimizer, metrics=['accuracy'])
   
   
@@ -406,8 +380,9 @@ cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path,
 
 
 hist = model.fit(train_ds,
-                    validation_data=val_ds,batch_size=1,
-                    epochs=1,
+                    validation_data=val_ds,
+                    batch_size = 5 ,
+                    epochs= 10 ,
                     validation_freq=1,
                     verbose=1,
                     callbacks=[cp_callback])
@@ -439,99 +414,3 @@ def get_actual_predicted_labels(dataset):
 
   return actual, predicted
      
-     
-     
-'''
-def plot_confusion_matrix(actual, predicted, labels, ds_type):
-  cm = tf.math.confusion_matrix(actual, predicted)
-  ax = sns.heatmap(cm, annot=True, fmt='g')
-  sns.set(rc={'figure.figsize':(6, 16)})
-  sns.set(font_scale=1.4)
-  ax.set_title('Confusion matrix of action recognition for ' + ds_type)
-  ax.set_xlabel('Predicted Action')
-  ax.set_ylabel('Actual Action')
-  plt.xticks(rotation=90)
-  plt.yticks(rotation=0)
-  ax.xaxis.set_ticklabels(labels)
-  ax.yaxis.set_ticklabels(labels)
-  plt.show()
-     
-
-fg = FrameGenerator(subset_paths['train'], num_frames, training = True)
-label_names = list(fg.class_ids_for_name.keys())
-'''     
-'''
-aal, predicted = get_actual_predicted_labels(test_ds)
-plot_confusion_matrix(actual, predicted, label_names, 'test')
-'''
-
-'''
-model_id = 'a0'
-use_positional_encoding = model_id in {'a3', 'a4', 'a5'}
-resolution = 172
-
-# Create backbone and model.
-backbone = movinet.Movinet(
-    model_id=model_id,
-    causal=True,
-    conv_type='2plus1d',
-    se_type='2plus3d',
-    activation='hard_swish',
-    gating_activation='hard_sigmoid',
-    use_positional_encoding=use_positional_encoding,
-    use_external_states=True,
-)
-
-model = movinet_model.MovinetClassifier(
-    backbone,
-    num_classes=10,
-    output_states=True)
-
-# Create your example input here.
-# Refer to the paper for recommended input shapes.
-inputs = tf.ones([1, 13, 172, 172, 3])
-
-# [Optional] Build the model and load a pretrained checkpoint.
-model.build(inputs.shape)
-
-# Load weights from the checkpoint to the rebuilt model
-checkpoint_dir = 'trained_model'
-model.load_weights(tf.train.latest_checkpoint(checkpoint_dir))
-
-def get_top_k(probs, k=5, label_map=CLASSES):
-  """Outputs the top k model labels and probabilities on the given video."""
-  top_predictions = tf.argsort(probs, axis=-1, direction='DESCENDING')[:k]
-  top_labels = tf.gather(label_map, top_predictions, axis=-1)
-  top_labels = [label.decode('utf8') for label in top_labels.numpy()]
-  top_probs = tf.gather(probs, top_predictions, axis=-1).numpy()
-  return tuple(zip(top_labels, top_probs))
-     
-
-# Create initial states for the stream model
-init_states_fn = model.init_states
-init_states = init_states_fn(tf.shape(tf.ones(shape=[1, 1, 172, 172, 3])))
-
-all_logits = []
-
-# To run on a video, pass in one frame at a time
-states = init_states
-for frames, label in test_ds.take(1):
-  for clip in frames[0]:
-    # Input shape: [1, 1, 172, 172, 3]
-    clip = tf.expand_dims(tf.expand_dims(clip, axis=0), axis=0)
-    logits, states = model.predict({**states, 'image': clip}, verbose=0)
-    all_logits.append(logits)
-
-logits = tf.concat(all_logits, 0)
-probs = tf.nn.softmax(logits)
-
-final_probs = probs[-1]
-top_k = get_top_k(final_probs)
-print()
-for label, prob in top_k:
-  print(label, prob)
-
-frames, label = list(test_ds.take(1))[0]
-to_gif(frames[0].numpy())
-
-'''
