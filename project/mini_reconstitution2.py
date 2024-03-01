@@ -309,12 +309,12 @@ inputs = tf.ones([419, 8, 172, 172, 3])
 # [Optional] Build the model and load a pretrained checkpoint.
 model.build(inputs.shape)
 
-hub_url = "https://tfhub.dev/google/imagenet/mobilenet_v2_130_224/classification/5"
-feature_extractor = hub.KerasLayer(hub_url, input_shape=(224, 224, 3))
-model = tf.keras.Sequential([
-    feature_extractor,
-    tf.keras.layers.Dense(num_classes, activation='softmax')
-])
+# hub_url = "https://tfhub.dev/google/imagenet/mobilenet_v2_130_224/classification/5"
+# feature_extractor = hub.KerasLayer(hub_url, input_shape=(224, 224, 3))
+# model = tf.keras.Sequential([
+#     feature_extractor,
+#     tf.keras.layers.Dense(num_classes, activation='softmax')
+# ])
 
 checkpoint_dir = 'D:\\movinet_a0_stream'
 checkpoint_path = tf.train.latest_checkpoint(checkpoint_dir)
@@ -364,7 +364,7 @@ def build_classifier(batch_size, num_frames, resolution, backbone, num_classes):
 with distribution_strategy.scope():
   model = build_classifier(batch_size, num_frames, resolution, backbone, 419)
   loss_obj = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
-  optimizer = tf.keras.optimizers.Adam(learning_rate = 0.01)
+  optimizer = tf.keras.optimizers.Adam(learning_rate = 0.1)
   model.compile(loss= loss_obj, optimizer=optimizer, metrics=['accuracy'])
   
   
@@ -381,7 +381,7 @@ cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path,
 
 hist = model.fit(train_ds,
                     validation_data=val_ds,
-                    batch_size = 5 ,
+                    batch_size = 3 ,
                     epochs= 10 ,
                     validation_freq=1,
                     verbose=1,
