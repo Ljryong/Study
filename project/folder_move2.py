@@ -1,10 +1,7 @@
 import os
 import shutil
 
-# source_directory = "D:\\수어 영상\\2.Validation\\WORD\\18"
-# source_directory = "D:\수어 영상\\1.Training\[원천]09_real_word_video\\05"
-source_directory = "D:\수어 영상\\1.Training\[원천]03_real_word_video\\02"
-
+source_directory = "D:\수어 영상\\1.Training\[원천]31_real_word_video\\16"
 target_directory = "C:\\3TB\\video\\"
 
 # source_directory에 있는 모든 MP4 파일에 대해 반복
@@ -24,9 +21,14 @@ for file_name in os.listdir(source_directory):
         if os.path.exists(folder_path):
             # 파일 이름에 "F"가 포함되어 있는지 확인하여 이동할지 결정
             if "F" in file_name:
-                # 파일을 해당 폴더로 이동
-                shutil.move(os.path.join(source_directory, file_name), folder_path)
-                print(f"'{file_name}' 파일을 '{folder_path}' 폴더로 이동했습니다.")
+                # 대상 파일이 이미 대상 폴더에 존재하는지 확인
+                target_file_path = os.path.join(folder_path, file_name)
+                if os.path.exists(target_file_path):
+                    print(f"'{file_name}' 파일은 이미 '{folder_path}' 폴더에 존재합니다. 이동되지 않았습니다.")
+                else:
+                    # 파일을 해당 폴더로 이동
+                    shutil.move(os.path.join(source_directory, file_name), folder_path)
+                    print(f"'{file_name}' 파일을 '{folder_path}' 폴더로 이동했습니다.")
             else:
                 print(f"'{file_name}' 파일은 'F'를 포함하지 않아 이동되지 않았습니다.")
         else:
