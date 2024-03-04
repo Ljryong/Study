@@ -1,21 +1,31 @@
-import os
+# import pandas as pd
+
+# # CSV 파일 불러오기
+# df = pd.read_csv("c:/study/new3_csv_file.csv")
+
+# # '타입(단어/문장)' 열이 문장인 행 삭제
+# df = df[df['타입(단어/문장)'] == '단어']
+
+# # '한국어' 열의 값이 중복된 행 제거
+# df.drop_duplicates(subset=['한국어'], keep='first', inplace=True)
+
+# # 수정된 DataFrame을 CSV 파일로 저장
+# df.to_csv("new4_csv_file.csv", index=False)
+
 import pandas as pd
 
-# 1. CSV 파일 읽기
-df = pd.read_csv('C:/Study/new_csv_file.csv')
+# CSV 파일 불러오기
+df = pd.read_csv("c:/study/new_csv_file.csv")
 
-# 2. 파일명을 기반으로 데이터 찾기
-# 예시: 파일명에서 확장자를 제거하여 파일 제목 추출
-file_title = os.path.splitext(os.path.basename('C:/Study/new_csv_file.csv'))[0]
+# '방향' 열이 '측면'인 행 삭제
+df = df[df['방향'] != '측면']
 
-# 3. 해당하는 행 찾기
-# 예시: 'Title' 열의 값이 파일 제목과 일치하는 행 찾기
-matching_row = df[df['한국어'] == file_title]
+# '타입(단어/문장)' 열이 문장인 행 삭제
+df = df[df['타입(단어/문장)'] == '단어']
 
-# 4. 내용 변경
-# 예시: 찾은 행의 내용을 변경
-# 예시로 모든 내용을 'New Content'로 변경
-matching_row['Content'] = 'New Content'
+# '한국어' 열의 값이 중복된 행 제거
+df.drop_duplicates(subset=['한국어'], keep='first', inplace=True)
 
-# 5. 변경된 데이터를 새로운 CSV 파일로 저장
-df.to_csv('updated_file.csv', index=False)
+# 수정된 DataFrame을 CSV 파일로 저장
+df.to_csv("new2_csv_file.csv", index=False)
+
