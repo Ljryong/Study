@@ -383,7 +383,6 @@ for frames, labels in train_ds.take(1):
   
   
 model_id = 'a3'
-use_positional_encoding = model_id in {'a3', 'a4', 'a5'}
 resolution = 256
 
 backbone = movinet.Movinet(
@@ -393,7 +392,6 @@ backbone = movinet.Movinet(
     se_type='2plus3d',
     activation='hard_swish',
     gating_activation='hard_sigmoid',
-    use_positional_encoding=use_positional_encoding,
     use_external_states=False,
 )
 
@@ -404,7 +402,7 @@ model = movinet_model.MovinetClassifier(
 
 # Create your example input here.
 # Refer to the paper for recommended input shapes.
-inputs = tf.ones([1, 15, 256, 256, 3])
+inputs = tf.ones([419, 15, 256, 256, 3])
 
 # [Optional] Build the model and load a pretrained checkpoint.
 model.build(inputs.shape)
@@ -473,7 +471,7 @@ cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path,
 
 results = model.fit(train_ds,
                     validation_data=val_ds,
-                    epochs=10,
+                    epochs=1,
                     validation_freq=1,
                     verbose=1,
                     callbacks=[cp_callback])
@@ -519,3 +517,96 @@ label_names = list(fg.class_ids_for_name.keys())
 
 actual, predicted = get_actual_predicted_labels(test_ds)
 cm = plot_confusion_matrix(actual, predicted, label_names, 'test')
+
+
+def plot_confusion_matrix(actual, predicted, labels, ds_type):
+  cm = tf.math.confusion_matrix(actual, predicted)
+  ax = sns.heatmap(cm, annot=True, fmt='g')
+  sns.set(rc={'figure.figsize':(6, 16)})
+  sns.set(font_scale=1.4)
+  ax.set_title('Confusion matrix of action recognition for ' + ds_type)
+  ax.set_xlabel('Predicted Action')
+  ax.set_ylabel('Actual Action')
+  plt.xticks(rotation=90)
+  plt.yticks(rotation=0)
+  ax.xaxis.set_ticklabels(labels)
+  ax.yaxis.set_ticklabels(labels)
+  plt.show()
+     
+
+fg = FrameGenerator(subset_paths['train'], num_frames, training = True)
+label_names = list(fg.class_ids_for_name.keys())
+'''     
+'''
+aal, predicted = get_actual_predicted_labels(test_ds)
+plot_confusion_matrix(actual, predicted, label_names, 'test')
+'''
+
+'''
+model_id = 'a0'
+use_positional_encoding = model_id in {'a3', 'a4', 'a5'}
+resolution = 172
+
+# Create backbone and model.
+backbone = movinet.Movinet(
+    model_id=model_id,
+    causal=True,
+    conv_type='2plus1d',
+    se_type='2plus3d',
+    activation='hard_swish',
+    gating_activation='hard_sigmoid',
+    use_positional_encoding=use_positional_encoding,
+    use_external_states=True,
+)
+
+model = movinet_model.MovinetClassifier(
+    backbone,
+    num_classes=419,
+    output_states=True)
+
+# Create your example input here.
+# Refer to the paper for recommended input shapes.
+inputs = tf.ones([1, 13, 172, 172, 3])
+
+# [Optional] Build the model and load a pretrained checkpoint.
+model.build(inputs.shape)
+
+# Load weights from the checkpoint to the rebuilt model
+checkpoint_dir = 'trained_model'
+model.load_weights(tf.train.latest_checkpoint(checkpoint_dir))
+
+def get_top_k(probs, k=5, label_map=CLASSES):
+  """Outputs the top k model labels and probabilities on the given video."""
+  top_predictions = tf.argsort(probs, axis=-1, direction='DESCENDING')[:k]
+  top_labels = tf.gather(label_map, top_predictions, axis=-1)
+  top_labels = [label.decode('utf8') for label in top_labels.numpy()]
+  top_probs = tf.gather(probs, top_predictions, axis=-1).numpy()
+  return tuple(zip(top_labels, top_probs))
+     
+
+# Create initial states for the stream model
+init_states_fn = model.init_states
+init_states = init_states_fn(tf.shape(tf.ones(shape=[1, 1, 172, 172, 3])))
+
+all_logits = []
+
+# To run on a video, pass in one frame at a time
+states = init_states
+for frames, label in test_ds.take(1):
+  for clip in frames[0]:
+    # Input shape: [1, 1, 172, 172, 3]
+    clip = tf.expand_dims(tf.expand_dims(clip, axis=0), axis=0)
+    logits, states = model.predict({**states, 'image': clip}, verbose=0)
+    all_logits.append(logits)
+
+logits = tf.concat(all_logits, 0)
+probs = tf.nn.softmax(logits)
+
+final_probs = probs[-1]
+top_k = get_top_k(final_probs)
+print()
+for label, prob in top_k:
+  print(label, prob)
+
+frames, label = list(test_ds.take(1))[0]
+to_gif(frames[0].numpy())
