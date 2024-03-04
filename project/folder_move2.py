@@ -1,7 +1,7 @@
 import os
 import shutil
 
-source_directory = "D:\수어 영상\\1.Training\[원천]31_real_word_video\\16"
+source_directory = "D:\수어 영상\\1.Training\[원천]23_real_word_video\\12"
 target_directory = "C:\\3TB\\video\\"
 
 # source_directory에 있는 모든 MP4 파일에 대해 반복

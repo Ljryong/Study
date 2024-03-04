@@ -8,7 +8,7 @@ def delete_real18_mp4_files(folder_path):
     """
     for root, dirs, files in os.walk(folder_path):
         for file in files:
-            if file.endswith('.mp4') and 'REAL16' in file:
+            if file.endswith('.mp4') and 'REAL12' in file:
                 try:
                     file_path = os.path.join(root, file)
                     os.remove(file_path)
