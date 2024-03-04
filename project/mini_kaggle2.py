@@ -358,7 +358,9 @@ batch_size = 1
 num_frames = 100
 
 CLASSES = sorted(os.listdir("C:\prodownload\\train"))
-# CLASSES = sorted(os.listdir("C:\\Users\\AIA\\Desktop\\ai\\AI_mini_project\\resource\\download_dir\\train"))
+
+# file_names = os.listdir("C:/prodownload\\train")
+# CLASSES = sorted(file_names, key=lambda x: int(x))
 
 output_signature = (tf.TensorSpec(shape = (None, None, None, 3), dtype = tf.float32),
                     tf.TensorSpec(shape = (), dtype = tf.int16))
