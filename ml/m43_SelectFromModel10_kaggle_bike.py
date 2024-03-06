@@ -95,7 +95,7 @@ for i in thresholds:                                                    # 제일
     select_y_predict = select_model.predict(select_x_test)
     score = r2_score(y_test , select_y_predict)
     
-    print("Thredsholds=%.3f, n=%d, ACC: %.2f%%" %(i, select_x_train.shape[1], score*100))
+    print("Thredsholds=%.3f, n=%d, R2: %.2f" %(i, select_x_train.shape[1] , score ))
 
 
 # Thredsholds=0.061, n=8, ACC: 35.92%
