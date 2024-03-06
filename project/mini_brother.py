@@ -403,3 +403,67 @@ plot_confusion_matrix(actual, predicted, label_names, 'test')
 
 
 
+#==================================================================================
+from PIL import ImageFont, ImageDraw, Image
+from pathlib import Path
+import numpy as np
+import cv2
+
+def draw_text(img, text, pos, font_path, font_size, font_color):
+    img_pil = Image.fromarray(img)
+    draw = ImageDraw.Draw(img_pil)
+    font = ImageFont.truetype(font_path, font_size)
+    draw.text(pos, text, font=font, fill=font_color)
+    return np.array(img_pil)
+
+def find_first_video_files(folder_path):
+    video_paths = []
+    base_path = Path(folder_path)
+    
+    for subfolder in base_path.iterdir():
+        if subfolder.is_dir():  # 하위 폴더인 경우
+            video_files = list(subfolder.glob('*.mp4'))
+            if video_files:  # 비디오 파일이 있는 경우
+                video_paths.append(video_files[0])
+                
+    return video_paths
+
+
+def play_videos_with_labels(video_paths, actual_labels, predicted_labels, label_mapping):
+    font_path = "C:\\Users\\user\\Downloads\\nanum-all\\나눔 글꼴\\나눔고딕에코\\NanumFontSetup_TTF_GOTHICECO\\NanumGothicEco.ttf"  # 한글 폰트 파일의 경로
+    for video_path, actual_label, predicted_label in zip(video_paths, actual_labels, predicted_labels):
+        cap = cv2.VideoCapture(str(video_path))
+
+        actual_label = (y_test, "알 수 없음")
+        predicted_label = (y_pred, "예측 할 수 없습니다.")
+
+        if not cap.isOpened():
+            print(f"Error opening video file: {video_path}")
+            continue
+
+        while cap.isOpened():
+            ret, frame = cap.read()
+            if ret:
+                label_text = f"실제 뜻은: {actual_label}입니다. , 예측한 뜻은: {predicted_label}입니다."
+                # OpenCV 이미지에 한글 텍스트를 그리기 위해 PIL 사용
+                frame = draw_text(frame, label_text, (10, 30), font_path, 20, (255, 255, 255))
+
+                cv2.imshow('Video', frame)
+
+                if cv2.waitKey(25) & 0xFF == ord('q'):
+                    break
+            else:
+                break
+
+        cap.release()
+    cv2.destroyAllWindows()
+    
+# 라벨 매핑 파일 로드
+with open('C:\classified_video_320\\token_dic.json', 'r', encoding = 'EUC-KR') as json_file:          ### 딕셔너리 불러오기
+    token_dic = json.load(json_file)
+
+# 비디오 파일 경로 리스트
+video_paths = find_first_video_files(test_path)
+
+# 비디오 재생 및 라벨 표시
+play_videos_with_labels(video_paths, y_test, y_pred, token_dic)
