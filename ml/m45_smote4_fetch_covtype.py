@@ -1,4 +1,5 @@
-# SMOTE 증폭을 때릴 때 무작정 때리는게 아니라 1000개 10000개 이상이 넘어가는 건 균등한 비율로 잘라서 SMOTE를 때리는게 좋다from sklearn.datasets import fetch_covtype
+# SMOTE 증폭을 때릴 때 무작정 때리는게 아니라 1000개 10000개 이상이 넘어가는 건 균등한 비율로 잘라서 SMOTE를 때리는게 좋다
+from sklearn.datasets import fetch_covtype
 import numpy as np
 import pandas as pd
 from keras.callbacks import EarlyStopping
