@@ -1,4 +1,4 @@
-### 44_1번을 rf 디폴트로 리폼
+### 라벨을 관리할 수 있을 때 사용한다
 
 import numpy as np
 import pandas as pd
