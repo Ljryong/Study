@@ -14,7 +14,8 @@
 # BaggingClassifier 이것도 모델이라서 이 안에 다른 모델을 집어 넣을 수 있다. keras랑 pytorch 도 가능
 
 # boosting
-# 
+# 1번째로 전체를 학습 시키고 거기서 나온 값중에 값이 좋지 못한 애들을 더 큰 가중치를 부여하여서 더 많은 관심도를 가지게 한다.
+# 가중치가 크든 작든 좋고 나쁜건 없지만 가중치가 크면 거기에 좀 더 집중을 한다. 가중치가 적다면 무시하는 경향이 있다.
 
 import numpy as np
 from sklearn.datasets import load_breast_cancer
