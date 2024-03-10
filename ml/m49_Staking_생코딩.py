@@ -85,7 +85,7 @@ li2 = []
 for model in models:
     model.fit(x_train, y_train)
     y_predict = model.predict(x_train)          # x_test 는 밑에서 쓰기 위해 train을 넣음
-    y_pred_test = model.predict(x_test)
+    y_pred_test = model.predict(x_test)         # train만 맞춰주는 것이 아니라 test도 변환 시켜줌
     # print(y_predict.shape)      # (114,)
     li.append(y_predict)
     li2.append(y_pred_test)
