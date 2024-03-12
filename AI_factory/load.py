@@ -411,16 +411,16 @@ save_best_only=True, mode='auto', period=CHECKPOINT_PERIOD)
 """
 start = time.time()
 print('---model 훈련 시작---')
-history = model.fit_generator(
-    train_generator,
-    steps_per_epoch=len(images_train) // BATCH_SIZE,
-    validation_data=validation_generator,
-    validation_steps=len(images_validation) // BATCH_SIZE,
-    callbacks=[checkpoint, es],
-    epochs=EPOCHS,
-    workers=WORKERS,
-    initial_epoch=INITIAL_EPOCH
-)
+# history = model.fit_generator(
+#     train_generator,
+#     steps_per_epoch=len(images_train) // BATCH_SIZE,
+#     validation_data=validation_generator,
+#     validation_steps=len(images_validation) // BATCH_SIZE,
+#     callbacks=[checkpoint, es],
+#     epochs=EPOCHS,
+#     workers=WORKERS,
+#     initial_epoch=INITIAL_EPOCH
+# )
 print('---model 훈련 종료---')
 end = time.time()
 
@@ -429,29 +429,30 @@ end = time.time()
 ## model save
 """
 
-print('가중치 저장')
-model_weights_output = os.path.join(OUTPUT_DIR, FINAL_WEIGHTS_OUTPUT)
-model.save_weights(model_weights_output)
-print("저장된 가중치 명: {}".format(model_weights_output))
+# print('가중치 저장')
+# model_weights_output = os.path.join(OUTPUT_DIR, FINAL_WEIGHTS_OUTPUT)
+# model.save_weights(model_weights_output)
+# print("저장된 가중치 명: {}".format(model_weights_output))
 
 """## inference
 
 - 학습한 모델 불러오기
 """
 
-model = get_model(MODEL_NAME, input_height=IMAGE_SIZE[0], input_width=IMAGE_SIZE[1], n_filters=N_FILTERS, n_channels=N_CHANNELS)
-model.compile(optimizer = Adam(), loss = 'binary_crossentropy', metrics = ['accuracy'])
-model.summary()
+# model = get_model(MODEL_NAME, input_height=IMAGE_SIZE[0], input_width=IMAGE_SIZE[1], n_filters=N_FILTERS, n_channels=N_CHANNELS)
+# model.compile(optimizer = Adam(), loss = 'binary_crossentropy', metrics = ['accuracy'])
+# model.summary()
 
 
 
-"""## 제출 Predict
-- numpy astype uint8로 지정
-- 반드시 pkl로 저장
+## 제출 Predict
+# - numpy astype uint8로 지정
+# - 반드시 pkl로 저장
 
 """
+load 부분의 이름을 바꿔야 됨
 """ 
-model.load_weights('C:/dataset/output/model_unet__11day12 8_final_weights.h5')
+model.load_weights('C:/dataset/output/model_unet__11day1810_final_weights.h5')
 
 y_pred_dict = {}
 
@@ -467,4 +468,4 @@ for i in test_meta['test_img']:
 joblib.dump(y_pred_dict, f'C:/dataset/output/submit_{dt.day}day{dt.hour:2}{dt.minute:2}.pkl')
 
 print('피클 저장')
-# print(end - start) """
+# print(end - start)

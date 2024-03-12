@@ -139,17 +139,17 @@ def FCN(nClasses, input_height=128, input_width=128, n_filters = 16, dropout = 0
     img_input = Input(shape=(input_height,input_width, 3))
 
     ## Block 1
-    x = Conv2D(n_filters, (3, 3), activation='swish', padding='same', name='block1_conv1')(img_input)
-    x = Conv2D(n_filters, (3, 3), activation='swish', padding='same', name='block1_conv2')(x)
+    x = Conv2D(n_filters, (3, 3), activation='relu', padding='same', name='block1_conv1')(img_input)
+    x = Conv2D(n_filters, (3, 3), activation='relu', padding='same', name='block1_conv2')(x)
     f1 = x
 
     # Block 2
-    x = Conv2D(n_filters, (3, 3), activation='swish', padding='same', name='block2_conv1')(x)
-    x = Conv2D(n_filters, (3, 3), activation='swish', padding='same', name='block2_conv2')(x)
+    x = Conv2D(n_filters, (3, 3), activation='relu', padding='same', name='block2_conv1')(x)
+    x = Conv2D(n_filters, (3, 3), activation='relu', padding='same', name='block2_conv2')(x)
     f2 = x
 
     # Out
-    o = (Conv2D(nClasses, (3,3), activation='swish' , padding='same', name="Out"))(x)
+    o = (Conv2D(nClasses, (3,3), activation='relu' , padding='same', name="Out"))(x)
 
     model = Model(img_input, o)
 
@@ -162,14 +162,14 @@ def conv2d_block(input_tensor, n_filters, kernel_size = 3, batchnorm = True):
                padding="same")(input_tensor)
     if batchnorm:
         x = BatchNormalization()(x)
-    x = Activation("swish")(x)
+    x = Activation("relu")(x)
 
     # second layer
     x = Conv2D(filters=n_filters, kernel_size=(kernel_size, kernel_size), kernel_initializer="he_normal",
                padding="same")(x)
     if batchnorm:
         x = BatchNormalization()(x)
-    x = Activation("swish")(x)
+    x = Activation("relu")(x)
     return x
 
 def get_unet(nClasses, input_height=256, input_width=256, n_filters = 16, dropout = 0.1, batchnorm = True, n_channels=10):
@@ -247,7 +247,7 @@ def get_unet_small1 (nClasses, input_height=128, input_width=128, n_filters = 16
     u9 = Dropout(dropout)(u9)
     c9 = conv2d_block(u9, n_filters * 1, kernel_size = 3, batchnorm = batchnorm)
 
-    outputs = Conv2D(1, (1, 1), activation='swish')(c9)
+    outputs = Conv2D(1, (1, 1), activation='relu')(c9)
     model = Model(inputs=[input_img], outputs=[outputs])
     return model
 
@@ -271,7 +271,7 @@ def get_unet_small2 (nClasses, input_height=128, input_width=128, n_filters = 16
     u3 = Dropout(dropout)(u3)
     c3 = conv2d_block(u3, n_filters * 1, kernel_size = 3, batchnorm = batchnorm)
 
-    outputs = Conv2D(1, (1, 1), activation='swish')(c3)
+    outputs = Conv2D(1, (1, 1), activation='relu')(c3)
     model = Model(inputs=[input_img], outputs=[outputs])
     return model
 
@@ -379,8 +379,8 @@ except:
     pass
 
 
-# train : val = 8 : 2 나누기
-x_tr, x_val = train_test_split(train_meta, test_size=0.2, random_state=RANDOM_STATE)
+# train : val = test_size 비율로 나누기
+x_tr, x_val = train_test_split(train_meta, test_size=0.3, random_state=RANDOM_STATE)
 print(len(x_tr), len(x_val))
 
 # train : val 지정 및 generator
@@ -401,7 +401,7 @@ model.summary()
 
 
 # checkpoint 및 조기종료 설정
-es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=EARLY_STOP_PATIENCE , restore_best_weights=True )
+es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=EARLY_STOP_PATIENCE)
 checkpoint = ModelCheckpoint(os.path.join(OUTPUT_DIR, CHECKPOINT_MODEL_NAME), monitor='loss', verbose=1,
 save_best_only=True, mode='auto', period=CHECKPOINT_PERIOD)
 
