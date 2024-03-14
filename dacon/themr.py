@@ -8,7 +8,9 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from sklearn.utils import shuffle
-
+from sklearn.preprocessing import MinMaxScaler , StandardScaler
+from catboost import CatBoostRegressor
+from lightgbm import LGBMRegressor
 
 def seed_everything(seed):
     random.seed(seed)
@@ -51,9 +53,10 @@ for i in encoding_target:
 # 데이터를 섞음
 x_shuffled, y_shuffled = shuffle(x, y, random_state=730501)
 
-from sklearn.preprocessing import LabelEncoder
+# scaler = MinMaxScaler()
+scaler = StandardScaler()
 
-
+scaler.fit_transform(x_shuffled)
 
 model = XGBRegressor() 
 model.fit(x_shuffled, y_shuffled) 
