@@ -24,19 +24,19 @@ y_train = data['login']
 # GridSearchCV를 위한 하이퍼파라미터 설정
 param_search_space = {
     'n_estimators': [100, 1000],
-    'max_depth': [None, np.random.randint(1, 100)],
-    'min_samples_split': [np.random.randint(2, 100),np.random.random()],
-    'min_samples_leaf': [np.random.randint(1, 100),np.random.uniform(0,0.5) ], 
+    'max_depth': [None] + [np.random.randint(1, 100) for _ in range(5)],
+    'min_samples_split': [np.random.randint(2, 100) for _ in range(5)] + [np.random.random() for _ in range(5)],
+    'min_samples_leaf':[np.random.randint(1, 100) for _ in range(5)]+ [np.random.uniform(0,0.5) for _ in range(5)] , 
     'criterion': ['gini', 'entropy'],  
-    'min_weight_fraction_leaf': [np.random.uniform(0, 0.5)],  # 변경된 설정
+    'min_weight_fraction_leaf': [np.random.uniform(0, 0.5) for _ in range(5)],  # 변경된 설정
     'max_features': ['auto', 'sqrt', 'log2',None],  
-    'max_leaf_nodes': [np.random.randint(1, 100)],  
-    'min_impurity_decrease': [np.random.random()],  
+    'max_leaf_nodes': [np.random.randint(1, 100) for _ in range(5)],  
+    'min_impurity_decrease': [np.random.random()for _ in range(5)],  
     'bootstrap': [True,False],  
 }
 
 # RandomForestClassifier 객체 생성
-rf = RandomForestClassifier(random_state= 45,  )
+rf = RandomForestClassifier(random_state= 42,  )
 
 # GridSearchCV 객체 생성
 grid_search = GridSearchCV(estimator=rf, param_grid=param_search_space, cv=3, n_jobs=-1, verbose=2, scoring='roc_auc')
