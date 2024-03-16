@@ -8,7 +8,7 @@ from sklearn.model_selection import train_test_split
 import tensorflow as tf
 import keras
 from keras.optimizers import *
-from keras.callbacks import ModelCheckpoint, EarlyStopping
+from keras.callbacks import ModelCheckpoint, EarlyStopping , ReduceLROnPlateau
 from tensorflow.python.keras import backend as K
 import sys
 import pandas as pd
@@ -372,15 +372,17 @@ validation_generator = generator_from_lists(images_validation, masks_validation,
 
 
 # model 불러오기
+lr = 0.01
 model = get_model(MODEL_NAME, input_height=IMAGE_SIZE[0], input_width=IMAGE_SIZE[1], n_filters=N_FILTERS, n_channels=N_CHANNELS)
-model.compile(optimizer = Adam(), loss = 'binary_crossentropy', metrics = ['accuracy'])
+model.compile(optimizer = Adam(lr), loss = 'binary_crossentropy', metrics = ['accuracy'])
 model.summary()
 
 
 # checkpoint 및 조기종료 설정
 es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=EARLY_STOP_PATIENCE, restore_best_weights=True)
 checkpoint = ModelCheckpoint(os.path.join(OUTPUT_DIR, CHECKPOINT_MODEL_NAME), monitor='loss', verbose=1,
-save_best_only=True, mode='auto', period=CHECKPOINT_PERIOD)
+save_best_only=True, mode='auto' )
+rlr = ReduceLROnPlateau( monitor='val_loss' , mode='auto' , patience = 100 ,verbose= 1 , factor= 0.5 )
 
 print('---model 훈련 시작---')
 history = model.fit_generator(
