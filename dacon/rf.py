@@ -66,4 +66,8 @@ for param, value in best_params.items():
     if param in submit.columns:
         submit[param] = value
 
-submit.to_csv(path + 'submit.csv', index=False)
+submit.to_csv(path + 'submit1.csv', index=False)
+
+
+# {'bootstrap': True, 'criterion': 'entropy', 'max_depth': None, 'max_features': None, 'max_leaf_nodes': 47, 'min_impurity_decrease': 0.013264961159866528, 'min_samples_leaf': 0.09170225492671691, 'min_samples_split': 22, 'min_weight_fraction_leaf': 0.14607232426760908, 'n_estimators': 100}
+# 0.7648943638865013
