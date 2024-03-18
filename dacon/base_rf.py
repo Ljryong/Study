@@ -22,17 +22,24 @@ y_train = data['login']
 
 # GridSearchCV를 위한 하이퍼파라미터 설정
 param_search_space = {
-    'n_estimators': [10, 50, 100],
-    'max_depth': [None, 10, 30],
-    'min_samples_split': [2, 10],
-    'min_samples_leaf': [1, 4]
+    'n_estimators': [100,300,1000],
+    'max_depth': [None, 5, 10, 7 ],
+    'min_samples_split': [2, 10,  5, 15 ],
+    'min_samples_leaf': [1, 4, 8, 15  ],
+    'bootstrap' : [True, False],
+    'min_weight_fraction_leaf' : [0],
+    # 'max_features' : ['auto', 'sqrt', 'log2', None],
+    'min_impurity_decrease' : [0,] ,
+    
 }
 
 # RandomForestClassifier 객체 생성
 rf = RandomForestClassifier(random_state=42)
 
 # GridSearchCV 객체 생성
-grid_search = GridSearchCV(estimator=rf, param_grid=param_search_space, cv=3, n_jobs=-1, verbose=2, scoring='roc_auc')
+grid_search = GridSearchCV(estimator=rf, 
+                           param_grid=param_search_space,
+                           cv = 10 , n_jobs=-1, verbose=2, scoring='roc_auc')
 
 # GridSearchCV를 사용한 학습
 grid_search.fit(X_train, y_train)
