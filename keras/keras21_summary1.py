@@ -22,5 +22,3 @@ model.add(Dense(1))
 model.summary()                             # 요약
 
 
-
-
