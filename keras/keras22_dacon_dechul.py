@@ -31,7 +31,6 @@ train_csv['주택소유상태'] = encoder.transform(train_csv['주택소유상�
 # train_csv['근로기간'] = encoder.transform(train_csv['근로기간'])
 
 
-
 encoder.fit(test_csv['주택소유상태'])
 test_csv['주택소유상태'] = encoder.transform(test_csv['주택소유상태'])
 # encoder.fit(test_csv['대출목적'])
