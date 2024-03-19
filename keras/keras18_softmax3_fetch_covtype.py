@@ -56,7 +56,6 @@ model.compile(loss='categorical_crossentropy',optimizer='adam',metrics=['acc']) 
 model.fit(x_train, y_train, epochs = 10000000 , batch_size=1000, verbose=1 , validation_split=0.2, callbacks=[es] )
 
 
-
 #4
 result = model.evaluate(x_test,y_test)
 y_predict = model.predict(x_test)
