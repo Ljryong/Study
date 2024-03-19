@@ -63,10 +63,6 @@ x_test = scaler.transform(x_test)
 ### 
 
 
-
-
-
-
 #2
 model = Sequential()
 model.add(Dense(20,input_dim = 13))
@@ -86,7 +82,6 @@ model.summary()
 # model.save("./_data/_save/keras24_save_model.h5")     # 현재 작업하고 있는 폴더(Study)에 생성 , 상대 경로
 
 # model.save("../_data/_save/keras24_save_model.h5")      # _data 상위 폴더에 생성 (c 드라이브) , 상대 경로
-
 
 
 '''
