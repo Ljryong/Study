@@ -19,8 +19,6 @@ submission_csv = pd.read_csv(path+ 'sample_submission.csv')
 # print(train_csv)        # [96294 rows x 14 columns]
 # print(test_csv)         # [64197 rows x 13 columns]
 
-
-
 encoder = LabelEncoder()
 encoder.fit(train_csv['주택소유상태'])
 train_csv['주택소유상태'] = encoder.transform(train_csv['주택소유상태'])
