@@ -67,6 +67,7 @@ from sklearn.preprocessing import OneHotEncoder
 # y_ohe1 = ohe.fit_transform(y).toarray()       # .toarray() 는 sparse = True 일때만 가능 
 
 
+
 # print(y_ohe1)
 # print(y_ohe1.shape)
 
