@@ -68,6 +68,7 @@ es = EarlyStopping(monitor='val_loss',      # 모니터를 왜 val_loss로 하�
 # Ture 를 해도 좋지 않을수도 있다. train 데이터를 훈련시키는거기 때문에 test_csv에 영향이 없을수도 있다.
 
 
+
 start_time = time.time()
 
 hist = model.fit(x_train,y_train,epochs=800,batch_size=10,validation_split=0.2  ,  callbacks = [es] ) # [] 한개인데 대괄호일 때 에는 들어갈 수 있는게 더 있다고 생각해야 된다.
