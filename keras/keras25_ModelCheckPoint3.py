@@ -84,7 +84,6 @@ model.save('../_data/_save/keras25_3_save_model.h5')    # 그냥 save 는 h5 , m
 # model = load_model('../_data/_save/MCP/keras25_MCP1.hdf5')
 
 
-
 # 4 평가, 예측
 print('============================== 1. 기본 출력 ===============================')
 
