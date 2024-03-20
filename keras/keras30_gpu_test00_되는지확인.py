@@ -7,5 +7,3 @@ if(gpus):
     print("쥐피유 돈다!!")
 else:
     print("쥐피유 안돈다!!")
-
-
