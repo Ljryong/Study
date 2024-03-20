@@ -60,7 +60,6 @@ model.compile(loss = 'categorical_crossentropy' , optimizer = 'adam' , metrics =
 model.fit(x_train,y_train , epochs = 100 , batch_size=32 , verbose=1 , validation_split= 0.2 )
 
 
-
 #4 평가, 예측
 result = model.evaluate(x_test, y_test)
 print('loss = ',result[0])
