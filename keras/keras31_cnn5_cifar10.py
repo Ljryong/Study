@@ -75,7 +75,6 @@ print('loss_acc',loss[1])
 print('acc', accuracy_score(y_test,y_predict) )
 
 
-
 # loss 1.8195503950119019
 # loss_acc 0.36899998784065247
 # acc 0.369
