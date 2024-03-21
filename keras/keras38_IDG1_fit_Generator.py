@@ -119,8 +119,7 @@ model.fit_generator(xy_train, epochs = 100  , verbose= 1 ,callbacks=[es], valida
                     # steps_per_epoch = 전체 데이터/batch = 160/10 = 16 // 이보다 높은 숫자는 안됨 / 낮은 숫자는 잘라서 버린다.
                     # 17은 error // 15는 데이터 손실
                     
-                    
-                    
+
 # model.fit(xy_train, epochs = 100  , verbose= 1 ,callbacks=[es], validation_data = xy_test  )
 # validation 스플릿은 텐서와 넘파이만 받을 수 있어서 인터레이터 형태를 받지 못한다.
 # == fit 안에 fit_generator 가 들어가있다. generator 를 쓰지 않아도 fit으로 쓸 수 있다.
