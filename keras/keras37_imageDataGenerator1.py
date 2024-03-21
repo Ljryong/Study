@@ -20,7 +20,6 @@ test_datagen = ImageDataGenerator(rescale=1./255)      # test 데이터는 train
 path_train = 'c:/_data/image/brain/train//'
 path_test = 'c:/_data/image/brain/test//'
 
-
 xy_train = train_datagen.flow_from_directory(                                   # 그림들을 가져와서 수치화해주는 것 (이터레이터형태)
                                              path_train,                        # 데이터를 가져오는 경로
                                              target_size = (200,200) ,          # 내가 정한 수치까지 그림들의 사이즈를 줄이거나 늘린다// 
