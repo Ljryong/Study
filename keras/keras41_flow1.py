@@ -62,8 +62,7 @@ for i in range(2):
     # print(image)
         ax[i,j].imshow(image)
         ax[i,j].axis('off')  
-    
-    
+
 print(np.min(batch),np.max(batch))    
 
 
