@@ -70,9 +70,6 @@ np.save(np_path + 'keras39_1_y_test.npy' , arr=xy_test[0][1] )
 
 
 
-
-
-
 #배치로 잘린 데이터 합치기    / 선의형
 # x_train = []
 # y_train = []
