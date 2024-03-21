@@ -32,4 +32,3 @@ img = np.expand_dims(arr,axis=0)                # 차원을 늘려라
 print(img.shape)                                # axis = 0 일 때 , (1, 150, 150, 3)
                                                 # axis = 1 일 때 , (150, 1, 150, 3)
                                                 # axis = 2 일 때 , (150, 150, 1, 3)
-
