@@ -45,7 +45,6 @@ datagen = ImageDataGenerator(
     
 )
 
-
 # img = img.reshape(2,150,150,3)
 
 
