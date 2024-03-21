@@ -46,21 +46,21 @@ y_train = xy_train[0][1]
 
 
 #배치로 잘린 데이터 합치기    / 선의형
-x_train = []
-y_train = []
-for i in range(xy_train.samples // xy_train.batch_size):
-    batch = next(xy_train)
-    x_train.append(batch[0])
-    y_train.append(batch[1])
-x_train = np.concatenate(x_train)
-y_train = np.concatenate(y_train)
+x = []
+y = []
+for i in range(len(xy_train)):
+    batch, count  = xy_train.next()
+    x.append(batch)
+    y.append(count)
+    
+    # all_images와 all_labels을 numpy 배열로 변환하면 하나의 데이터로 만들어진 것입니다.
+x = np.concatenate(x, axis=0)
+y = np.concatenate(y, axis=0)
 
 
 x_train , x_test, y_train , y_test = train_test_split(x_train,y_train , test_size=0.3 , random_state= 3 , stratify=y_train , shuffle=True )
 
-
 end = time.time()
-
 
 # print(xy_train.next())
 es = EarlyStopping(monitor='val_loss' , mode = 'min' , patience= 15 , restore_best_weights=True , verbose= 1  )
