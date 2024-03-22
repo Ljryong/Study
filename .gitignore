@@ -85,3 +85,10 @@ catboost_info/catboost_training.json
 catboost_info/learn_error.tsv
 catboost_info/time_left.tsv
 catboost_info/learn/events.out.tfevents
+catboost_info/catboost_training.json
+catboost_info/learn_error.tsv
+catboost_info/time_left.tsv
+catboost_info/learn/events.out.tfevents
+catboost_info/tmp/cat_feature_index.2b22276e-815025aa-2d513347-85262101.tmp
+catboost_info/tmp/cat_feature_index.225b331f-98987714-22665bbc-957505a.tmp
+catboost_info/tmp/cat_feature_index.f6dc3925-70045654-52af3ccc-d63c1b58.tmp
