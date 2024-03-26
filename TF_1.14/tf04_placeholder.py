@@ -14,6 +14,7 @@ a = tf.compat.v1.placeholder(tf.float32)
 b = tf.compat.v1.placeholder(tf.float32)
 add_node = a + b
 
+#  sess.run 할때 placeholder 랑 feed_dict 랑 둘이 짝이다.
 print(sess.run(add_node, feed_dict={a:3, b : 4} ))      # 어떤 값을 넣든 add_node 를 실행
 # 7.0
 print(sess.run(add_node, feed_dict={a:30, b : 4.5} )) 
