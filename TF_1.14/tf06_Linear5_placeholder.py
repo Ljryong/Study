@@ -27,7 +27,7 @@ hypothesis = x * w + b
 #3. 컴파일 , 훈련
 loss = tf.reduce_mean(tf.square(hypothesis - y))        # mse // hypothesis(예측값) - y 를 해서 loss 를 알아냄
 
-optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.01)           # 경사각도
+optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.01)           # 경사감법
 train = optimizer.minimize(loss)        # loss를 최소화하겠다
 # model.compile(loss = 'mse', optimizer='sgb') 위에 3줄과 이거랑 똑같다
 
