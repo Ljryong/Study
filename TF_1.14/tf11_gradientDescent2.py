@@ -13,7 +13,7 @@ w = tf.compat.v1.Variable( [10] ,dtype=tf.float32 , name='weight')
 b = tf.compat.v1.Variable( [10] ,dtype=tf.float32 , name='weight')
 
 #2. 모델
-hypothesis = x * w + b            # hypothesis = 예측된 y 값
+hypothesis = x * w + b            # hypothesis = 예측된 y 값        순전파
 
 #3-1. 컴파일 // model.compile(loss='mse' , optimizer = 'sgb')
 loss = tf.reduce_mean(tf.square(hypothesis - y))        # mse 
@@ -24,7 +24,7 @@ loss = tf.reduce_mean(tf.square(hypothesis - y))        # mse
 lr = 0.1
 gradient = tf.reduce_mean((x * w + b - y) * x )      # (x * w + b - y) * x  = tf.square(hypothesis - y) 를 미분 한 값 숫자 2는 결국 비율로 나타내는 것이라서 안써도 똑같다.
 
-descent = w - lr * gradient
+descent = w - lr * gradient                             # gradient , descent 가 역전파 
 
 update = w.assign(descent)                  # 이 4줄이 주석과 위의 주석 2줄과 같은 내용
 ############################ 옵티마이저 ############################
