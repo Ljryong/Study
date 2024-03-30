@@ -1,11 +1,10 @@
-
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import auc
 import tensorflow as tf
 import pandas as pd
 import numpy as np
-import optuna
+import dacon.RFoptuna as RFoptuna
 import random
 
 RANDOM_STATE = 42  
@@ -18,24 +17,35 @@ train_csv = pd.read_csv('C:\_data\dacon\RF/train.csv',index_col=0)
 x = train_csv.drop('login',axis=1)
 y = train_csv['login']
 
-x_train, x_test, y_train, y_test = train_test_split(x,y,test_size=0.2, random_state=RANDOM_STATE)
+
+x_train, x_test, y_train, y_test = train_test_split(x,y,test_size=0.15 , random_state=RANDOM_STATE , stratify=y)
 
 def objectiveRF(trial):
+    # param = {
+    #     'n_estimators' : trial.suggest_int('n_estimators', 100, 1000, 10),
+    #     'criterion' : trial.suggest_categorical('criterion', ['gini','entropy']),
+    #     'bootstrap' : trial.suggest_categorical('bootstrap', [True,False]),
+    #     'max_depth' : trial.suggest_int('max_depth', 5, 100 ),
+    #     # 'random_state' : RANDOM_STATE,
+    #     # 'min_samples_split' : trial.suggest_int('min_samples_split', 2, 100),
+    #     # 'min_samples_leaf' : trial.suggest_int('min_samples_leaf', 1, 100),
+    #     'min_samples_split' : trial.suggest_uniform('min_samples_split',0,1,),
+    #     'min_samples_leaf' : trial.suggest_uniform('min_samples_leaf',0,0.5, ),
+    #     'min_weight_fraction_leaf' : trial.suggest_uniform('min_weight_fraction_leaf',0,0.5),
+    # }
+    
     param = {
-        'n_estimators' : trial.suggest_int('n_estimators', 100, 1000, 10),
-        'criterion' : trial.suggest_categorical('criterion', ['gini','entropy']),
-        'bootstrap' : trial.suggest_categorical('bootstrap', [True,False]),
-        'max_depth' : trial.suggest_int('max_depth', 5, 100 ),
-        'random_state' : RANDOM_STATE,
-        'min_samples_split' : trial.suggest_int('min_samples_split', 2, 100),
-        'min_samples_leaf' : trial.suggest_int('min_samples_leaf', 1, 100),
-        # 'min_samples_split' : trial.suggest_uniform('min_samples_split',0,1), 
-        # 'min_samples_leaf' : trial.suggest_uniform('min_samples_leaf',0,0.5), 
-        'min_weight_fraction_leaf' : trial.suggest_uniform('min_weight_fraction_leaf',0,0.5),
+    'n_estimators': trial.suggest_int('n_estimators', 100, 1000, 10),
+    'criterion': trial.suggest_categorical('criterion', ['gini', 'entropy']),
+    'bootstrap': trial.suggest_categorical('bootstrap', [True, False]),
+    'max_depth': trial.suggest_int('max_depth', 5, 100),
+    'min_samples_split': trial.suggest_loguniform('min_samples_split', 0.01, 1.0),
+    'min_samples_leaf': trial.suggest_loguniform('min_samples_leaf', 0.01, 0.5),
+    'min_weight_fraction_leaf': trial.suggest_uniform('min_weight_fraction_leaf', 0.0, 0.5),
     }
     
     # 학습 모델 생성
-    model = RandomForestClassifier(**param)
+    model = RandomForestClassifier(**param, random_state=42)
     rf_model = model.fit(x_train, y_train) # 학습 진행
     
     # 모델 성능 확인
@@ -44,14 +54,14 @@ def objectiveRF(trial):
     
     return score
 
-study = optuna.create_study(direction='maximize')
-study.optimize(objectiveRF, n_trials=1000)
+study = RFoptuna.create_study(direction='maximize')
+study.optimize(objectiveRF, n_trials=100)
 
 best_params = study.best_params
 print(best_params)
 
-optuna.visualization.plot_param_importances(study)      # 파라미터 중요도 확인 그래프
-optuna.visualization.plot_optimization_history(study)   # 최적화 과정 시각화
+RFoptuna.visualization.plot_param_importances(study)      # 파라미터 중요도 확인 그래프
+RFoptuna.visualization.plot_optimization_history(study)   # 최적화 과정 시각화
 
 # model = RandomForestClassifier(**best_params)
 model = RandomForestClassifier(**best_params)
@@ -70,7 +80,7 @@ submit_csv = pd.read_csv('C:\_data\dacon\RF/sample_submission.csv')
 for label in submit_csv:
     if label in best_params.keys():
         submit_csv[label] = best_params[label]
-    
+
 submit_csv.to_csv(f'C:\_data\dacon\RF/submit_AUC_{auc:.6f}.csv',index=False)
 
 
