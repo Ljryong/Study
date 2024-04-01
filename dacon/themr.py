@@ -5,7 +5,7 @@ import pandas as pd
 import xgboost as xgb
 from xgboost import XGBRegressor
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split , GridSearchCV , RandomizedSearchCV
 from sklearn.preprocessing import LabelEncoder
 from sklearn.utils import shuffle
 from sklearn.preprocessing import MinMaxScaler , StandardScaler
@@ -17,7 +17,7 @@ def seed_everything(seed):
     os.environ['PYTHONHASHSEED'] = str(seed)
     np.random.seed(seed)
 
-seed_everything(4090)
+seed_everything(980909)      # 98099
 
 path = 'C:\_data\dacon\소득\\'
 
@@ -51,15 +51,59 @@ for i in encoding_target:
 
 
 # 데이터를 섞음
-x_shuffled, y_shuffled = shuffle(x, y, random_state=730501)
+# x_shuffled, y_shuffled = shuffle(x, y, random_state=220118)
 
 # scaler = MinMaxScaler()
 scaler = StandardScaler()
 
-scaler.fit_transform(x_shuffled)
+scaler.fit_transform(x)
 
-model = XGBRegressor() 
-model.fit(x_shuffled, y_shuffled) 
+grid_params = {
+    # 'iterations': 1000,
+    'learning_rate': [1.0,0.1,0.5,0.01],
+    'early_stopping_rounds': [30],  
+    'max_depth' : [10,6] ,
+    # 'reduce_learning_rate' : True,
+    'random_state' : [980909]
+}
+
+params = {
+    'iterations': 3000,
+    # 'learning_rate': [1.0,0.1,0.5,0.01],
+    'learning_rate': 1.0,
+    'early_stopping_rounds': 30,  
+    'max_depth' : 10 ,
+    # 'reduce_learning_rate' : True,
+    # 'random_state' : 980909,
+    
+}
+
+
+# model = XGBRegressor() 
+# model = CatBoostRegressor(task_type='GPU' , loss_function='RMSE', 
+#                           **params,
+#                           random_state=980909
+#                           ) 
+
+model = RandomForestRegressor(**params,
+                          random_state=980909)
+
+# model = GridSearchCV(model,grid_params,cv= 3 , n_jobs= 16 ,
+#                     #  n_iter = 10, 
+#                      refit=True)
+
+# model = RandomizedSearchCV(model,grid_params,cv= 3 , n_jobs= 16 ,
+#                     #  n_iter = 10, 
+#                      refit=True)
+
+""" model = GridSearchCV(RandomForestClassifier(), parameters, cv=kfold ,
+                    verbose=1,
+                    refit=True,
+                    n_jobs= -1,
+                    random_state=66, 
+                    n_iter= 10       ) """
+
+model.fit(x, y) 
 
 preds = model.predict(test_csv)
 
@@ -67,3 +111,6 @@ submission = pd.read_csv(path+'sample_submission.csv')
 submission['Income'] = preds
 
 submission.to_csv(path + 'submit.csv', index=False)
+
+import pickle
+pickle.dump(model, open(path + 'themr_save.dat' , 'wb' ))

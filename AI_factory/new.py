@@ -47,6 +47,7 @@ import joblib
 import time
 import datetime
 from keras.layers import Attention
+from keras.applications import EfficientNetV2B0
 dt = datetime.datetime.now()
 
 """&nbsp;
@@ -185,58 +186,72 @@ def conv2d_block(input_tensor, n_filters, kernel_size = 3, batchnorm = True):
     return x
 
 #############################################모델################################################
-
-#Default Conv2D
-def conv2d_block(input_tensor, n_filters, kernel_size = 3, batchnorm = True):
-    # first layer
-    x = Conv2D(filters=n_filters, kernel_size=(kernel_size, kernel_size), kernel_initializer="he_normal",
-               padding="same")(input_tensor)
-    if batchnorm:
-        x = BatchNormalization()(x)
+def conv_block(inputs, num_filters):
+    x = Conv2D(num_filters, 3, padding="same")(inputs)
+    x = BatchNormalization()(x)
     x = Activation("relu")(x)
 
-    # second layer
-    x = Conv2D(filters=n_filters, kernel_size=(kernel_size, kernel_size), kernel_initializer="he_normal",
-               padding="same")(x)
-    if batchnorm:
-        x = BatchNormalization()(x)
+    x = Conv2D(num_filters, 3, padding="same")(x)
+    x = BatchNormalization()(x)
     x = Activation("relu")(x)
+
     return x
 
-from keras.layers import *
-from keras.models import Model
-from keras.applications import EfficientNetB3
-from transformers import TwinTransposeTransformer
+# import tensorflow_hub as hub
 
-def unet_v3_efficientnet(input_shape=(256, 256, 3), num_classes=1):
-    # EfficientNet as feature extractor
-    base_model = EfficientNetB3(weights='imagenet', include_top=False, input_shape=input_shape)
+# # EfficientNetV2B0 모델의 URL
+# model_url = "https://tfhub.dev/google/imagenet/efficientnet_v2_imagenet1k_b0/feature_vector/2"
+
+# # TensorFlow Hub에서 모델 로드
+# efficientnetv2b0_model = hub.load(model_url)
+
+# # 모델의 summary 출력
+# efficientnetv2b0_model.summary()
+
     
-    # UNet V3 decoder
-    conv1 = base_model.get_layer('block2a_expand_activation').output
-    conv2 = base_model.get_layer('block3a_expand_activation').output
-    conv3 = base_model.get_layer('block4a_expand_activation').output
-    conv4 = base_model.get_layer('block6a_expand_activation').output
-    conv5 = base_model.get_layer('top_activation').output
+
+def decoder_block(inputs, skip, num_filters):
+    x = Conv2DTranspose(num_filters, (2, 2), strides=2, padding="same")(inputs)
     
-    up6 = UpSampling2D()(conv5)
-    merge6 = concatenate([up6, conv4], axis=-1)
-    conv6 = Conv2D(512, 3, activation='relu', padding='same')(merge6)
+    # skip 특징 맵과 업샘플링된 특징 맵의 크기를 조정
+    x = tf.image.resize(x, tf.shape(skip)[1:3], method='nearest')
     
-    # Add more decoder layers as needed...
-    
-    # Twin Transpose Transformer
-    transformer_output = TwinTransposeTransformer(num_classes)(conv6)
-    
-    # Final segmentation output
-    output = Conv2D(num_classes, 1, activation='softmax')(transformer_output)
-    
-    model = Model(inputs=base_model.input, outputs=output)
-    
+    x = Concatenate()([x, skip])
+    x = conv_block(x, num_filters)
+    return x
+
+def build_effienet_unet(input_shape):
+    """ Input """
+    inputs = Input(input_shape)
+
+    """ Pre-trained Encoder """
+    encoder = EfficientNetV2B0(include_top=False, weights="imagenet", input_tensor=inputs)
+
+    s1 = encoder.get_layer("input_1").output                      ## 256
+    s2 = encoder.get_layer("block2a_expand_activation").output    ## 128
+    s3 = encoder.get_layer("block3a_expand_activation").output    ## 64
+    s4 = encoder.get_layer("block4a_expand_activation").output    ## 32
+
+    """ Bottleneck """
+    b1 = encoder.get_layer("block6a_expand_activation").output    ## 16
+
+    """ Decoder """
+    d1 = decoder_block(b1, s4, 256)                               ## 32
+    d2 = decoder_block(d1, s3, 128)                               ## 64
+    d3 = decoder_block(d2, s2, 64)                               ## 128
+    d4 = decoder_block(d3, s1, 32)                                ## 256
+
+    """ Output """
+    outputs = Conv2D(1, 1, padding="same", activation="sigmoid")(d4)
+
+    model = Model(inputs, outputs, name="EfficientNetV2B0_UNET")
     return model
 
-# Example usage:
-model = unet_v3_efficientnet()
+if __name__ == "__main__":
+    input_shape = (256, 256, 3)
+    model = build_effienet_unet(input_shape)
+    model.summary()
+###########################################################################
 
 # 두 샘플 간의 유사성 metric
 def dice_coef(y_true, y_pred, smooth=1):
@@ -272,7 +287,7 @@ save_name = f'_{dt.day}day{dt.hour:2}{dt.minute:2}'
 
 N_FILTERS = 16 # 필터수 지정
 N_CHANNELS = 3 # channel 지정
-EPOCHS = 10000 # 훈련 epoch 지정
+EPOCHS = 1 # 훈련 epoch 지정
 BATCH_SIZE = 8 # batch size 지정
 IMAGE_SIZE = (256, 256) # 이미지 크기 지정
 MODEL_NAME = 'unet' # 모델 이름
@@ -336,27 +351,44 @@ masks_validation = [os.path.join(MASKS_PATH, mask) for mask in x_val['train_mask
 train_generator = generator_from_lists(images_train, masks_train, batch_size=BATCH_SIZE, random_state=RANDOM_STATE, image_mode="762")
 validation_generator = generator_from_lists(images_validation, masks_validation, batch_size=BATCH_SIZE, random_state=RANDOM_STATE, image_mode="762")
 
+#miou metric
+def miou(y_true, y_pred, smooth=1e-6):
+    # 임계치 기준으로 이진화
+    THESHOLDS = 0.25
+    y_pred = tf.cast(y_pred > THESHOLDS, tf.float32)
+    
+    intersection = tf.reduce_sum(y_true * y_pred, axis=[1, 2, 3])
+    union = tf.reduce_sum(y_true, axis=[1, 2, 3]) + tf.reduce_sum(y_pred, axis=[1, 2, 3]) - intersection
+    
+    # mIoU 계산
+    iou = (intersection + smooth) / (union + smooth)
+    miou = tf.reduce_mean(iou)
+    return miou
 
-# model 불러오기
-# model = get_model(MODEL_NAME, input_height=IMAGE_SIZE[0], input_width=IMAGE_SIZE[1], n_filters=N_FILTERS, n_channels=N_CHANNELS)
-# model.compile(optimizer = Adam(), loss = 'binary_crossentropy', metrics = ['accuracy'])
-# model.summary()
 
-# model 불러오기
-model = get_model(MODEL_NAME, input_height=IMAGE_SIZE[0], input_width=IMAGE_SIZE[1], n_filters=N_FILTERS, n_channels=N_CHANNELS)
-if model is None:
-    raise ValueError("Unsupported model name: {}".format(MODEL_NAME))
-
-model.compile(optimizer=Adam(), loss='binary_crossentropy', metrics=['accuracy'])
+model.compile(optimizer = Adam(learning_rate= 0.01), loss = 'binary_crossentropy', metrics = ['accuracy', miou])
 model.summary()
 
 
+# checkpoint 및 조기종료 설정 val_miou 기준
+es = EarlyStopping(monitor='val_miou', mode='max', verbose=1, patience = 20 , restore_best_weights=True)
+checkpoint = ModelCheckpoint(os.path.join(OUTPUT_DIR, CHECKPOINT_MODEL_NAME), monitor='val_miou', verbose=1,
+save_best_only=True, mode='max', period=CHECKPOINT_PERIOD)
+rlr = ReduceLROnPlateau(monitor='val_loss',
+                        patience= 10,
+                        mode= 'auto',
+                        factor= 0.1,
+                        verbose=1)
 
-# checkpoint 및 조기종료 설정
-es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=EARLY_STOP_PATIENCE , restore_best_weights=True )
-checkpoint = ModelCheckpoint(os.path.join(OUTPUT_DIR, CHECKPOINT_MODEL_NAME), monitor='loss', verbose=1,
-save_best_only=True, mode='auto', period=CHECKPOINT_PERIOD  )
-rlr = ReduceLROnPlateau( monitor='val_loss' , mode='auto' , patience = 100 ,verbose= 1 , factor= 0.5 )
+""" # checkpoint 및 조기종료 설정  val_loss 기준
+es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience = 20 , restore_best_weights=True)
+checkpoint = ModelCheckpoint(os.path.join(OUTPUT_DIR, CHECKPOINT_MODEL_NAME), monitor='val_loss', verbose=1,
+save_best_only=True, mode='min', period=CHECKPOINT_PERIOD)
+rlr = ReduceLROnPlateau(monitor='val_loss',
+                        patience= 10,
+                        mode= 'auto',
+                        factor= 0.1,
+                        verbose=1) """
 
 
 """&nbsp;
@@ -393,10 +425,38 @@ print("저장된 가중치 명: {}".format(model_weights_output))
 - 학습한 모델 불러오기
 """
 
-model = get_model(MODEL_NAME, input_height=IMAGE_SIZE[0], input_width=IMAGE_SIZE[1], n_filters=N_FILTERS, n_channels=N_CHANNELS)
+# model = get_model(MODEL_NAME, input_height=IMAGE_SIZE[0], input_width=IMAGE_SIZE[1], n_filters=N_FILTERS, n_channels=N_CHANNELS)
 model.compile(optimizer = Adam(), loss = 'binary_crossentropy', metrics = ['accuracy'])
 model.summary()
 
+df = pd.DataFrame(train_generator , columns = train_generator.feature_names)
+
+print('=================== 상관계수 히트맵 =====================')
+print(df.corr())                                 # correlation
+#                    sepal length (cm)  sepal width (cm)  petal length (cm)  petal width (cm)  target(Y)
+# sepal length (cm)           1.000000         -0.117570           0.871754          0.817941   0.782561
+# sepal width (cm)           -0.117570          1.000000          -0.428440         -0.366126  -0.426658
+# petal length (cm)           0.871754         -0.428440           1.000000          0.962865   0.949035
+# petal width (cm)            0.817941         -0.366126           0.962865          1.000000   0.956547
+# target(Y)                   0.782561         -0.426658           0.949035          0.956547   1.000000
+
+# -0.1 이 0보다 좋다
+# 다중공섬선?
+# 상관관계가 너무 높은 애들을 가지쳐주는게 성능이 좋을수도 있다. 높은애들만 있으면 걔들한테만 과적합되어서 상관관계가 없는 애들이 피해를 봄
+# y값과 상관관계가 있는게 좋은 데이터 , x값과 상관관계가 있는게 애매한 데이터
+
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+import matplotlib
+print(sns.__version__)
+print(matplotlib.__version__)               # 3.8.0
+sns.set(font_scale=1.2)
+sns.heatmap(data=df.corr(), 
+            square=True,    
+            annot=True,                       # 표안에 수치 명시
+            cbar=True)                        # 사이드 바
+plt.show()
 
 
 """## 제출 Predict

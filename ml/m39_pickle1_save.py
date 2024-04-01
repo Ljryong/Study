@@ -41,7 +41,7 @@ import pickle
 # 대부분의 경우 작은 크기의 데이터를 저장할 때는 pickle을 사용하는 것이 간편하고 효과적일 수 있지만, 큰 배열과 같은 대용량 데이터를 저장할 때는 joblib이 더 효율적일 수 있습니다.
 path = 'C:/_data/_save/_pickle_test//'
 
-pickle.dump(model, open(path + 'm39_pickle_save.dat' , 'wb' ))
+pickle.dump(model, open(path + 'm39_pickle_save.h5' , 'wb' ))
 
 
 # 최종 점수4 :  0.9611111111111111
