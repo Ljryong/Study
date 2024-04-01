@@ -105,7 +105,7 @@ def optimize_catboost(trial):
     model.fit(X_train, y_train, eval_set=[(X_test, y_test)], verbose=False)
     predictions = model.predict(X_test)
     return np.sqrt(mean_squared_error(predictions, y_test))
-
+ 
 # LightGBM 모델 최적화 함수
 def optimize_lgbm(trial):
     lgbm_params = {

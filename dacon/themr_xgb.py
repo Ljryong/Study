@@ -39,7 +39,6 @@ for c in missing_cols:
     test[c] = 0
 test = test[X.columns]
 
-
 # 학습 데이터와 테스트 데이터 분리
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=random_state)
 

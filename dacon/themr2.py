@@ -267,7 +267,7 @@ def objective(trial):
     model = EnsembleRegressor(xgb_params=xgb_params, catboost_params=catboost_params, # lgbm_params=lgbm_params, 
                               xgb_weight=xgb_weight, catboost_weight=catboost_weight, # lgbm_weight = lgbm_weight
                               )
-
+ 
     model.fit(x_train, y_train)
     preds = model.predict(x_test)
     rmse = np.sqrt(mean_squared_error(y_test, preds))

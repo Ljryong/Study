@@ -101,7 +101,7 @@ model = RandomForestRegressor(**params,
                     refit=True,
                     n_jobs= -1,
                     random_state=66, 
-                    n_iter= 10       ) """
+                    n_iter= 10       ) """ 
 
 model.fit(x, y) 
 

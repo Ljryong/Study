@@ -158,7 +158,7 @@ ensemble_rmse = np.sqrt(mean_squared_error(y_test, ensemble_pred))
 print(f'Optimized Ensemble RMSE: {ensemble_rmse}')
 
 # 테스트 데이터에 대한 예측 수행
-test_preds = best_model.predict(test)
+test_preds = best_model.predict(test) 
 submission['Income'] = test_preds
 
 # 제출 파일 생성

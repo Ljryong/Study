@@ -126,6 +126,7 @@ for step in range(100) :
         #     'silent': True
         # }
         
+        
         catboost_params = {
         'iterations': trial.suggest_int('iterations', 500, 1500),
         'depth': trial.suggest_int('depth', 4, 16),
