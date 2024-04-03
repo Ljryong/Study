@@ -129,7 +129,8 @@ b = tf.compat.v1.Variable(tf.zeros([1,y_train.shape[1]]),name='bias')
 
 hypothesis = tf.nn.softmax(tf.add(tf.matmul(x,w),b))
 
-loss_fn = tf.reduce_mean(-tf.reduce_mean(y*tf.log(hypothesis-y),axis=1)) # categorical_cross_entropy
+loss_fn = tf.reduce_mean(-tf.reduce_sum(y*tf.log(hypothesis-y),axis=1)) # categorical_cross_entropy
+
 loss_fn = tf.compat.v1.losses.softmax_cross_entropy(y,hypothesis)
 # optimizer = tf.train.AdamOptimizer(learning_rate=0.001)
 optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.1)
