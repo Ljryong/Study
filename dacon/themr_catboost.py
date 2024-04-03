@@ -134,14 +134,14 @@ for step in range(100) :
         # 'border_count': trial.suggest_int('border_count', 64, 255),
         'bagging_temperature': trial.suggest_float('bagging_temperature', 0.0, 0.8),
         'random_strength': trial.suggest_float('random_strength', 0, 5),
-        'task_type': 'GPU',  # GPU 사용 설정, GPU가 없을 경우 'CPU'로 변경
+        # 'task_type': 'GPU',  # GPU 사용 설정, GPU가 없을 경우 'CPU'로 변경
         'early_stopping_rounds': trial.suggest_int('early_stopping_rounds', 5, 50),
         'boosting_type': trial.suggest_categorical('boosting_type', ['Ordered', 'Plain']),
         'silent': True
     }
-        
+
         cat = CatBoostRegressor(**catboost_params , random_state=cat_random )
-        
+
         rmse_scores = []
         for train_idx, val_idx in kfold.split(X_train, y_train):
             X_train_fold, X_val_fold = X_train.iloc[train_idx], X_train.iloc[val_idx]
@@ -179,7 +179,7 @@ for step in range(100) :
     predictions = cat.predict(test_csv)
     submission_csv["Income"] = predictions
     
-    if final_rmse < 585:
+    if final_rmse < 590:
         submission_csv.to_csv(path + f"sample_submission_pred{save_name}_{final_rmse}_random_{RAMDOM}.csv", index=False)
     else:
         print("RMSE is not less than 580. Model not saved.")
