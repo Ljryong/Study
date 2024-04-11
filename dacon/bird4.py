@@ -95,7 +95,6 @@ def train(model, optimizer, train_loader, val_loader, scheduler, device):
 
     return best_model
 
-
 def seed_everything(seed):
     random.seed(seed)
     os.environ['PYTHONHASHSEED'] = str(seed)
