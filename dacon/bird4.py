@@ -44,11 +44,11 @@ path = 'C:\\_data\\dacon\\bird\\'
 
 CFG = {
     'IMG_SIZE': 224,
-    'EPOCHS': 100,
+    'EPOCHS': 1000 ,
     'LEARNING_RATE': 0.0001,
     'BATCH_SIZE': 32,
     'SEED': 220118 ,
-    'PATIENCE': 5 ,  # 얼리 스톱핑을 위한 인내심 설정
+    'PATIENCE': 10 ,  # 얼리 스톱핑을 위한 인내심 설정
 }
 
 def train(model, optimizer, train_loader, val_loader, scheduler, device):
@@ -81,8 +81,8 @@ def train(model, optimizer, train_loader, val_loader, scheduler, device):
             scheduler.step(_val_score)
 
         # 성능이 개선되었는지 확인
-        if best_score < _val_score:
-            best_score = _val_score
+        if best_score < _val_loss:
+            best_score = _val_loss
             best_model = model
             patience_counter = 0  # 성능이 개선되었으므로 카운터를 리셋합니다.
         else:
@@ -286,7 +286,7 @@ model.eval()
 
 
 optimizer = torch.optim.Adam(params = model.parameters(), lr = CFG["LEARNING_RATE"])
-scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='max', factor=0.5, patience=3, threshold_mode='abs', min_lr=1e-8, verbose=True)
+scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='max', factor=0.7, patience=3, threshold_mode='abs', min_lr=1e-8, verbose=True)
 
 # scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=CFG['EPOCHS'], eta_min=0)
 
