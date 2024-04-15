@@ -46,7 +46,7 @@ from sklearn.model_selection import RandomizedSearchCV
 from keras.wrappers.scikit_learn import KerasClassifier , KerasRegressor
 # keras의 모델을 rapping 해줄 모델
 
-keras_model = KerasClassifier(build_fn=build_model,  # 위에 만든 keras 모델을 sklearn의 형태로 rapping 시켜줌
+keras_model = KerasClassifier(build_fn=build_model,  # 위에 만든 keras 모델을 sklearn의 형태로 wrapping 시켜줌
                               verbose = 1
                               ) 
 
