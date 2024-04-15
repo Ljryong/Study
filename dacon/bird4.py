@@ -308,7 +308,6 @@ def inference(model, test_loader, device):
     preds = le.inverse_transform(preds)
     return preds
 
-
 preds = inference(infer_model, test_loader, device)
 
 submit = pd.read_csv(path + 'sample_submission.csv')
