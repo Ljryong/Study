@@ -284,7 +284,6 @@ class BaseModel(nn.Module):
 model = BaseModel(num_classes=len(le.classes_)).to(device)
 model.eval()
 
-
 optimizer = torch.optim.Adam(params = model.parameters(), lr = CFG["LEARNING_RATE"])
 scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='max', factor=0.7, patience=3, threshold_mode='abs', min_lr=1e-8, verbose=True)
 
