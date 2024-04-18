@@ -45,8 +45,8 @@ path = 'C:\\_data\\dacon\\bird\\'
 CFG = {
     'IMG_SIZE': 224,
     'EPOCHS': 1000 ,
-    'LEARNING_RATE': 0.0001,
-    'BATCH_SIZE': 32,
+    'LEARNING_RATE': 0.03,          # 0.0001
+    'BATCH_SIZE': 64,               # 32
     'SEED': 220118 ,
     'PATIENCE': 10 ,  # 얼리 스톱핑을 위한 인내심 설정
 }
@@ -81,8 +81,8 @@ def train(model, optimizer, train_loader, val_loader, scheduler, device):
             scheduler.step(_val_score)
 
         # 성능이 개선되었는지 확인
-        if best_score < _val_loss:
-            best_score = _val_loss
+        if best_score < _val_score:
+            best_score = _val_score
             best_model = model
             patience_counter = 0  # 성능이 개선되었으므로 카운터를 리셋합니다.
         else:
@@ -298,7 +298,7 @@ test_loader = DataLoader(test_dataset, batch_size=CFG['BATCH_SIZE'], shuffle=Fal
 def inference(model, test_loader, device):
     model.eval()
     preds = []
-    with torch.no_grad():
+    with torch.no_grad():           # no gradient 평가와 예측을 할때 역전파를 사용하지 않고 함
         for batch in tqdm(iter(test_loader)):
             imgs = batch[0].to(device)  # 첫 번째 요소가 이미지 데이터라고 가정
             pred = model(imgs)
