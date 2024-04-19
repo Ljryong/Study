@@ -39,7 +39,6 @@ if torch.cuda.is_available():
 # 현재 CUDA 장치(GPU) 이름 확인
 # print(torch.cuda.get_device_name(0))
 
-
 path = 'C:\\_data\\dacon\\bird\\'
 
 CFG = {
