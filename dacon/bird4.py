@@ -18,13 +18,11 @@ import albumentations as A
 from albumentations.pytorch.transforms import ToTensorV2
 import torchvision.models as models
 
-
 from sklearn.model_selection import train_test_split
 from sklearn import preprocessing
 from sklearn.metrics import f1_score
 from sklearn.metrics import classification_report
 from tqdm import tqdm
-
 
 import warnings
 warnings.filterwarnings(action='ignore') 
