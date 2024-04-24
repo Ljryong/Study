@@ -28,6 +28,7 @@ import warnings
 warnings.filterwarnings(action='ignore') 
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
+
 import torch
 print("CUDA Available:", torch.cuda.is_available())
 print("CUDA Version:", torch.version.cuda)
