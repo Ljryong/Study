@@ -15,7 +15,6 @@ import torch.nn as nn
 import torchvision.models as models
 
 
-
 import albumentations as A
 from albumentations.pytorch.transforms import ToTensorV2
 import torchvision.models as models
