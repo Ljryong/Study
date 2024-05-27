@@ -43,7 +43,7 @@ def train(model , criterion , optimizer, x, y):
     
     #####################
     
-    loss.backward()         # 기울기(gradient)값(loss를 weight로 미분한 값) 계산 -> 역전파 시작
+    loss.backward()         # 기울기(gradient)값(loss를 weight로 미분한 값) 계산까지 -> 역전파 시작
     optimizer.step()        # 가중치 수정(w 갱신)       -> 역전파 끝
     return loss.item()      # item을 쓰는 이유는 numpy 데이터로 뽑기위해서 똑같이 tensor 데이터는 맞음
     
