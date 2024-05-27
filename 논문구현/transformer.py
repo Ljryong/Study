@@ -7,7 +7,6 @@ import sacrebleu
 file_path = "C:\_data\\transformer\\1_구어체.xlsx"
 data = pd.read_excel(file_path)
 
-
 # 소스 문장과 타겟 문장을 리스트로 추출
 source_sentences = data['원문'].tolist()[:10]
 target_sentences = data['번역문'].tolist()[:10]
