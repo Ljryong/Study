@@ -33,9 +33,9 @@ def train(model , criterion , optimizer, x, y):
     # model.train()     # 훈련모드 , 디폴트 값 // 훈련모드랑 dropout , batch normalization 같은것을 사용
     # w = w - lr * (loss를 weight로 미분한 값)
     optimizer.zero_grad()       # zero_grad = optimizer를 0으로 초기화 시킨다
-                                # 1. 처음에 0으로 시작하는게 좋아서
-                                # 2. epoch가 돌때마다 전의 gradient를 가지고 있어서 그게 문제가 될 수 있어서 이걸 해결 하기 위해서
-                                #    계속 0으로 바꿔주는 것이다. 
+                                # Gradient는 Weight를 초기화 시키기 위해서 사용되는거지 전 에포에 gradient가 영향을 끼치면 epoch가 이어지게 되서 
+                                # 그 문제를 해결하기 위해 0 을 넣어주게 된다.
+                                # Weight를 갱신해야되는거지 gradient를 갱신 X
 
     hypothesis = model(x)       # 예상치 값 (순전파)
     
