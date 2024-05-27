@@ -4,7 +4,7 @@ from keras_transformer import get_model, decode
 import sacrebleu
 
 # 엑셀 파일 로딩
-file_path = "C:\_data\\transformer\\1_구어체.xlsx"
+file_path = "C:\_data\\transformer\\구어체.xlsx"
 data = pd.read_excel(file_path)
 
 # 소스 문장과 타겟 문장을 리스트로 추출
