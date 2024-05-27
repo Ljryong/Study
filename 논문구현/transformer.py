@@ -11,6 +11,7 @@ data = pd.read_excel(file_path)
 source_sentences = data['원문'].tolist()[:10]
 target_sentences = data['번역문'].tolist()[:10]
 
+
 print("번역 전\t\t\t\t번역 후")
 for source, target in zip(source_sentences, target_sentences):
     print(f"번역 전:\n{source}\n번역 후:\n{target}")
