@@ -12,6 +12,8 @@ def attn(x, scope, n_state, *, past, hparams):
         # split_heads의 역변환
         return merge_states(tf.transpose(x, [0, 2, 1, 3]))
 
+
+
     def mask_attn_weights(w):
         # w의 형태는 [배치 크기, 헤드 수, 대상 시퀀스 길이, 소스 시퀀스 길이]이며, 정보는 소스에서 대상으로 흐름
         _, _, nd, ns = shape_list(w)  # w의 형상을 가져옴
