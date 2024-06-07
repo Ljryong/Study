@@ -13,6 +13,7 @@ import datetime
 import matplotlib.pyplot as plt
 import optuna
 
+
 """ 
 최고점수
 random_state = 42
