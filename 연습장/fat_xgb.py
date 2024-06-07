@@ -50,7 +50,6 @@ y = train_csv['NObeyesdad']
 from sklearn.preprocessing import MinMaxScaler , StandardScaler , MaxAbsScaler , RobustScaler
 
 
-
 x_train , x_test , y_train , y_test = train_test_split(x,y, random_state= 123456 , test_size=0.3 , shuffle=True , stratify=y )
 
 scaler = StandardScaler()
