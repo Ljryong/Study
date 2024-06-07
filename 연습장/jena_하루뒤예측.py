@@ -18,7 +18,6 @@ xy = pd.read_csv(path + 'jena_climate_2009_2016.csv', index_col=0)
 
 # print(xy.shape)             # (420551, 14)
 
-
 x  = xy
 y = xy['T (degC)']
 
