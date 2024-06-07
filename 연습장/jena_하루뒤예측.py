@@ -35,7 +35,6 @@ def split(xy,timestep,col) :
 # iloc = index 를 제외한 수치(값)들만을 뽑아내준다. 
 x , y = split(xy,timestep,'T (degC)')
 
-
 # print(x.shape,y.shape)       # (420541, 10, 14) (420541,)
 
 end = time.time()
