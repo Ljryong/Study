@@ -18,6 +18,10 @@ llm = ChatOpenAI(temperature=0.5,               # 창의성 (0.0 ~ 2.0)
                  openai_api_key='' 
                 )
 
+<<<<<<<<< Temporary merge branch 1
+
+=========
+>>>>>>>>> Temporary merge branch 2
 # 대화 메모리 설정
 memory = ConversationBufferMemory(memory_key="history")
 
