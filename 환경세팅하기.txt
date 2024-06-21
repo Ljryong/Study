@@ -1,0 +1,54 @@
+1.vscode 설치
+2.anaconda 설치
+3.scikit-learn지우고 1.1.3으로 설치(보스턴 데이터셋 사용하기 위함)
+4.rainbow csv, edit csv 설치(vscode 에서)
+5.python extension pack 설치(vscode 에서)
+6.Nvidia 드라이버 최신버전으로 (546.33ver)
+7.vscode에서 ctrl alt P 누르고 python: selection interpriter를 base:conda로 변경
+8.pip install tensorflow==2.15 하기
+9.git 설치하기
+
+
+#그래픽드라이버 설치
+nvidia-smi 입력해서 작동하는지 버전이랑확인
+
+#CUDA 설치
+1. 경로는 기본값으로
+2. 빠른설치 X 사용자지정설치 O
+3. 사용자정의설치옵션 - 드라이버 구성요소 선택
+    - CUDA - VisualStudio Integration 무조건 체크 해제하기
+4. 기본경로: C:/ProgramFiles/Nvidia GPU Computing Tollkit/CUDA/12.3
+
+#CUDNN 설치
+1. CNN 압축풀기
+2. 기본경로: C:/ProgramFiles/Nvidia GPU Computing Tollkit/CUDA/12.3 로 들어가서 덮어씌우기
+3. cmd 에서 nvcc -V를 입력, 버전이랑 잘 나오면 성공
+
+#가상환경 설치
+1.cmd에 conda create -n tf215_GPU python=3.9 anaconda
+2.conda env list로 확인해보기
+3.activate 가상환경이름   <- 이렇게 하면 실행됨
+  deactivate <- 이러면 빠져나올 수 있음
+  conda search python 하면 설치가능한 파이썬 모두 확인가능 
+  conda install python=버전 <- 하면 파이썬 버전 변경가능
+
+#가상환경 삭제
+conda remove --name 가상환경이름 --all
+
+###### 현재 가상환경 ######
+CUDA 11.4
+python 3.9
+tensorflow-gpu==2.9
+
+###### tf114cpu만들기 ######
+conda create -n tf114cpu python=3.7.4 anaconda
+pip install tensorflow==1.14
+protobuf 다운그레이드 하라는 에러뜨면
+pip uninstall protobuf
+pip install protbuf==3.19.6
+conda install pip==19.22.2(pip version 19.22.2로 맞추기)
+tensorflow 버전확인
+numpy future waring발생
+numpy 1.16.X버전 설치
+
+
