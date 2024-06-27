@@ -110,7 +110,6 @@ def attn(x, scope, n_state, *, past, hparams):
         a = conv1d(a, 'c_proj', n_state)
         return a, present
 
-
 def mlp(x, scope, n_state, *, hparams):
     with tf.variable_scope(scope):
         nx = x.shape[-1].value
