@@ -34,7 +34,6 @@ model.add(Dense(1))
 model.compile(loss='mse', optimizer= 'adam')
 model.fit(x_train, y_train, epochs = 100 ,batch_size= 100 , validation = 0.2)
 
-
 #4 평가 , 예측
 loss= model.evaluate(x_test,y_test)
 y_submit = model.predict(test_csv)
