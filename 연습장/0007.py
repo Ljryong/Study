@@ -44,4 +44,3 @@ submission_csv['count'] = y_submit          # 소괄호는 안되고 대괄호�
 print(submission_csv)
 
 # submission_csv = submission_csv.to_csv(path + 'submission_0108.csv' , index = False)
-
