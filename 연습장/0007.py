@@ -36,6 +36,7 @@ model.fit(x_train, y_train, epochs = 100 ,batch_size= 100 , validation = 0.2)
 
 #4 평가 , 예측
 loss= model.evaluate(x_test,y_test)
+
 y_submit = model.predict(test_csv)
 
 submission_csv['count'] = y_submit          # 소괄호는 안되고 대괄호만 가능하다. ---> 함수 뒤에만 
