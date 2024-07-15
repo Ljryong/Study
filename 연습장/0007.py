@@ -42,4 +42,5 @@ y_submit = model.predict(test_csv)
 submission_csv['count'] = y_submit          # 소괄호는 안되고 대괄호만 가능하다. ---> 함수 뒤에만 
 
 print(submission_csv)
+
 # submission_csv = submission_csv.to_csv(path + 'submission_0108.csv' , index = False)
